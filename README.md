@@ -1,24 +1,47 @@
-# LLLL — Compliance OS for Claude Code
+# LLLL — Embedded Compliance Layer for AI-Built Software
 
-A project-aware Compliance Operating System that runs as a Claude Code skill. LLLL analyzes product features, codebases, and documentation to detect compliance gaps and generate actionable guidance.
+An always-present compliance layer that integrates into AI development workflows. LLLL uses a structured master compliance checklist to continuously analyze product features, codebases, and documentation — detecting compliance gaps and generating actionable, traceable guidance.
 
-## Features
+## What LLLL Is
 
-- **Context-aware analysis** — automatically reads README, PRD, and policy files
-- **Feature-to-policy mapping** — maps product features to required compliance coverage
-- **Diff detection** — identifies gaps between features and existing policies
-- **Lawyer-ready briefs** — generates structured handoff documents for legal counsel
-- **Design-time governance** — catches compliance issues during feature planning
+LLLL is an **Embedded Compliance Layer** — not a legal tool, not a document generator, not a checklist assistant.
+
+It operates as three integrated engines:
+
+- **AI Compliance Engine** — automated analysis, checklist mapping, diff detection, gap identification
+- **Human Expert Layer** — escalation suggestions, expert-ready briefs, connects to compliance experts and legal professionals
+- **Enablement Layer** — education insights, compliance reasoning, organizational learning
+
+## How It Works
+
+LLLL is workflow-integrated and continuously active:
+
+- **During feature planning** — catches compliance issues at design time
+- **During code generation** — flags triggered domains automatically
+- **During feature changes** — detects drift and suggests re-evaluation
+- **During pre-launch review** — generates structured compliance briefs
 
 ## Commands
 
+All commands are available at every subscription level (Basic / Pro / Team).
+
 | Command | Description |
 |---------|-------------|
-| `/llll` | Full compliance analysis |
-| `/llll deep` | Deep analysis with sensitivity assessment |
-| `/llll brief` | Lawyer handoff brief |
-| `/llll checklist` | Structured intake checklist |
-| `/llll diff` | Feature vs policy coverage matrix |
+| `/llll` | Compliance diagnosis with P1 risks and action plan |
+| `/llll checklist` | Structured intake checklist with completeness scoring |
+| `/llll diff` | Feature vs policy coverage matrix with change tickets |
+| `/llll brief` | Compliance expert handoff brief |
+| `/llll deep` | Strict review with sensitivity assessment and consequence modeling |
+
+## Subscription Levels
+
+Full functionality at every level. In Basic, Medium/Low items are folded (Critical + High always shown).
+
+- **Basic** — all commands available, Medium/Low items folded. Critical + High always shown. Builds habit.
+- **Pro** — full content, nothing folded. Provides certainty.
+- **Team** — same content as Pro + organizational features (TODO P3: define Team-specific features).
+
+Deep (`/llll deep`) is a command mode available at all levels, not a subscription level.
 
 ## Installation
 
@@ -31,12 +54,54 @@ ln -s /Users/vox/LLLL ~/.claude/skills/llll
 ## File Structure
 
 ```
-SKILL.md              — Core skill definition and reasoning engine
-checklist-schema.md   — Checklist categories and decision/legal split
-output-templates.md   — Output format templates for all modes
-examples.md           — Usage examples and expected outputs
+SKILL.md                        — Core skill definition, embedded layer architecture, mode system
+compliance-checklist-master.md  — Master compliance rule library (domains A-M)
+checklist-schema.md             — Intake schema aligned with master domains
+output-templates.md             — Output templates for all modes and subscription levels
+examples.md                     — Usage examples including passive activation and continuous compliance
 ```
+
+## Architecture
+
+```
+Development Workflow (feature planning, code gen, PRD, modification)
+    |
+    v
+⚖️  LLLL Embedded Compliance Layer (passive activation)
+    |
+    v
+Context Gathering (README, docs, code, deps, conversation)
+    |
+    v
+Domain Selection Engine
+    |-- Layer 1: Universal checks (A-E)
+    |-- Layer 2: Business-model checks (F-H)
+    |-- Layer 3: Industry/sensitivity checks (M)
+    |-- Layer 4: AI-specific checks (I-K)
+    |-- Layer 5: Mobile checks (L)
+    |
+    v
+Three Engine Model
+    |-- AI Compliance Engine (analysis, mapping, gaps)
+    |-- Human Expert Layer (escalation, briefs)
+    |-- Enablement Layer (education, reasoning)
+    |
+    v
+Subscription Level Output (Basic / Pro / Team)
+    |
+    v
+Actionable Deliverables + Mandatory Disclaimer
+```
+
+## Product Principles
+
+- We are not selling features — we are selling **confidence** and **continuous compliance capability**
+- Basic level builds habit and awareness
+- Pro level provides certainty
+- Team level adds organizational compliance
+- Deep mode (available at all levels) supports decision-making under risk
+- Expert escalation is optional, value-added, never forced
 
 ## Version
 
-v1.2 — Engineering Mode with diff engine, context awareness, and API pre-structure.
+v3.0 — Embedded Compliance Layer with three engine model, tiered visibility, continuous compliance, and human expert escalation.
