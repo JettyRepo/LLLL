@@ -52,7 +52,8 @@ Critical and High items are **ALWAYS shown**. Only Medium and Low are folded:
 
 1. **3+ items** in a risk level: fold 2, show the rest
 2. **2 items** in a risk level: fold 1, show 1
-3. **Exception**: if total Medium + Low ≤ 2, fold ALL Medium and Low
+3. Within each level, sort by severity descending — show more severe items, fold least severe
+4. **Exception**: if total Medium + Low ≤ 2, fold ALL Medium and Low
 
 Marker: `(+N Medium/Low items hidden)`
 

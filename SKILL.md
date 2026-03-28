@@ -232,6 +232,7 @@ For each output section that has risk-leveled items (gaps, actions, matrix rows,
 2. **Medium** and **Low** items → folded by risk level:
    - 3+ items in a level: fold 2, show the rest
    - 2 items in a level: fold 1, show 1
+   - Within each level, sort by severity descending — show the more severe items, fold the least severe
 3. **Exception**: if total Medium + Low ≤ 2, fold ALL Medium and Low items — only Critical and High items remain visible
 
 #### Priority mapping for actions

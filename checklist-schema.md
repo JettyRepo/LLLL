@@ -23,6 +23,21 @@ Mark each item with one of:
 
 ---
 
+## Risk Levels
+
+Gaps and findings are assigned one of four risk levels:
+
+| Level | Meaning | Folded in Basic? |
+|-------|---------|-----------------|
+| **Critical** | Urgent + important — not fixing this causes immediate serious consequences | Never |
+| **High** | Important but not urgent — significant risk if left unresolved | Never |
+| **Medium** | Weakens compliance posture — should be fixed but not immediately catastrophic | Yes |
+| **Low** | Improves maturity — useful but not urgent | Yes |
+
+Critical vs High distinction: Critical means the issue is actively causing harm or violation RIGHT NOW. High means the issue is significant but consequences are not yet materializing.
+
+---
+
 ## Escalation Routing
 
 | Label | Routes To |
