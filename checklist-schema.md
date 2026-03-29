@@ -1,8 +1,8 @@
-# LLLL Checklist Schema v3.0
+# Layrix Checklist Schema v3.0
 
 Aligned with the Embedded Compliance Layer architecture and compliance-checklist-master.md domains.
 
-LLLL is an Embedded Compliance Layer — a Compliance Operating System.
+LLLL is the core skill of the Layrix Compliance OS — an Embedded Compliance Layer.
 Checklists are structured as: **Domain → Inputs → Status → Owner**.
 This schema supports continuous compliance, not static one-time validation.
 

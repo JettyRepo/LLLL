@@ -1,8 +1,8 @@
-# LLLL Output Templates v3.0
+# LLLL (Layrix Logic Layer Loop) Output Templates v3.0
 
 Aligned with the Embedded Compliance Layer architecture and compliance-checklist-master.md.
 
-LLLL is an Embedded Compliance Layer — a Compliance Operating System.
+LLLL is the core skill of the Layrix Compliance OS — an Embedded Compliance Layer.
 It is NOT a legal tool. It is NOT a document generator.
 It produces actionable compliance intelligence.
 
@@ -77,6 +77,37 @@ Every output — regardless of subscription level — must include:
    - **Product** — business decisions
    - **Engineering** — technical confirmations
    - **Compliance expert / Legal professional** — regulatory and compliance questions
+4. **Coverage Confidence** — how much to trust this analysis (see below)
+
+---
+
+## Coverage Confidence
+
+Appears in ALL modes, after Action Plan and before Education Insight. Never folded at any subscription level.
+
+### Template
+
+```
+### Coverage Confidence
+
+| Factor | Score | Detail |
+|--------|-------|--------|
+| Context inputs | N/5 | README ✓/✗, docs ✓/✗, policies ✓/✗, code ✓/✗, deps ✓/✗ |
+| Evidence basis | N% observed | N observed, N inferred, N missing |
+| Domain coverage | N/N | All triggered domains evaluated / [list unevaluated] |
+
+**Overall: High / Medium / Low**
+
+To increase confidence: [actionable list of missing inputs or evidence]
+```
+
+### Rating Rules
+
+| Rating | Condition |
+|--------|-----------|
+| **High** | Context ≥ 4/5 AND evidence ≥ 70% observed AND all triggered domains evaluated |
+| **Medium** | Context ≥ 2/5 AND evidence ≥ 40% observed |
+| **Low** | Context < 2/5 OR evidence < 40% observed OR any triggered domain not evaluated |
 
 ---
 
@@ -129,6 +160,18 @@ Output Mode: LLLL Basic
 
 **LLLL Basic:** All P1 actions shown (from Critical + High gaps). P2/P3 folded per folding rules. `(+N P2/P3 actions hidden)`
 **LLLL Pro / Team:** Full action plan.
+
+### Coverage Confidence
+
+| Factor | Score | Detail |
+|--------|-------|--------|
+| Context inputs | N/5 | README ✓/✗, docs ✓/✗, policies ✓/✗, code ✓/✗, deps ✓/✗ |
+| Evidence basis | N% observed | N observed, N inferred, N missing |
+| Domain coverage | N/N | All triggered domains evaluated / [list unevaluated] |
+
+**Overall: High / Medium / Low**
+
+To increase confidence: [actionable list of missing inputs or evidence]
 
 ### Education Insight
 - Compliance: [One key compliance concept relevant to this analysis]
@@ -203,6 +246,18 @@ Reasoning: [Why this sensitivity level — reference Domain M triggers if applic
 | P1 | ... | Product / Engineering / Compliance expert | ... |
 | P2 | ... | ... | ... |
 | P3 | ... | ... | ... |
+
+### Coverage Confidence
+
+| Factor | Score | Detail |
+|--------|-------|--------|
+| Context inputs | N/5 | README ✓/✗, docs ✓/✗, policies ✓/✗, code ✓/✗, deps ✓/✗ |
+| Evidence basis | N% observed | N observed, N inferred, N missing |
+| Domain coverage | N/N | All triggered domains evaluated / [list unevaluated] |
+
+**Overall: High / Medium / Low**
+
+To increase confidence: [actionable list of missing inputs or evidence]
 
 ### Education Insight (longest format — deep mode)
 - Compliance: [Detailed paragraph with regulatory context, 5-8 sentences. Explain the underlying regulatory principle, its history, why it matters for this specific product, and how enforcement trends are evolving.]
@@ -284,6 +339,18 @@ Output Mode: LLLL Pro
 | P2 | [Important] | ... |
 | P3 | [Recommended] | ... |
 
+### Coverage Confidence
+
+| Factor | Score | Detail |
+|--------|-------|--------|
+| Context inputs | N/5 | README ✓/✗, docs ✓/✗, policies ✓/✗, code ✓/✗, deps ✓/✗ |
+| Evidence basis | N% observed | N observed, N inferred, N missing |
+| Domain coverage | N/N | All triggered domains evaluated / [list unevaluated] |
+
+**Overall: High / Medium / Low**
+
+To increase confidence: [actionable list of missing inputs or evidence]
+
 ### Education Insight (formal — for compliance / legal audience)
 - Compliance: [Formal language. Regulatory landscape relevant to triggered domains.]
 - Business: [Business context that helps reviewers understand product team priorities.]
@@ -347,6 +414,18 @@ Output Mode: LLLL Pro
 
 **LLLL Basic:** All P1 tickets shown. P2/P3 tickets folded per folding rules. `(+N P2/P3 tickets hidden)`
 **LLLL Pro / Team:** All tickets.
+
+### Coverage Confidence
+
+| Factor | Score | Detail |
+|--------|-------|--------|
+| Context inputs | N/5 | README ✓/✗, docs ✓/✗, policies ✓/✗, code ✓/✗, deps ✓/✗ |
+| Evidence basis | N% observed | N observed, N inferred, N missing |
+| Domain coverage | N/N | All triggered domains evaluated / [list unevaluated] |
+
+**Overall: High / Medium / Low**
+
+To increase confidence: [actionable list of missing inputs or evidence]
 
 ### Education Insight (scaled to change severity)
 - Compliance: [Length matches the highest-risk gap in the diff.]
@@ -464,6 +543,18 @@ Output Mode: LLLL Pro
 | 2 | ... | ... | P2 |
 | 3 | ... | ... | P3 |
 
+### Coverage Confidence
+
+| Factor | Score | Detail |
+|--------|-------|--------|
+| Context inputs | N/5 | README ✓/✗, docs ✓/✗, policies ✓/✗, code ✓/✗, deps ✓/✗ |
+| Evidence basis | N% observed | N observed, N inferred, N missing |
+| Domain coverage | N/N | All triggered domains evaluated / [list unevaluated] |
+
+**Overall: High / Medium / Low**
+
+To increase confidence: [actionable list of missing inputs or evidence]
+
 ### Education Insight (scaled to completeness score)
 - Compliance: [If Red (<50%), use 3-4 sentences. If Yellow, use 2 sentences. If Green, use 1 sentence.]
 - Business: [Brief business context relevant to the intake stage.]
@@ -484,7 +575,7 @@ Output Mode: LLLL Basic
 Design-time outputs are embedded automatically when LLLL detects feature planning.
 Default level is Basic. User can escalate via suggested next steps.
 
-## ⚖️ LLLL Compliance Layer
+## ⚖️ Layrix Compliance Layer
 
 ### Triggered Domains
 [Which compliance domains this feature activates]

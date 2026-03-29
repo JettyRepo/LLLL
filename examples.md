@@ -1,8 +1,8 @@
-# LLLL Examples v3.0
+# LLLL (Layrix Logic Layer Loop) Examples v3.0
 
 Examples demonstrating the Embedded Compliance Layer across all modes and subscription levels.
 
-LLLL is an Embedded Compliance Layer — a Compliance Operating System.
+LLLL is the core skill of the Layrix Compliance OS — an Embedded Compliance Layer.
 It is NOT a legal tool. It is NOT a document generator.
 
 ---
@@ -429,7 +429,7 @@ Human compliance expert or legal professional review is recommended.
 
 **Expected output** (appended after the feature discussion):
 
-## ⚖️ LLLL Compliance Layer
+## ⚖️ Layrix Compliance Layer
 
 ```
 Output Mode: LLLL Basic
@@ -596,7 +596,7 @@ Human compliance expert or legal professional review is recommended.
 
 **Expected output** (appended):
 
-## ⚖️ LLLL Compliance Layer — Feature Change Detected
+## ⚖️ Layrix Compliance Layer — Feature Change Detected
 
 ```
 Output Mode: LLLL Basic

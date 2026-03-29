@@ -1,4 +1,4 @@
-# LLLL Compliance Checklist Master
+# Layrix Compliance Checklist Master
 Version: v2.0
 
 This file is the master compliance rule library for LLLL.
