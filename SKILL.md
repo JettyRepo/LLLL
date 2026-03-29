@@ -213,8 +213,8 @@ Deep (`/llll deep`) is a command mode, not a tier. It is available at all subscr
 
 ### Basic
 - Full functionality — all commands available including `/llll deep`
-- Medium and Low risk/priority items are folded (Critical and High always shown)
-- Folded items noted with `(+N Medium/Low items hidden)` markers
+- All modules/sections always present — identical structure to Pro
+- Severity-based folding within modules (see rules below)
 - Builds habit and compliance awareness
 
 ### Pro
@@ -229,27 +229,62 @@ Deep (`/llll deep`) is a command mode, not a tier. It is available at all subscr
 
 ### Content Folding (Basic level only)
 
-Basic only folds Medium and Low risk/priority items. Critical and High items are ALWAYS shown.
+Basic folding is **severity-based within modules** — it never removes modules or sections. All modules present in Pro are also present in Basic. Folding happens **inside** modules.
 
 #### Risk levels
 
-| Level | Meaning | Folded in Basic? |
-|-------|---------|-----------------|
-| **Critical** | Urgent + important — not fixing this causes immediate serious consequences | Never |
-| **High** | Important but not urgent — significant risk if left unresolved | Never |
-| **Medium** | Weakens compliance posture — should be fixed but not immediately catastrophic | Yes |
-| **Low** | Improves maturity — useful but not urgent | Yes |
+| Level | Indicator | Meaning | Folded in Basic? |
+|-------|-----------|---------|-----------------|
+| **Critical** | 🔴🔴 | Urgent + important — immediate serious consequences | Never |
+| **High** | 🔴 | Important but not urgent — significant risk if left unresolved | Never |
+| **Medium** | 🟡 | Weakens compliance posture — not immediately catastrophic | Yes |
+| **Low** | 🟢 | Improves maturity — useful but not urgent | Yes |
+
+#### Color indicator rules
+
+**MANDATORY: All risk-leveled items in ALL outputs MUST use the emoji color indicators.**
+
+Apply to:
+- Gap severity in Gaps / Risk Areas tables
+- Action priority in Action Plan tables
+- Coverage status in Required Compliance Stack (🔴 Gap / 🟡 Partial / 🟢 Covered)
+- Completeness scoring in Checklist mode (🔴 Red <50% / 🟡 Yellow 50-80% / 🟢 Green >80%)
+- Coverage Matrix rows in Diff mode (risk column)
+- Policy Update Priorities (risk column)
+- Change Ticket priority
+
+Format in tables:
+```
+| Gap | Risk |
+|-----|------|
+| No privacy policy | 🔴🔴 **Critical** |
+| No AI disclosure | 🔴 **High** |
+| Incomplete cookie notice | 🟡 **Medium** |
+| Missing changelog format | 🟢 **Low** |
+```
 
 #### Folding algorithm
 
 For each output section that has risk-leveled items (gaps, actions, matrix rows, tickets):
 
-1. **Critical** and **High** items → always shown, never folded
-2. **Medium** and **Low** items → folded by risk level:
-   - 3+ items in a level: fold 2, show the rest
-   - 2 items in a level: fold 1, show 1
-   - Within each level, sort by severity descending — show the more severe items, fold the least severe
-3. **Exception**: if total Medium + Low ≤ 2, fold ALL Medium and Low items — only Critical and High items remain visible
+1. **Critical** and **High** items → always shown in full, never folded
+2. **Medium** and **Low** items → show the 2 most severe, fold the rest
+   - Sort all Medium + Low items by severity descending
+   - Show the top 2
+   - Fold the remaining items
+   - **List the names of folded items** in the fold marker
+3. If a section has **no Medium/Low items** to fold: fold less important detail content within the section (e.g., truncate long lists, show summary instead of full detail), but always keep the section header and core content
+
+#### Fold marker format
+
+Every fold marker uses red indicators and lists hidden item names, followed by an upgrade prompt:
+
+```
+🔴 (+N hidden: [Item Name 1], [Item Name 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
+
+Pro and Team show all content without folding or upgrade prompts.
 
 #### Priority mapping for actions
 
@@ -257,15 +292,12 @@ For each output section that has risk-leveled items (gaps, actions, matrix rows,
 |----------|----------------|-----------------|
 | Critical | P1 | Never |
 | High | P1 | Never |
-| Medium | P2 | Yes |
-| Low | P3 | Yes |
-
-Always include `(+N Medium/Low items hidden)` markers.
-Pro and Team show all content without folding.
+| Medium | P2 | Yes (show 2, fold rest) |
+| Low | P3 | Yes (show 2, fold rest) |
 
 #### Deep mode at Basic level
 
-Deep mode (`/llll deep`) adds extra sections (Sensitivity Assessment, Why This Matters Now, Consequences, Human Review Flags) at ALL levels. In Basic, these sections are present but follow the same Medium/Low folding rules (Critical and High always shown). In Pro and Team, deep mode output is identical and fully expanded.
+Deep mode (`/llll deep`) adds extra sections (Sensitivity Assessment, Why This Matters Now, Consequences, Human Review Flags, Evidence Gaps with Consequences) at ALL levels. In Basic, all sections are present. Human Review Flags show Critical + High flags in full; Medium/Low flags follow the folding rules. In Pro and Team, deep mode output is identical and fully expanded.
 
 #### Output Mode header
 
@@ -341,6 +373,7 @@ Output:
 8. Action Plan (P1 / P2 / P3) with owners
 9. Coverage Confidence
 10. Education Insight
+11. Next steps menu
 
 ---
 
@@ -355,6 +388,7 @@ Output:
 4. Priority Action Items with owners
 5. Coverage Confidence
 6. Education Insight
+7. Next steps menu
 
 ---
 
@@ -375,6 +409,7 @@ MUST include:
 10. Immediate Priorities with owners
 11. Coverage Confidence
 12. Education Insight
+13. Next steps menu
 
 ---
 
@@ -398,6 +433,7 @@ Output:
 4. Change Tickets (one per policy gap cluster)
 5. Coverage Confidence
 6. Education Insight
+7. Next steps menu
 
 ---
 
@@ -422,6 +458,124 @@ Output:
 7. Evidence Gaps with Consequences (what could go wrong)
 8. Coverage Confidence
 9. Education Insight (longest format)
+10. Next steps menu
+
+---
+
+## MANDATORY NEXT STEPS MENU
+
+**HARD RULE: Every LLLL output MUST end with the Next steps menu. No exceptions.**
+
+This applies to ALL modes (`/llll`, `/llll deep`, `/llll checklist`, `/llll brief`, `/llll diff`) and passive activation (Design-Time Mode). If an LLLL output does not contain the Next steps menu, the output is incomplete.
+
+### Output order (end of every LLLL output)
+
+```
+1. Education Insight
+2. Disclaimer ← MANDATORY
+3. Next steps menu ← MANDATORY
+```
+
+Note: Registration hint is NOT at the tail. It appears at the top of the output (see REGISTRATION HINT section).
+
+### Menu format
+
+The menu lists the other available modes. The current mode is replaced with `/llll` (diagnosis).
+
+**Basic (unregistered or registered)** — includes upgrade item [6]:
+
+From `/llll`:
+```
+Next:
+[1] Continue
+[2] /llll deep
+[3] /llll checklist
+[4] /llll brief
+[5] /llll diff
+[6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+```
+
+From `/llll deep`:
+```
+Next:
+[1] Continue
+[2] /llll
+[3] /llll checklist
+[4] /llll brief
+[5] /llll diff
+[6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+```
+
+From `/llll checklist`:
+```
+Next:
+[1] Continue
+[2] /llll deep
+[3] /llll
+[4] /llll brief
+[5] /llll diff
+[6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+```
+
+From `/llll brief`:
+```
+Next:
+[1] Continue
+[2] /llll deep
+[3] /llll checklist
+[4] /llll
+[5] /llll diff
+[6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+```
+
+From `/llll diff`:
+```
+Next:
+[1] Continue
+[2] /llll deep
+[3] /llll checklist
+[4] /llll brief
+[5] /llll
+[6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+```
+
+**Pro and Team** — no upgrade item:
+
+```
+Next:
+[1] Continue
+[2] ...
+[3] ...
+[4] ...
+[5] ...
+```
+
+### Upgrade response (when user selects [6])
+
+When a Basic user selects [6], display the Pro vs Basic comparison table followed by the upgrade URL:
+
+```
+## 🟢 Upgrade to Layrix Pro
+
+| Feature | Basic | Pro |
+|---------|-------|-----|
+| All compliance modes | ✓ | ✓ |
+| Critical + High findings | Always shown | Always shown |
+| Medium + Low findings | Folded (2 shown) | All shown |
+| Hidden item names | Listed in fold marker | Full detail |
+| Compliance Stack | ✓ | ✓ |
+| Change Tickets | P1 shown | All shown |
+| Coverage Confidence | ✓ | ✓ |
+| Education Insight | ✓ | ✓ |
+| Full action plans (P2/P3) | Folded | ✓ |
+| Complete evidence detail | Folded | ✓ |
+
+Upgrade at → layrix.ai/upgrade
+
+> No compliance data leaves your environment. LLLL runs locally in Claude Code.
+```
+
+Note: Upgrade purchase flow is TODO (to be developed). Currently this displays the comparison and URL only.
 
 ---
 
@@ -482,7 +636,7 @@ When appropriate, add:
 
 ## MANDATORY DISCLAIMER
 
-Append to ALL outputs:
+Append to ALL outputs as the **final element** (after Next steps menu):
 
 ```
 ---
@@ -490,6 +644,16 @@ Append to ALL outputs:
 This content is generated by AI and may be incomplete or inaccurate.
 Human compliance expert or legal professional review is recommended.
 ```
+
+### Mandatory output tail (every LLLL output must end with this sequence)
+
+```
+[Education Insight]
+[Disclaimer — ALWAYS]
+[Next steps menu — ALWAYS]
+```
+
+If any of the mandatory elements (Disclaimer, Next steps menu) are missing, the output is incomplete.
 
 ---
 
@@ -543,10 +707,54 @@ Coverage Confidence is shown at ALL levels (Basic, Pro, Team). It is never folde
 
 ## REGISTRATION HINT
 
-After repeated use (3+ invocations in a session), append once:
+Format:
 
-> Save your compliance history and unlock continuity (diff tracking, updates).
-> Register at layrix.ai in 30 seconds →
+> 🟢🟢 Register at layrix.ai in 30 seconds → 🟢🟢
+
+### Registration detection mechanism
+
+LLLL checks `~/.layrix/config.json` before producing output.
+
+**Detection flow:**
+1. Attempt to read `~/.layrix/config.json`
+2. If file exists and contains `"registered": true` → status is REGISTERED
+3. If file does not exist, is unreadable, or `"registered"` is missing/false → status is UNREGISTERED (default)
+
+**Config file format** (`~/.layrix/config.json`):
+```json
+{
+  "registered": true,
+  "email": "user@example.com",
+  "subscription": "basic"
+}
+```
+
+The `subscription` field determines the user's tier:
+- `"basic"` (default) → LLLL Basic
+- `"pro"` → LLLL Pro
+- `"team"` → LLLL Team
+
+If the file is missing or the `subscription` field is absent, default to Basic.
+
+```
+Registration status: REGISTERED / UNREGISTERED (default)
+Subscription level: basic / pro / team (default: basic)
+```
+
+### When to show
+
+- **Unregistered users** — show registration hint at the **very beginning** of every LLLL output, immediately after the `Output Mode:` header line and before any analysis content
+- **Registered users** — never show registration hint
+
+### Placement
+
+```
+Output Mode: LLLL Basic
+
+🟢🟢 Register at layrix.ai in 30 seconds → 🟢🟢
+
+[... analysis content ...]
+```
 
 Never block usage. This is a soft suggestion only.
 

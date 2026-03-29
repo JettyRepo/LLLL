@@ -22,40 +22,57 @@ Deep mode (`/llll deep`) adds Sensitivity Assessment, Why This Matters Now, Cons
 
 ### Output Mode Header
 
-Every output begins with the user's subscription level:
+Every output begins with the user's subscription level, followed by a registration hint for unregistered users:
 
 ```
 Output Mode: LLLL Basic
+
+🟢🟢 Register at layrix.ai in 30 seconds → 🟢🟢
+```
+
+Registered users and Pro/Team users do not see the registration hint:
+
+```
 Output Mode: LLLL Pro
-Output Mode: LLLL Team
 ```
 
 When running `/llll deep`, append the mode:
 
 ```
-Output Mode: LLLL Pro — Deep Analysis
 Output Mode: LLLL Basic — Deep Analysis
+
+🟢🟢 Register at layrix.ai in 30 seconds → 🟢🟢
 ```
 
-### Risk Levels
+### Risk Levels and Color Indicators
 
-| Level | Meaning | Folded in Basic? |
-|-------|---------|-----------------|
-| **Critical** | Urgent + important — immediate serious consequences | Never |
-| **High** | Important but not urgent — significant risk over time | Never |
-| **Medium** | Weakens compliance posture — not immediately catastrophic | Yes |
-| **Low** | Improves maturity — useful but not urgent | Yes |
+| Level | Indicator | Meaning | Folded in Basic? |
+|-------|-----------|---------|-----------------|
+| **Critical** | 🔴🔴 | Urgent + important — immediate serious consequences | Never |
+| **High** | 🔴 | Important but not urgent — significant risk over time | Never |
+| **Medium** | 🟡 | Weakens compliance posture — not immediately catastrophic | Yes |
+| **Low** | 🟢 | Improves maturity — useful but not urgent | Yes |
+
+Color indicators are **mandatory** on all risk-leveled items across all outputs:
+- Gap severity, action priority, coverage status (🔴 Gap / 🟡 Partial / 🟢 Covered)
+- Completeness scoring (🔴 Red / 🟡 Yellow / 🟢 Green)
+- Matrix rows, policy priorities, change tickets
 
 ### Basic Folding Rules
 
-Critical and High items are **ALWAYS shown**. Only Medium and Low are folded:
+Folding is **severity-based within modules** — never removes modules or sections. All modules present in Pro are also present in Basic.
 
-1. **3+ items** in a risk level: fold 2, show the rest
-2. **2 items** in a risk level: fold 1, show 1
-3. Within each level, sort by severity descending — show more severe items, fold least severe
-4. **Exception**: if total Medium + Low ≤ 2, fold ALL Medium and Low
+1. **Critical** and **High** items → always shown in full, never folded
+2. **Medium** and **Low** items → show the 2 most severe, fold the rest
+   - Sort all Medium + Low by severity descending, show top 2, fold remaining
+   - **List the names of folded items** in the fold marker
+3. Sections with **no Medium/Low items**: fold less important detail content (truncate long lists), keep section header and core content
 
-Marker: `(+N Medium/Low items hidden)`
+Fold marker format:
+```
+🔴 (+N hidden: [Item Name 1], [Item Name 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
 
 Every output ends with:
 
@@ -143,22 +160,30 @@ Output Mode: LLLL Basic
 
 | Gap | Domain | Check | Risk | Label |
 |-----|--------|-------|------|-------|
-| No privacy policy (users active) | D | D2 | Critical | NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT |
-| No AI disclosure (AI in production) | I | I1 | Critical | NEEDS BUSINESS DECISION |
-| No data retention policy | D | D1 | High | NEEDS BUSINESS DECISION |
+| No privacy policy (users active) | D | D2 | 🔴🔴 **Critical** | NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT |
+| No AI disclosure (AI in production) | I | I1 | 🔴🔴 **Critical** | NEEDS BUSINESS DECISION |
+| No data retention policy | D | D1 | 🔴 **High** | NEEDS BUSINESS DECISION |
 
-**LLLL Basic:** All Critical + High gaps shown. Medium/Low folded per folding rules. `(+N Medium/Low gaps hidden)`
+**LLLL Basic:** All Critical + High gaps shown. Medium/Low: show 2 most severe, fold rest with names listed.
+```
+🔴 (+N hidden: [Gap Name 1], [Gap Name 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
 **LLLL Pro / Team:** Full gap table.
 
 ### Action Plan
 
 | Priority | Action | Owner |
 |----------|--------|-------|
-| P1 | [Critical — must address before launch] | Product / Engineering / Compliance expert |
-| P2 | [Important — address within sprint] | ... |
-| P3 | [Recommended — plan for next cycle] | ... |
+| 🔴🔴 P1 | [Critical — must address before launch] | Product / Engineering / Compliance expert |
+| 🟡 P2 | [Important — address within sprint] | ... |
+| 🟢 P3 | [Recommended — plan for next cycle] | ... |
 
-**LLLL Basic:** All P1 actions shown (from Critical + High gaps). P2/P3 folded per folding rules. `(+N P2/P3 actions hidden)`
+**LLLL Basic:** All P1 actions shown. P2/P3: show 2 most severe, fold rest with names listed.
+```
+🔴 (+N hidden: [Action Name 1], [Action Name 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
 **LLLL Pro / Team:** Full action plan.
 
 ### Coverage Confidence
@@ -230,6 +255,13 @@ Reasoning: [Why this sensitivity level — reference Domain M triggers if applic
 - [ ] Whether health data processing triggers HIPAA — NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT
 - [ ] Data retention period selection — NEEDS BUSINESS DECISION
 
+**LLLL Basic:** Critical + High Human Review Flags always shown. Medium/Low: show 2 most severe, fold rest with names listed.
+```
+🔴 (+N hidden: [Flag Name 1], [Flag Name 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
+**LLLL Pro / Team:** All flags shown.
+
 > This may require a compliance expert or legal professional review.
 
 ### Evidence Gaps with Consequences
@@ -243,9 +275,9 @@ Reasoning: [Why this sensitivity level — reference Domain M triggers if applic
 
 | Priority | Action | Owner | Consequence if Ignored |
 |----------|--------|-------|----------------------|
-| P1 | ... | Product / Engineering / Compliance expert | ... |
-| P2 | ... | ... | ... |
-| P3 | ... | ... | ... |
+| 🔴🔴 P1 | ... | Product / Engineering / Compliance expert | ... |
+| 🟡 P2 | ... | ... | ... |
+| 🟢 P3 | ... | ... | ... |
 
 ### Coverage Confidence
 
@@ -282,7 +314,11 @@ Output Mode: LLLL Pro
 ### Functional Scope
 [Bullet list of key features with compliance relevance]
 
-**LLLL Basic:** All features shown. Low-relevance features may be folded. `(+N features hidden)`
+**LLLL Basic:** All features shown. Low-relevance features: show 2, fold rest with names listed.
+```
+🔴 (+N hidden: [Feature 1], [Feature 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
 **LLLL Pro / Team:** All features listed.
 
 ### Triggered Compliance Domains
@@ -306,7 +342,11 @@ Output Mode: LLLL Pro
 | Data flow diagram | D | Map of personal data through all systems | Engineering |
 | AI model provider terms | K2 | Provider agreement re: data retention | Product |
 
-**LLLL Basic:** High-priority items shown. Lower-priority folded per folding rules. `(+N items hidden)`
+**LLLL Basic:** Critical + High items shown. Medium/Low: show 2 most severe, fold rest with names listed.
+```
+🔴 (+N hidden: [Item Name 1], [Item Name 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
 **LLLL Pro / Team:** Full table.
 
 ### Business Decisions Still Needed
@@ -335,9 +375,9 @@ Output Mode: LLLL Pro
 
 | Priority | Action | Owner |
 |----------|--------|-------|
-| P1 | [Critical] | Product / Engineering / Compliance expert |
-| P2 | [Important] | ... |
-| P3 | [Recommended] | ... |
+| 🔴🔴 P1 | [Critical] | Product / Engineering / Compliance expert |
+| 🟡 P2 | [Important] | ... |
+| 🟢 P3 | [Recommended] | ... |
 
 ### Coverage Confidence
 
@@ -375,25 +415,33 @@ Output Mode: LLLL Pro
 
 | Feature | Domain | Check | Covered | Gap | Risk | Owner |
 |---------|--------|-------|---------|-----|------|-------|
-| User login | B | B1 | Yes | — | Low | — |
-| AI ranking | I | I1 | No | AI disclosure missing | High | Product + Compliance expert |
-| AI ranking | J | J1 | No | Decision significance undocumented | High | Product |
-| Payment | F | F1 | Partial | Refund policy missing | Medium | Compliance expert |
-| Payment | F | F2 | Yes | — | Low | — |
-| File upload | B | B3 | Partial | Upload validation unclear | Medium | Engineering |
-| File upload | G | G1 | No | Content ownership terms missing | Medium | Compliance expert |
+| User login | B | B1 | 🟢 Yes | — | 🟢 **Low** | — |
+| AI ranking | I | I1 | 🔴 No | AI disclosure missing | 🔴 **High** | Product + Compliance expert |
+| AI ranking | J | J1 | 🔴 No | Decision significance undocumented | 🔴 **High** | Product |
+| Payment | F | F1 | 🟡 Partial | Refund policy missing | 🟡 **Medium** | Compliance expert |
+| Payment | F | F2 | 🟢 Yes | — | 🟢 **Low** | — |
+| File upload | B | B3 | 🟡 Partial | Upload validation unclear | 🟡 **Medium** | Engineering |
+| File upload | G | G1 | 🔴 No | Content ownership terms missing | 🟡 **Medium** | Compliance expert |
 
-**LLLL Basic:** All Critical + High rows shown. Medium/Low rows folded per folding rules. `(+N Medium/Low rows hidden)`
+**LLLL Basic:** All Critical + High rows shown. Medium/Low: show 2 most severe, fold rest with names listed.
+```
+🔴 (+N hidden: [Feature — Check 1], [Feature — Check 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
 **LLLL Pro / Team:** Full matrix.
 
 ### Policy Update Priorities
 
-1. **High** — AI Disclosure (I1): no disclosure exists for AI-powered features
-2. **High** — Decision Significance (J1): AI ranking affects user outcomes, no documentation
-3. **Medium** — Refund Policy (F1): payment exists but refund terms incomplete
-4. **Medium** — Content Terms (G1): user uploads exist but ownership undefined
+1. 🔴 **High** — AI Disclosure (I1): no disclosure exists for AI-powered features
+2. 🔴 **High** — Decision Significance (J1): AI ranking affects user outcomes, no documentation
+3. 🟡 **Medium** — Refund Policy (F1): payment exists but refund terms incomplete
+4. 🟡 **Medium** — Content Terms (G1): user uploads exist but ownership undefined
 
-**LLLL Basic:** All High priorities shown. Medium folded per folding rules. `(+N Medium/Low items hidden)`
+**LLLL Basic:** All Critical + High priorities shown. Medium/Low: show 2 most severe, fold rest with names listed.
+```
+🔴 (+N hidden: [Priority Name 1], [Priority Name 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
 **LLLL Pro / Team:** All priorities listed.
 
 ### Change Tickets
@@ -403,16 +451,20 @@ Output Mode: LLLL Pro
 - Required: AI Disclosure page, decision significance documentation, human review process
 - Risk if ignored: regulatory exposure (EU AI Act, state-level AI laws)
 - Owner: Product + Compliance expert
-- Priority: P1
+- Priority: 🔴🔴 P1
 
 **Ticket 2: Payment Terms Update**
 - Checks: F1
 - Required: Refund and cancellation policy
 - Risk if ignored: consumer protection complaints, chargeback disputes
 - Owner: Compliance expert / Legal professional
-- Priority: P2
+- Priority: 🟡 P2
 
-**LLLL Basic:** All P1 tickets shown. P2/P3 tickets folded per folding rules. `(+N P2/P3 tickets hidden)`
+**LLLL Basic:** All P1 tickets shown. P2/P3: show 2 most severe, fold rest with names listed.
+```
+🔴 (+N hidden: [Ticket Name 1], [Ticket Name 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
 **LLLL Pro / Team:** All tickets.
 
 ### Coverage Confidence
@@ -467,7 +519,7 @@ Change tickets are generated at Pro and Team levels.
 - Product / Engineering / Compliance expert or legal professional
 
 **Priority:**
-P1 / P2 / P3
+🔴🔴 P1 / 🟡 P2 / 🟢 P3
 
 **Deep mode addition (all levels):**
 
@@ -494,11 +546,11 @@ Output Mode: LLLL Pro
 
 | Domain | Items | Known | Gaps | Score | Status |
 |--------|-------|-------|------|-------|--------|
-| D — Privacy | 8 | 5 | 3 | 62% | Yellow |
-| B — Security | 6 | 6 | 0 | 100% | Green |
-| I — AI | 4 | 1 | 3 | 25% | Red |
+| D — Privacy | 8 | 5 | 3 | 62% | 🟡 Yellow |
+| B — Security | 6 | 6 | 0 | 100% | 🟢 Green |
+| I — AI | 4 | 1 | 3 | 25% | 🔴 Red |
 
-**Overall: 60% — Yellow**
+**Overall: 60% — 🟡 Yellow**
 
 ### Inputs Required by Domain
 
@@ -532,16 +584,20 @@ Output Mode: LLLL Pro
 
 [Additional activated domain sections follow the same Domain → Input → Status → Owner pattern]
 
-**LLLL Basic:** Completeness summary shown. Medium/Low gap items folded per folding rules. `(+N Medium/Low items hidden)`
+**LLLL Basic:** All sections present. Medium/Low gap items: show 2 most severe, fold rest with names listed.
+```
+🔴 (+N hidden: [Item Name 1], [Item Name 2], ...) 🔴
+🟢 Upgrade to Pro to view all items → 🟢
+```
 **LLLL Pro / Team:** Full checklist by domain.
 
 ### Priority Action Items
 
 | # | Action | Owner | Priority |
 |---|--------|-------|----------|
-| 1 | ... | Product / Engineering / Compliance expert | P1 |
-| 2 | ... | ... | P2 |
-| 3 | ... | ... | P3 |
+| 1 | ... | Product / Engineering / Compliance expert | 🔴🔴 P1 |
+| 2 | ... | ... | 🟡 P2 |
+| 3 | ... | ... | 🟢 P3 |
 
 ### Coverage Confidence
 
@@ -629,9 +685,9 @@ Output Mode: LLLL Pro
 
 | # | Requirement | Domain | Check | Priority | Owner | Status |
 |---|------------|--------|-------|----------|-------|--------|
-| 1 | Implement privacy notice | D | D2 | P1 | Compliance expert | Not started |
-| 2 | Add AI disclosure | I | I1 | P1 | Product | Not started |
-| 3 | Document data retention | D | D1 | P1 | Product | Not started |
+| 1 | Implement privacy notice | D | D2 | 🔴🔴 P1 | Compliance expert | Not started |
+| 2 | Add AI disclosure | I | I1 | 🔴🔴 P1 | Product | Not started |
+| 3 | Document data retention | D | D1 | 🔴🔴 P1 | Product | Not started |
 
 ### Dependencies
 [Requirements that block other requirements]
