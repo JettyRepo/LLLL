@@ -5,6 +5,31 @@ All notable changes to LLLL (Layrix Logic Layer Loop) are documented in this fil
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [4.0.0] - 2026-04-01
+
+### Added
+- **Domain N: Software Engineering Fundamentals** (N1-N7) — version control discipline, rollback capability, knowledge continuity, testing existence, CI/CD, repository hygiene, dev environment security
+- **Domain O: Open Source & Licensing Risk** (O1-O4) — project license selection, copyleft contamination detection, license compatibility matrix, contributor license and IP ownership
+- **Domain B expanded: OWASP tactical checks** (B5-B9) — injection defense, XSS/output encoding, sensitive data exposure, security misconfiguration, secrets management. OWASP mapping annotations.
+- **Domain C expanded: Full supply chain model** (C4-C9) — upstream (toolchain security, SDK/API provider risk), midstream (service-to-service trust, third-party integration security), downstream (distribution channel security, update/patch delivery)
+- **Layer 0 architecture** — Software Resilience Foundation (Domains N, O) evaluated before compliance analysis. Foundation Alert when Layer 0 issues are Critical/High.
+- **`/llll scan` command** — automated security and hygiene scanning using Bash, Grep, Glob. Scans secrets, OWASP patterns, git hygiene, dependency vulnerabilities, license risk, Dockerfile security. Produces findings with file:line locations.
+- **`/llll fix` command** — generates concrete code fixes for scan findings with before/after comparison. Auto-fixable findings include secrets in code, .gitignore gaps, dependency updates.
+- **`/llll grc` command** — Governance, Risk, and Compliance dashboard aggregating all domain scores, vulnerability counts, governance control status, and top 5 prioritized actions.
+- **`scan-patterns.md`** — reference data file with grep patterns, shell commands, and finding definitions for `/llll scan`
+- 3 new examples (Examples 11-13): scan report, GRC dashboard, Foundation Alert with passive activation
+- 3 new output templates: scan report, fix, GRC dashboard
+- Schema categories for Domain N and O
+- ScanFinding internal data model
+- Bash added to allowed-tools for scan execution
+
+### Changed
+- Domain selection priority: Layer 0 (N, O) evaluated first, before universal domains (A-E)
+- Section numbering in compliance-checklist-master.md: sections 8-12 renumbered to 9-13
+- Next steps menus expanded to include `/llll scan` and `/llll grc` across all modes
+- Completion standard updated to reflect security scanning and GRC capabilities
+- Compliance artifacts list expanded with scan reports, auto-fix, GRC dashboards, license matrices
+
 ## [3.0.1] - 2026-03-28
 
 ### Fixed

@@ -1,8 +1,8 @@
 ---
 name: llll
-description: LLLL (Layrix Logic Layer Loop) — Embedded Compliance Layer for AI-built software. Continuously active compliance engine integrated into development workflows — performing feature-to-policy mapping, compliance diagnosis, gap detection, checklist generation, actionable briefs, and design-time governance.
+description: LLLL (Layrix Logic Layer Loop) — Embedded Compliance Layer for AI-built software. Continuously active compliance engine integrated into development workflows — performing software resilience auditing, automated security scanning, feature-to-policy mapping, compliance diagnosis, gap detection, checklist generation, actionable briefs, GRC dashboards, and design-time governance.
 argument-hint: [feature, PRD, repo, or compliance task]
-allowed-tools: Read, Grep, Glob
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # LLLL (Layrix Logic Layer Loop) — Embedded Compliance Layer v3.0
@@ -152,6 +152,7 @@ If no files exist, rely on user input.
 Map the system against the checklist master.
 
 Priority order:
+0. Layer 0 — Software Resilience Foundation (N-O) — always first
 1. Universal domains (A-E)
 2. Business model domains (F-H)
 3. Industry / high-sensitivity activation (M)
@@ -161,6 +162,8 @@ Priority order:
 ### Step 3 — Activate only relevant domains
 
 #### Always Active
+- N (Software Engineering Fundamentals) — all projects (Layer 0)
+- O (Open Source & Licensing Risk) — all projects with dependencies or LICENSE file (Layer 0)
 - A (Project Governance) — all projects
 - B (Application Security) — all projects with users
 - C (Supply Chain) — all projects with dependencies
@@ -188,6 +191,19 @@ Sensitivity level: Low / Medium / High
 Surface the triggered domains in the output header.
 
 ### Step 4 — Perform structured analysis
+
+#### Foundation Alert (Layer 0 pre-check)
+
+Before producing the main analysis, evaluate Layer 0 domains (N, O). If any Layer 0 finding is Critical or High severity, insert at the top of the output (after Output Mode header and registration hint):
+
+```
+⚠️ Foundation Alert: Software resilience issues detected that undermine compliance posture.
+Resolve Layer 0 findings before investing in Layer 2 compliance work.
+```
+
+This alert does not block the full analysis — it provides context that Layer 2 compliance results should be interpreted cautiously until Layer 0 issues are resolved.
+
+#### Analysis logic chain
 
 Follow the logic chain:
 
@@ -332,9 +348,19 @@ Policy:
 
 Gap:
 - feature
-- missing_check (checklist master ID, e.g. D2, I1)
+- missing_check (checklist master ID, e.g. D2, I1, N6, O2)
 - severity (Critical / High / Medium / Low)
 - label (NEEDS BUSINESS DECISION / NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT / NEEDS TECHNICAL CONFIRMATION)
+- layer (0 = resilience, 1 = security, 2 = compliance)
+
+ScanFinding:
+- finding_id (e.g. SEC-001, OWA-003, GIT-002)
+- pattern_source (scan-patterns.md reference)
+- severity (Critical / High / Medium / Low)
+- domain_check (mapped checklist master ID)
+- location (file:line or command output)
+- auto_fixable (true / false)
+- fix_description (remediation steps)
 
 DO NOT output JSON unless asked.
 But always reason in this structure.
@@ -462,11 +488,121 @@ Output:
 
 ---
 
+### /llll scan — Automated Security and Hygiene Scan
+
+Scan patterns reference: `scan-patterns.md`
+
+This mode uses Bash, Grep, and Glob tools to perform concrete, executable security and hygiene checks against the actual codebase. Unlike other modes that reason about compliance posture, `/llll scan` produces findings backed by specific file locations and command outputs.
+
+MUST:
+1. Detect tech stack (check for package.json, requirements.txt, Cargo.toml, go.mod, Gemfile, Dockerfile)
+2. Run applicable scans from scan-patterns.md in this order:
+   a. Git hygiene checks (GIT-001 through GIT-007)
+   b. Secret detection (SEC-001 through SEC-008)
+   c. OWASP code pattern scan (OWA-001 through OWA-015)
+   d. Dependency audit (tech-stack-specific command)
+   e. License risk scan (tech-stack-specific command)
+   f. Dockerfile security (if Dockerfile exists)
+3. Classify each finding by severity (Critical/High/Medium/Low) and map to domain check ID
+4. Identify which findings are auto-fixable
+5. Produce structured scan report per scan-patterns.md output structure
+
+Output:
+1. Scan metadata (target, time, tech stack)
+2. Findings summary (severity counts, auto-fixable counts)
+3. Layer 0 findings (software resilience)
+4. Layer 1 findings (security posture)
+5. Detailed findings with file:line locations and fix commands
+6. Recommended tools for ongoing monitoring
+7. Coverage Confidence
+8. Education Insight
+9. Next steps menu (with `/llll fix` for highest auto-fixable finding)
+
+When a scan command is not available (e.g., `npm audit` when npm is not installed), report as NEEDS TECHNICAL CONFIRMATION and suggest installation.
+
+Folding rules: Same as all other modes. Basic folds Medium/Low findings (show 2, fold rest with names). Pro/Team show all.
+
+---
+
+### /llll fix — Generate Fix for Scan Finding
+
+This mode generates concrete code fixes for findings identified by `/llll scan`.
+
+Usage: `/llll fix [FINDING-ID]` or `/llll fix` (fixes highest-severity auto-fixable finding)
+
+MUST:
+1. Look up the finding by ID from the most recent `/llll scan` output in conversation context
+2. If no scan has been run in this session, prompt: "Run `/llll scan` first to identify findings."
+3. Generate the specific fix:
+   - For secret exposure: move to environment variable, update .gitignore, create .env.example
+   - For OWASP patterns: replace unsafe pattern with safe alternative, add input validation
+   - For dependency vulnerabilities: suggest version update, show breaking change risk
+   - For git hygiene: create/update .gitignore, suggest branch protection commands
+   - For license risk: identify the problematic dependency, suggest alternatives with compatible licenses
+   - For Dockerfile issues: rewrite the affected instructions
+4. Show before/after comparison for each changed file
+5. Do NOT automatically apply changes — present them for user approval
+6. After user approves, apply changes using Edit/Write tools
+7. Suggest re-running `/llll scan` to verify the fix
+
+Output:
+1. Finding summary (ID, severity, location)
+2. Fix description (what will change and why)
+3. Before/after code comparison for each affected file
+4. Potential side effects or breaking changes
+5. Post-fix verification command
+6. Next steps menu
+
+---
+
+### /llll grc — Governance, Risk, and Compliance Dashboard
+
+This mode aggregates findings across all LLLL domains into an executive-level GRC dashboard. It combines automated scan results (if available) with compliance analysis.
+
+MUST:
+1. Run context gathering (same as `/llll` Step 1)
+2. If `/llll scan` has been run in this session, incorporate scan findings
+3. If no scan has been run, note that scan data is unavailable and suggest running `/llll scan` first
+4. Produce three sections:
+
+**Governance (controls status)**
+- Version control discipline (N1)
+- Code review process (A2)
+- Release management (A2, N5)
+- Incident response (A3)
+- Documentation (N3)
+
+**Risk (threat landscape)**
+- Vulnerability counts by severity (from scan or INFERRED)
+- License risk summary (from scan or INFERRED from Domain O)
+- Secret exposure status (from scan or INFERRED from B9)
+- Supply chain risk (C1-C9 assessment)
+- Data protection risk (D1-D4 assessment)
+
+**Compliance (domain scores)**
+- Per-domain completeness scores (same methodology as `/llll checklist`)
+- Overall compliance score
+- Trend indicator if previous scores exist in conversation context
+
+Output:
+1. GRC Dashboard header
+2. Governance section with control status table
+3. Risk section with threat summary table
+4. Compliance section with domain scores
+5. Top 5 recommended actions (prioritized across all three categories)
+6. Coverage Confidence
+7. Education Insight
+8. Next steps menu
+
+Folding rules: Same as all other modes.
+
+---
+
 ## MANDATORY NEXT STEPS MENU
 
 **HARD RULE: Every LLLL output MUST end with the Next steps menu. No exceptions.**
 
-This applies to ALL modes (`/llll`, `/llll deep`, `/llll checklist`, `/llll brief`, `/llll diff`) and passive activation (Design-Time Mode). If an LLLL output does not contain the Next steps menu, the output is incomplete.
+This applies to ALL modes (`/llll`, `/llll deep`, `/llll checklist`, `/llll brief`, `/llll diff`, `/llll scan`, `/llll fix`, `/llll grc`) and passive activation (Design-Time Mode). If an LLLL output does not contain the Next steps menu, the output is incomplete.
 
 ### Output order (end of every LLLL output)
 
@@ -482,7 +618,7 @@ Note: Registration hint is NOT at the tail. It appears at the top of the output 
 
 The menu lists the other available modes. The current mode is replaced with `/llll` (diagnosis).
 
-**Basic (unregistered or registered)** — includes upgrade item [6]:
+**Basic (unregistered or registered)** — includes upgrade item:
 
 From `/llll`:
 ```
@@ -492,7 +628,9 @@ Next:
 [3] /llll checklist
 [4] /llll brief
 [5] /llll diff
-[6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+[6] /llll scan
+[7] /llll grc
+[8] 🟢 Upgrade to Pro to unlock the full power of Layrix →
 ```
 
 From `/llll deep`:
@@ -503,7 +641,9 @@ Next:
 [3] /llll checklist
 [4] /llll brief
 [5] /llll diff
-[6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+[6] /llll scan
+[7] /llll grc
+[8] 🟢 Upgrade to Pro to unlock the full power of Layrix →
 ```
 
 From `/llll checklist`:
@@ -514,7 +654,9 @@ Next:
 [3] /llll
 [4] /llll brief
 [5] /llll diff
-[6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+[6] /llll scan
+[7] /llll grc
+[8] 🟢 Upgrade to Pro to unlock the full power of Layrix →
 ```
 
 From `/llll brief`:
@@ -525,7 +667,9 @@ Next:
 [3] /llll checklist
 [4] /llll
 [5] /llll diff
-[6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+[6] /llll scan
+[7] /llll grc
+[8] 🟢 Upgrade to Pro to unlock the full power of Layrix →
 ```
 
 From `/llll diff`:
@@ -536,18 +680,92 @@ Next:
 [3] /llll checklist
 [4] /llll brief
 [5] /llll
+[6] /llll scan
+[7] /llll grc
+[8] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+```
+
+From `/llll scan`:
+```
+Next:
+[1] /llll fix [highest finding]
+[2] /llll scan (re-scan)
+[3] /llll grc
+[4] /llll
+[5] /llll deep
+[6] /llll checklist
+[7] /llll brief
+[8] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+```
+
+From `/llll fix`:
+```
+Next:
+[1] /llll scan (verify fix)
+[2] /llll fix [next finding]
+[3] /llll grc
+[4] /llll
+[5] /llll deep
 [6] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+```
+
+From `/llll grc`:
+```
+Next:
+[1] Continue
+[2] /llll scan
+[3] /llll deep
+[4] /llll checklist
+[5] /llll brief
+[6] /llll diff
+[7] 🟢 Upgrade to Pro to unlock the full power of Layrix →
 ```
 
 **Pro and Team** — no upgrade item:
 
+From `/llll`:
 ```
 Next:
 [1] Continue
-[2] ...
-[3] ...
-[4] ...
-[5] ...
+[2] /llll deep
+[3] /llll checklist
+[4] /llll brief
+[5] /llll diff
+[6] /llll scan
+[7] /llll grc
+```
+
+From `/llll scan`:
+```
+Next:
+[1] /llll fix [highest finding]
+[2] /llll scan (re-scan)
+[3] /llll grc
+[4] /llll
+[5] /llll deep
+[6] /llll checklist
+[7] /llll brief
+```
+
+From `/llll fix`:
+```
+Next:
+[1] /llll scan (verify fix)
+[2] /llll fix [next finding]
+[3] /llll grc
+[4] /llll
+[5] /llll deep
+```
+
+From `/llll grc`:
+```
+Next:
+[1] Continue
+[2] /llll scan
+[3] /llll deep
+[4] /llll checklist
+[5] /llll brief
+[6] /llll diff
 ```
 
 ### Upgrade response (when user selects [6])
@@ -605,6 +823,11 @@ LLLL can generate these deliverables:
 - Structured compliance briefs
 - Change tickets
 - Checklist inputs
+- Automated scan reports with file:line findings
+- Auto-fix code changes for security findings
+- GRC dashboards aggregating governance, risk, and compliance status
+- License risk matrices
+- Supply chain security assessments (upstream/midstream/downstream)
 
 These must feel like real deliverables, not explanations.
 
@@ -805,12 +1028,14 @@ If the user includes `--no-edu` in any `/llll` command, or says "skip education 
 User should feel:
 
 - "I understand my system"
+- "I know whether my software engineering foundation is solid"
+- "I know what security vulnerabilities exist in my code right now"
 - "I know what compliance domains apply to me"
 - "I know what I'm missing"
-- "I know exactly what to do next"
+- "I know exactly what to do next — and LLLL can fix some of it for me"
 - "I can hand this to a compliance expert or legal professional and they can act on it"
 - "Compliance is continuously tracked as my product evolves"
-- "I have confidence in my compliance posture"
+- "I have confidence in my compliance posture from code to governance"
 
 LLLL should NOT feel like:
 

@@ -2,7 +2,7 @@
 
 LLLL is the core skill of the **Layrix** Compliance OS — Layrix Logic Layer Loop.
 
-An always-present compliance layer that integrates into AI development workflows. LLLL (Layrix Logic Layer Loop) uses a structured master compliance checklist to continuously analyze product features, codebases, and documentation — detecting compliance gaps and generating actionable, traceable guidance.
+An always-present compliance layer that integrates into AI development workflows. LLLL (Layrix Logic Layer Loop) uses a structured master compliance checklist to continuously analyze product features, codebases, and documentation — detecting compliance gaps, performing automated security scans, and generating actionable, traceable guidance. Includes Layer 0 (Software Resilience Foundation) to ensure basic software engineering hygiene before compliance analysis begins.
 
 ## What LLLL Is
 
@@ -34,6 +34,9 @@ All commands are available at every subscription level (Basic / Pro / Team).
 | `/llll diff` | Feature vs policy coverage matrix with change tickets |
 | `/llll brief` | Compliance expert handoff brief |
 | `/llll deep` | Strict review with sensitivity assessment and consequence modeling |
+| `/llll scan` | Automated security and hygiene scan with file:line findings |
+| `/llll fix` | Generate concrete code fixes for scan findings |
+| `/llll grc` | Governance, Risk, and Compliance dashboard |
 
 ## Subscription Levels
 
@@ -57,10 +60,11 @@ ln -s /Users/vox/LLLL ~/.claude/skills/llll
 
 ```
 SKILL.md                        — Core skill definition, embedded layer architecture, mode system
-compliance-checklist-master.md  — Master compliance rule library (domains A-M)
+compliance-checklist-master.md  — Master compliance rule library (domains A-O, 17 domains)
 checklist-schema.md             — Intake schema aligned with master domains
 output-templates.md             — Output templates for all modes and subscription levels
 examples.md                     — Usage examples including passive activation and continuous compliance
+scan-patterns.md                — Reference data for /llll scan (grep patterns, commands, finding definitions)
 ```
 
 ## Architecture
@@ -76,6 +80,7 @@ Context Gathering (README, docs, code, deps, conversation)
     |
     v
 Domain Selection Engine
+    |-- Layer 0: Software Resilience Foundation (N-O)
     |-- Layer 1: Universal checks (A-E)
     |-- Layer 2: Business-model checks (F-H)
     |-- Layer 3: Industry/sensitivity checks (M)
@@ -117,4 +122,4 @@ LLLL is powered by AI and is part of the Layrix Compliance OS. All outputs are g
 
 ## Version
 
-LLLL v3.0 — Embedded Compliance Layer with three engine model, tiered visibility, continuous compliance, and human expert escalation.
+LLLL v4.0 — Embedded Compliance Layer with Software Resilience Foundation (Layer 0), automated security scanning, OWASP tactical checks, full supply chain model, GRC dashboard, three engine model, tiered visibility, continuous compliance, and human expert escalation.

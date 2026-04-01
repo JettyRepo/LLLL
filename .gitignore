@@ -3,3 +3,8 @@
 *.swo
 *~
 .local/
+
+# Internal / competitive analysis
+LLLL_Competitive_Analysis_*.md
+LLLL_Full_Analysis_*.md
+AGENT_PROMPT_*.md

@@ -1,4 +1,4 @@
-# Layrix Checklist Schema v3.0
+# Layrix Checklist Schema v4.0
 
 Aligned with the Embedded Compliance Layer architecture and compliance-checklist-master.md domains.
 
@@ -47,7 +47,7 @@ Critical vs High distinction: Critical means the issue is actively causing harm 
 | NEEDS TECHNICAL CONFIRMATION | Engineering / technical lead |
 | MISSING EVIDENCE | Investigation — engineering or product |
 
-This routing applies across all modes: diagnosis, checklist, brief, diff, and deep.
+This routing applies across all modes: diagnosis, checklist, brief, diff, deep, scan, fix, and grc.
 
 ---
 
@@ -169,6 +169,27 @@ All categories use the **Domain → Inputs → Status → Owner** structure.
 | Sector identification (health, finance, education, etc.) | KNOWN / UNKNOWN / NEEDS BUSINESS DECISION | Product |
 | Heightened review triggers | KNOWN / UNKNOWN / NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT | Compliance expert |
 
+### 15. Software Engineering Fundamentals — Domain N
+
+| Input | Status | Owner |
+|-------|--------|-------|
+| Version control discipline (branching, commit quality, branch protection) | KNOWN / UNKNOWN / NEEDS TECHNICAL CONFIRMATION | Engineering |
+| Rollback and recovery capability | KNOWN / UNKNOWN / NEEDS TECHNICAL CONFIRMATION | Engineering |
+| Knowledge continuity and bus factor | KNOWN / UNKNOWN / NEEDS BUSINESS DECISION | Product |
+| Testing existence (automated tests, CI gate) | KNOWN / UNKNOWN / NEEDS TECHNICAL CONFIRMATION | Engineering |
+| CI/CD and release process | KNOWN / UNKNOWN / NEEDS TECHNICAL CONFIRMATION | Engineering |
+| Repository hygiene (.gitignore, no secrets in history) | KNOWN / UNKNOWN / NEEDS TECHNICAL CONFIRMATION | Engineering |
+| Development environment security | KNOWN / UNKNOWN / NEEDS TECHNICAL CONFIRMATION | Engineering |
+
+### 16. Open Source and Licensing Risk — Domain O
+
+| Input | Status | Owner |
+|-------|--------|-------|
+| Project license selection and business model alignment | KNOWN / UNKNOWN / NEEDS BUSINESS DECISION | Product |
+| Copyleft contamination (GPL/AGPL in dependencies) | KNOWN / UNKNOWN / NEEDS TECHNICAL CONFIRMATION | Engineering |
+| License compatibility matrix | KNOWN / UNKNOWN / NEEDS TECHNICAL CONFIRMATION | Engineering |
+| Contributor license and IP ownership | KNOWN / UNKNOWN / NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT | Compliance expert |
+
 ---
 
 ## Decision Matrix
@@ -180,6 +201,8 @@ All categories use the **Domain → Inputs → Status → Owner** structure.
 | AI feature disclosure | I1 | KNOWN | Engineering | Feature documented in README |
 | Payment PCI scope | F2 | NEEDS TECHNICAL CONFIRMATION | Engineering | Verify what data touches the system |
 | Open source licenses | C2 | MISSING EVIDENCE | Engineering | No license inventory found |
+| Repository hygiene | N6 | NEEDS TECHNICAL CONFIRMATION | Engineering | Check .gitignore and git history for secrets |
+| Copyleft contamination | O2 | UNKNOWN | Engineering | No license audit has been performed |
 
 ---
 
