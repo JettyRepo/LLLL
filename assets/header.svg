@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" width="900" height="320">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a12"/>
+      <stop offset="50%" style="stop-color:#0d1117"/>
+      <stop offset="100%" style="stop-color:#090916"/>
+    </linearGradient>
+    <linearGradient id="glow1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00ff8855"/>
+      <stop offset="50%" style="stop-color:#00ffaa"/>
+      <stop offset="100%" style="stop-color:#00ff8855"/>
+    </linearGradient>
+    <linearGradient id="glow2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#6e40c955"/>
+      <stop offset="50%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#6e40c955"/>
+    </linearGradient>
+    <linearGradient id="glow3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0ea5e955"/>
+      <stop offset="50%" style="stop-color:#38bdf8"/>
+      <stop offset="100%" style="stop-color:#0ea5e955"/>
+    </linearGradient>
+    <linearGradient id="scanline" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:transparent"/>
+      <stop offset="40%" style="stop-color:#00ff8822"/>
+      <stop offset="50%" style="stop-color:#00ffaa66"/>
+      <stop offset="60%" style="stop-color:#00ff8822"/>
+      <stop offset="100%" style="stop-color:transparent"/>
+    </linearGradient>
+    <filter id="blur1">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <filter id="blur2">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes wave1 {
+      0% { d: path('M0,180 C150,140 300,220 450,160 C600,100 750,200 900,170'); }
+      50% { d: path('M0,170 C150,220 300,130 450,190 C600,210 750,140 900,180'); }
+      100% { d: path('M0,180 C150,140 300,220 450,160 C600,100 750,200 900,170'); }
+    }
+    @keyframes wave2 {
+      0% { d: path('M0,200 C200,160 350,240 500,180 C650,130 800,210 900,190'); }
+      50% { d: path('M0,190 C200,240 350,150 500,210 C650,230 800,160 900,200'); }
+      100% { d: path('M0,200 C200,160 350,240 500,180 C650,130 800,210 900,190'); }
+    }
+    @keyframes wave3 {
+      0% { d: path('M0,220 C180,190 360,250 540,200 C720,150 810,230 900,210'); }
+      50% { d: path('M0,210 C180,250 360,170 540,230 C720,240 810,180 900,220'); }
+      100% { d: path('M0,220 C180,190 360,250 540,200 C720,150 810,230 900,210'); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    @keyframes scanMove {
+      0% { transform: translateX(-900px); }
+      100% { transform: translateX(900px); }
+    }
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.03; }
+      50% { opacity: 0.08; }
+    }
+    @keyframes nodeGlow {
+      0%, 100% { r: 2; opacity: 0.4; }
+      50% { r: 3.5; opacity: 0.9; }
+    }
+    @keyframes textGlow {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; }
+    }
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -20; }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    .wave1 { animation: wave1 8s ease-in-out infinite; }
+    .wave2 { animation: wave2 10s ease-in-out infinite; }
+    .wave3 { animation: wave3 12s ease-in-out infinite; }
+    .scan { animation: scanMove 6s linear infinite; }
+    .grid { animation: gridPulse 4s ease-in-out infinite; }
+    .node { animation: nodeGlow 3s ease-in-out infinite; }
+    .title-glow { animation: textGlow 3s ease-in-out infinite; }
+    .dash-flow { animation: dashFlow 1.5s linear infinite; }
+  </style>
+
+  <!-- Background -->
+  <rect width="900" height="320" fill="url(#bg)"/>
+
+  <!-- Grid pattern -->
+  <g class="grid">
+    <line x1="0" y1="60" x2="900" y2="60" stroke="#1e293b" stroke-width="0.5"/>
+    <line x1="0" y1="120" x2="900" y2="120" stroke="#1e293b" stroke-width="0.5"/>
+    <line x1="0" y1="180" x2="900" y2="180" stroke="#1e293b" stroke-width="0.5"/>
+    <line x1="0" y1="240" x2="900" y2="240" stroke="#1e293b" stroke-width="0.5"/>
+    <line x1="150" y1="0" x2="150" y2="320" stroke="#1e293b" stroke-width="0.5"/>
+    <line x1="300" y1="0" x2="300" y2="320" stroke="#1e293b" stroke-width="0.5"/>
+    <line x1="450" y1="0" x2="450" y2="320" stroke="#1e293b" stroke-width="0.5"/>
+    <line x1="600" y1="0" x2="600" y2="320" stroke="#1e293b" stroke-width="0.5"/>
+    <line x1="750" y1="0" x2="750" y2="320" stroke="#1e293b" stroke-width="0.5"/>
+  </g>
+
+  <!-- Animated flowing curves (blurred glow layer) -->
+  <g filter="url(#blur2)" opacity="0.4">
+    <path class="wave1" d="M0,180 C150,140 300,220 450,160 C600,100 750,200 900,170" fill="none" stroke="url(#glow1)" stroke-width="4"/>
+    <path class="wave2" d="M0,200 C200,160 350,240 500,180 C650,130 800,210 900,190" fill="none" stroke="url(#glow2)" stroke-width="4"/>
+    <path class="wave3" d="M0,220 C180,190 360,250 540,200 C720,150 810,230 900,210" fill="none" stroke="url(#glow3)" stroke-width="3"/>
+  </g>
+
+  <!-- Animated flowing curves (sharp layer) -->
+  <path class="wave1" d="M0,180 C150,140 300,220 450,160 C600,100 750,200 900,170" fill="none" stroke="url(#glow1)" stroke-width="1.5" opacity="0.7"/>
+  <path class="wave2" d="M0,200 C200,160 350,240 500,180 C650,130 800,210 900,190" fill="none" stroke="url(#glow2)" stroke-width="1.5" opacity="0.7"/>
+  <path class="wave3" d="M0,220 C180,190 360,250 540,200 C720,150 810,230 900,210" fill="none" stroke="url(#glow3)" stroke-width="1" opacity="0.5"/>
+
+  <!-- Scanning line -->
+  <rect class="scan" x="0" y="0" width="900" height="320" fill="url(#scanline)" opacity="0.3"/>
+
+  <!-- Data flow dashes on curves -->
+  <path class="wave1 dash-flow" d="M0,180 C150,140 300,220 450,160 C600,100 750,200 900,170" fill="none" stroke="#00ffaa" stroke-width="1" stroke-dasharray="4,16" opacity="0.5"/>
+
+  <!-- Glowing nodes at intersections -->
+  <circle class="node" cx="150" cy="165" r="2" fill="#00ffaa" style="animation-delay: 0s"/>
+  <circle class="node" cx="300" cy="200" r="2" fill="#a855f7" style="animation-delay: 0.5s"/>
+  <circle class="node" cx="450" cy="160" r="2" fill="#00ffaa" style="animation-delay: 1s"/>
+  <circle class="node" cx="600" cy="140" r="2" fill="#38bdf8" style="animation-delay: 1.5s"/>
+  <circle class="node" cx="750" cy="195" r="2" fill="#a855f7" style="animation-delay: 2s"/>
+
+  <!-- Small floating particles -->
+  <circle class="node" cx="80" cy="100" r="1" fill="#00ffaa44" style="animation-delay: 0.3s"/>
+  <circle class="node" cx="220" cy="80" r="1" fill="#a855f744" style="animation-delay: 0.8s"/>
+  <circle class="node" cx="400" cy="90" r="1" fill="#38bdf844" style="animation-delay: 1.3s"/>
+  <circle class="node" cx="550" cy="75" r="1" fill="#00ffaa44" style="animation-delay: 1.8s"/>
+  <circle class="node" cx="700" cy="95" r="1" fill="#a855f744" style="animation-delay: 2.3s"/>
+  <circle class="node" cx="830" cy="85" r="1" fill="#38bdf844" style="animation-delay: 0.6s"/>
+
+  <!-- LLLL Title -->
+  <g filter="url(#glow)">
+    <text x="450" y="58" text-anchor="middle" font-family="monospace, 'Courier New'" font-size="42" font-weight="bold" fill="#e2e8f0" letter-spacing="12" class="title-glow">LLLL</text>
+  </g>
+
+  <!-- Subtitle -->
+  <text x="450" y="88" text-anchor="middle" font-family="monospace, 'Courier New'" font-size="13" fill="#94a3b8" letter-spacing="3">LAYRIX LOGIC LAYER LOOP</text>
+
+  <!-- Tagline -->
+  <text x="450" y="118" text-anchor="middle" font-family="monospace, 'Courier New'" font-size="11" fill="#64748b" letter-spacing="1">Embedded Compliance Layer for AI-Built Software</text>
+
+  <!-- Status badges area -->
+  <g transform="translate(450, 275)" text-anchor="middle">
+    <!-- Guard badge -->
+    <rect x="-195" y="-12" width="100" height="22" rx="4" fill="#0d1f0d" stroke="#00ff8844" stroke-width="1"/>
+    <text x="-145" y="4" font-family="monospace" font-size="10" fill="#00ffaa">GUARD ACTIVE</text>
+
+    <!-- Scan badge -->
+    <rect x="-75" y="-12" width="90" height="22" rx="4" fill="#1a0d2e" stroke="#a855f744" stroke-width="1"/>
+    <text x="-30" y="4" font-family="monospace" font-size="10" fill="#a855f7">15 DOMAINS</text>
+
+    <!-- Version badge -->
+    <rect x="35" y="-12" width="60" height="22" rx="4" fill="#0d1520" stroke="#38bdf844" stroke-width="1"/>
+    <text x="65" y="4" font-family="monospace" font-size="10" fill="#38bdf8">v5.0</text>
+
+    <!-- Engine badge -->
+    <rect x="115" y="-12" width="88" height="22" rx="4" fill="#0d1f0d" stroke="#00ff8844" stroke-width="1"/>
+    <text x="159" y="4" font-family="monospace" font-size="10" fill="#00ffaa">3 ENGINES</text>
+  </g>
+
+  <!-- Bottom scan line -->
+  <line x1="50" y1="300" x2="850" y2="300" stroke="#1e293b" stroke-width="0.5"/>
+  <rect class="scan" x="0" y="298" width="900" height="4" fill="url(#scanline)" opacity="0.2" style="animation-duration: 4s"/>
+</svg>

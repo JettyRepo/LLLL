@@ -1,4 +1,6 @@
-# LLLL (Layrix Logic Layer Loop) — Embedded Compliance Layer for AI-Built Software
+<p align="center">
+  <img src="assets/header.svg" alt="LLLL — Embedded Compliance Layer" width="100%"/>
+</p>
 
 ### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
 
