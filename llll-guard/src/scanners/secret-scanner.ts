@@ -18,7 +18,7 @@ const SECRET_PATTERNS: SecretPattern[] = [
   },
   {
     id: 'PG-H002',
-    regex: /sk-[a-zA-Z0-9]{20,}/,
+    regex: /sk-[a-zA-Z0-9\-_]{20,}/,
     title: 'OpenAI / Stripe Secret Key',
     description: 'API secret key detected in outgoing code',
     action: 'Remove the key, use environment variable',
