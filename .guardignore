@@ -1,0 +1,8 @@
+# LLLL Guard's own source — contains detection patterns and test fixtures
+llll-guard/src/scanners/*.ts
+llll-guard/src/output/*.ts
+llll-guard/tests/*.ts
+
+# Guard detection pattern definitions
+guard-patterns.md
+scan-patterns.md

@@ -40,15 +40,19 @@
 - [x] Next menu registration CTA (Unregistered only)
 - [x] Registration comparison table
 
-## Phase 0 — Registration MVP (layrix-backend)
+## Phase 0 — Registration MVP (layrix-backend) — DONE
 
-- [ ] Cloudflare Worker project + D1 schema (users, magic_links)
-- [ ] Domain migration: GoDaddy NS → Cloudflare
-- [ ] Landing page at layrix.ai/
-- [ ] Registration page at layrix.ai/register
-- [ ] Magic link flow (Resend): register → verify → activate
-- [ ] Activation: create ~/.layrix/config.json (curl + manual options)
+- [x] Cloudflare Worker project + D1 schema (users, magic_links)
+- [x] Domain migration: GoDaddy NS → Cloudflare
+- [x] Resend account + layrix.ai domain verified (DKIM, SPF, MX)
+- [x] Landing page at layrix.ai/
+- [x] Registration page at layrix.ai/register
+- [x] Magic link flow (Resend): register → verify → activate
+- [x] Activation: create ~/.layrix/config.json (curl + manual options)
+- [x] Custom domain binding: layrix.ai → Cloudflare Worker
 - [ ] Layrix Academy page at layrix.ai/academy
+- [ ] Landing/Register page content & design polish
+- [ ] Production hardening: rate limiting, CORS, input sanitization
 
 ## Phase 1 — MCP + License Validation (Pro, Coming Soon)
 

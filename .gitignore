@@ -8,6 +8,9 @@
 llll-guard/node_modules/
 llll-guard/dist/
 
+# Landing page (deployed via Cloudflare Pages, not GitHub)
+site/
+
 # Internal / competitive analysis
 LLLL_Competitive_Analysis_*.md
 LLLL_Full_Analysis_*.md
