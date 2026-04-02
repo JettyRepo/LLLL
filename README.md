@@ -73,11 +73,30 @@ AI Governance Professional (AIGP) certification preparation.
 
 ## Installation
 
-Symlink into Claude Code skills directory:
+### 1. Install LLLL Skill (compliance engine)
 
 ```bash
-ln -s /path/to/LLLL ~/.claude/skills/llll
+git clone https://github.com/jeffhouyanlin-hub/LLLL.git ~/.claude/skills/llll
 ```
+
+That's it — LLLL is now available as `/llll` in Claude Code.
+
+### 2. Install LLLL Guard CLI (optional — push/release compliance gate)
+
+```bash
+cd ~/.claude/skills/llll/llll-guard
+npm install && npm run build
+npm link
+```
+
+### 3. Install pre-push hook (optional — in your project repo)
+
+```bash
+cd /path/to/your/project
+llll-guard install-hook
+```
+
+Every `git push` will now be scanned automatically. Secrets and policy-relevant changes are blocked before they leave the machine.
 
 ## File Structure
 
