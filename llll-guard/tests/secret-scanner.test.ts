@@ -16,6 +16,12 @@ describe('scanForSecrets', () => {
     expect(findings.some(f => f.id === 'PG-H002')).toBe(true);
   });
 
+  it('detects sk-proj-* format OpenAI key', () => {
+    const content = 'const key = "sk-proj-abc123def456ghi789jkl012mno345pqr678stu901vwx";';
+    const findings = scanForSecrets(content, 'config.ts');
+    expect(findings.some(f => f.id === 'PG-H002')).toBe(true);
+  });
+
   it('detects GitHub PAT', () => {
     const content = 'const token = "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij";';
     const findings = scanForSecrets(content, 'auth.ts');

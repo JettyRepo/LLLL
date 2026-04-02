@@ -105,6 +105,14 @@
 - [ ] Compliance evidence auto-collection
 - [ ] Policy-as-code integration (OPA/Rego)
 
+## Site Health Monitoring — Deferred
+
+- [ ] Heartbeat: check all layrix.ai pages every 5 min (/, /terms, /privacy, /acceptable-use, /register)
+- [ ] Checks: HTTP 200, correct <title>, response time < 3s, SSL valid
+- [ ] Alert: email info@layrix.ai on 2 consecutive failures
+- [ ] Impl: Cloudflare Worker cron trigger (free, same account) or UptimeRobot free tier
+- [ ] Optional: status page at layrix.ai/status
+
 ## Team Features — Deferred
 
 - [ ] Team compliance dashboards
