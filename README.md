@@ -1,5 +1,24 @@
 # LLLL (Layrix Logic Layer Loop) — Embedded Compliance Layer for AI-Built Software
 
+### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
+
+```bash
+# Install LLLL compliance engine
+git clone https://github.com/jeffhouyanlin-hub/LLLL.git ~/.claude/skills/llll
+
+# Install LLLL Guard (blocks secrets and risky code before push)
+cd ~/.claude/skills/llll/llll-guard && npm install && npm run build && npm link
+
+# Activate pre-push compliance gate in your project
+cd /path/to/your/project && llll-guard install-hook
+```
+
+> Every `git push` is now guarded. Leaked API keys, hardcoded credentials, and source maps are **blocked before they leave your machine**.
+>
+> Register free at [layrix.ai](https://layrix.ai) to unlock full compliance findings.
+
+---
+
 LLLL is the core skill of the **Layrix** Compliance OS — Layrix Logic Layer Loop.
 
 An always-present compliance layer that integrates into AI development workflows. LLLL uses a structured master compliance checklist to continuously analyze product features, codebases, and documentation — detecting compliance gaps, performing automated security scans, guarding push and release workflows, and generating actionable, traceable guidance. Includes Layer 0 (Software Resilience Foundation) and LLLL Guard (Push & Release Compliance Gate).
