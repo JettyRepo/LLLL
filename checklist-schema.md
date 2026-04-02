@@ -27,7 +27,7 @@ Mark each item with one of:
 
 Gaps and findings are assigned one of four risk levels:
 
-| Level | Meaning | Folded in Basic? |
+| Level | Meaning | Folded in Unregistered? |
 |-------|---------|-----------------|
 | **Critical** | Urgent + important — not fixing this causes immediate serious consequences | Never |
 | **High** | Important but not urgent — significant risk if left unresolved | Never |

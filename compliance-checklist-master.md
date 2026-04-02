@@ -47,7 +47,7 @@ Issues that are urgent AND important — not fixing them causes immediate seriou
 - consequential decisions being made without required human review
 - payment processing without required controls or disclosures
 
-Critical items generate P1 actions and are NEVER folded in Basic.
+Critical items generate P1 actions and are NEVER folded in Unregistered.
 
 ## High
 Issues that are important but not immediately urgent:
@@ -57,7 +57,7 @@ Issues that are important but not immediately urgent:
 - payment or AI governance gaps requiring attention
 - operational or reputational harm that accumulates over time
 
-High items generate P1 actions and are NEVER folded in Basic.
+High items generate P1 actions and are NEVER folded in Unregistered.
 
 ## Medium
 Issues that:
@@ -66,7 +66,7 @@ Issues that:
 - create operational inconsistency
 - are unlikely to be immediately catastrophic but should be fixed
 
-Medium items generate P2 actions and may be folded in Basic.
+Medium items generate P2 actions and may be folded in Unregistered.
 
 ## Low
 Issues that:
@@ -75,7 +75,7 @@ Issues that:
 - improve governance hygiene
 - are useful but not urgent
 
-Low items generate P3 actions and may be folded in Basic.
+Low items generate P3 actions and may be folded in Unregistered.
 
 ---
 
@@ -1279,9 +1279,9 @@ When triggered, LLLL should:
 
 Use this master checklist differently depending on the command.
 
-All commands are available at every subscription level (Basic / Pro / Team).
-Basic folds Medium/Low items (Critical + High always shown). Pro and Team show full content identically.
-Deep (`/llll deep`) is a command mode, not a subscription level.
+All commands are available at every registration level (Unregistered / Basic).
+Unregistered folds Medium/Low items (Critical + High always shown). Basic (registered) shows full content.
+Deep (`/llll deep`) is a command mode, not a registration level.
 
 ## `/llll`
 Use:

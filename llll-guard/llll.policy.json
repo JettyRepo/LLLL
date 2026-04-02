@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "pushRules": {
+    "hardBlock": true,
+    "softBlock": true,
+    "warn": true,
+    "disabledRules": []
+  },
+  "releaseRules": {
+    "hardBlock": true,
+    "softBlock": true,
+    "warn": true,
+    "disabledRules": []
+  },
+  "excludePatterns": [
+    "*.md",
+    "*.txt",
+    "*.lock",
+    "yarn.lock",
+    "package-lock.json",
+    "CHANGELOG*",
+    "LICENSE*"
+  ]
+}

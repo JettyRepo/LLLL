@@ -4,7 +4,12 @@
 *~
 .local/
 
+# LLLL Guard CLI
+llll-guard/node_modules/
+llll-guard/dist/
+
 # Internal / competitive analysis
 LLLL_Competitive_Analysis_*.md
 LLLL_Full_Analysis_*.md
 AGENT_PROMPT_*.md
+MCP_analysis.md

@@ -1,32 +1,20 @@
 # TODO
 
-## Color Indicators — DONE
+## v5.0 — Freemium Pivot + Business Modules — DONE
 
-- [x] Add emoji color indicators to all LLLL output modes
-  - 🔴🔴 Critical / P1
-  - 🔴 High / Gap
-  - 🟡 Medium / Partial / P2
-  - 🟢 Low / Covered / P3
-  - Applied to: SKILL.md (mandatory rule), output-templates.md (all example tables)
-
-## Basic Tier — Severity-Based Folding & Conversion — DONE
-
-- [x] Rewrite SKILL.md folding rules to severity-based model
-- [x] Rewrite output-templates.md folding annotations to match
-- [x] All hidden markers use red: `🔴 (+N hidden: ...) 🔴`
-- [x] All hidden markers followed by: `🟢 Upgrade to Pro to view all items → 🟢`
-- [x] Fold markers list hidden item names
-- [x] Deep mode: Human Review Flags — show Critical+High, fold Medium/Low (option B)
-
-## Registration & Upgrade — DONE
-
-- [x] Registration hint at output header (unregistered users)
-- [x] Registration detection via `~/.layrix/config.json`
-- [x] Subscription level detection from config (`basic` / `pro` / `team`, default: `basic`)
-- [x] Next menu [6] upgrade item (Basic only)
-- [x] Upgrade [6] response: Pro vs Basic comparison table + URL
-- [x] Mandatory Next steps menu (HARD RULE, all modes)
-- [ ] **TODO: Upgrade purchase flow** — actual payment/activation at layrix.ai/upgrade (backend, not LLLL scope)
+- [x] Freemium pivot: registration = full visibility gate
+- [x] LLLL Unregistered / LLLL Basic naming
+- [x] Pro/Team marked "Coming Soon"
+- [x] /llll review command (human expert review escalation)
+- [x] Layrix Academy CTAs in Education Insight
+- [x] LLLL Guard module (push & release compliance gate)
+- [x] /llll guard, /llll guard push, /llll guard release commands
+- [x] /llll override command
+- [x] guard-patterns.md detection rules
+- [x] llll-guard/ CLI scaffold (TypeScript + Node.js)
+- [x] Updated all tier annotations across SKILL.md, templates, examples
+- [x] Registration comparison table (replaces upgrade table)
+- [x] Human review CTAs in deep/brief/GRC outputs
 
 ## v4.0 — Software Resilience Foundation — DONE
 
@@ -35,27 +23,87 @@
 - [x] Domain B: OWASP tactical checks (B5-B9)
 - [x] Domain C: Full supply chain model (C4-C9)
 - [x] Layer 0 architecture with Foundation Alert
-- [x] `/llll scan` command with scan-patterns.md
-- [x] `/llll fix` command
-- [x] `/llll grc` command
-- [x] Updated schema, templates, examples
+- [x] /llll scan, /llll fix, /llll grc commands
+- [x] scan-patterns.md
 - [x] Bash added to allowed-tools
 
-## Scan Enhancements — Deferred (P2)
+## Color Indicators — DONE
 
-- [ ] Container image scanning (Trivy/Grype integration if available)
-- [ ] DAST via headless browser (basic check for exposed admin panels, default credentials)
+- [x] Emoji color indicators on all risk-leveled items
+- [x] Basic tier severity-based folding with item name listing
+
+## Registration & Upgrade — DONE
+
+- [x] Registration hint at output header
+- [x] Registration detection via ~/.layrix/config.json
+- [x] Subscription level detection from config
+- [x] Next menu registration CTA (Unregistered only)
+- [x] Registration comparison table
+
+## Phase 0 — Registration MVP (layrix-backend)
+
+- [ ] Cloudflare Worker project + D1 schema (users, magic_links)
+- [ ] Domain migration: GoDaddy NS → Cloudflare
+- [ ] Landing page at layrix.ai/
+- [ ] Registration page at layrix.ai/register
+- [ ] Magic link flow (Resend): register → verify → activate
+- [ ] Activation: create ~/.layrix/config.json (curl + manual options)
+- [ ] Layrix Academy page at layrix.ai/academy
+
+## Phase 1 — MCP + License Validation (Pro, Coming Soon)
+
+- [ ] MCP server on /mcp route (Streamable HTTP)
+- [ ] layrix_validate_license tool
+- [ ] SKILL.md: MCP detection logic, allowed-tools update
+- [ ] Convert LLLL skill → Plugin (MCP auto-config in plugin.json)
+
+## Phase 2 — Stripe + Pro Tier (Coming Soon)
+
+- [ ] Stripe Checkout on /upgrade
+- [ ] Webhook handler: subscription update in D1
+- [ ] Config auto-refresh: MCP returns "pro" → local config updated
+- [ ] Pro-specific features: custom scan patterns, project personalization
+
+## Phase 3 — Pro Content Packs (Coming Soon)
+
+- [ ] GDPR jurisdiction pack
+- [ ] Security hardening industry pack
+- [ ] Advanced scan patterns (container, infrastructure)
+- [ ] R2 storage + MCP delivery tools
+- [ ] /llll industry and /llll jurisdiction commands
+
+## Phase 4 — E2E Encrypted State Persistence (Coming Soon)
+
+- [ ] Client-side AES-256-GCM encryption for compliance state
+- [ ] layrix_save_compliance_state + layrix_get_compliance_history
+- [ ] GRC trending in SKILL.md
+
+## LLLL Guard Enhancements — Deferred
+
+- [ ] Guard: semantic diff analysis (Pro feature)
+- [ ] Guard: policy mapping (Pro feature)
+- [ ] Guard: CI integration mode (Team feature)
+- [ ] Guard: reviewer requirement hooks (Team feature)
+- [ ] Guard: override logging with audit trail (Team feature)
+- [ ] Guard: custom policy profiles
+
+## Scan Enhancements — Deferred
+
+- [ ] Container image scanning (Trivy/Grype)
+- [ ] DAST via headless browser
 - [ ] Scan history persistence across sessions
-- [ ] Auto-fix confidence levels (high/medium/low) for each finding
-- [ ] Custom scan pattern definitions (user-defined patterns in project config)
+- [ ] Custom scan pattern definitions
 
-## GRC Enhancements — Deferred (P3)
+## GRC Enhancements — Deferred
 
-- [ ] GRC trend tracking across sessions (requires state persistence)
+- [ ] GRC trend tracking across sessions
 - [ ] Export GRC dashboard as PDF or Markdown artifact
-- [ ] Compliance evidence auto-collection to structured folder
-- [ ] Policy-as-code integration (OPA/Rego for automated compliance checks)
+- [ ] Compliance evidence auto-collection
+- [ ] Policy-as-code integration (OPA/Rego)
 
-## Team Features — Deferred (P3)
+## Team Features — Deferred
 
-- [ ] Define Team-specific features (team-level compliance tracking, shared history, multi-user dashboards, role-based access)
+- [ ] Team compliance dashboards
+- [ ] Multi-user role-based access
+- [ ] Shared compliance history
+- [ ] Centralized evidence repository

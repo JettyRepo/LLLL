@@ -5,6 +5,38 @@ All notable changes to LLLL (Layrix Logic Layer Loop) are documented in this fil
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [5.0.0] - 2026-04-01
+
+### Added
+- **Freemium pivot** — registration (free) unlocks full content visibility; Pro/Team deferred to "Coming Soon"
+- **`/llll review` command** — human expert review escalation with on-demand pricing (review@layrix.ai)
+- **Layrix Academy integration** — AIGP training CTAs in Education Insight sections when AI domains triggered (layrix.ai/academy)
+- **LLLL Guard module** — push and release compliance gates
+- **`/llll guard` command** — general compliance gate entry point
+- **`/llll guard push`** — pre-push diff scanning for secrets, credentials, policy-relevant changes
+- **`/llll guard release`** — pre-release artifact scanning for source maps, internal assets, whitelist violations
+- **`/llll override`** — override SOFT_BLOCK findings with justification logging
+- **guard-patterns.md** — detection rules for push and release gates (PG-H/S/W, RG-H/S patterns)
+- **llll-guard/ CLI** — Node.js + TypeScript CLI tool for git hook integration
+- Human review CTAs (🔵) in deep, brief, and GRC outputs
+- Academy reference (📚) in Education Insight when AI governance domains active
+
+### Changed
+- Visibility model: registration replaces paid tiers as the content gate
+- `LLLL Basic` (old partial visibility) → `LLLL Unregistered`
+- `LLLL Pro` (old full visibility) → `LLLL Basic` (registered, free)
+- Pro and Team marked "Coming Soon" — reserved for MCP, personalization, team features
+- All fold markers: "Register free" replaces "Upgrade to Pro"
+- Registration hint updated: "Register free at layrix.ai — unlock all findings in 30 seconds"
+- Next steps menus expanded with /llll review, /llll guard
+- Three Engine Model updated to reference real services (human review, Layrix Academy)
+- SKILL.md version header updated to v5.0
+- Human Expert Escalation section enhanced with review CTAs
+
+### Removed
+- Pro/Team as active paid tiers (deferred to future release)
+- Upgrade comparison table (replaced with registration comparison)
+
 ## [4.0.0] - 2026-04-01
 
 ### Added

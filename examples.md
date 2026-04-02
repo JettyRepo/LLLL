@@ -1,6 +1,6 @@
 # LLLL (Layrix Logic Layer Loop) Examples v3.0
 
-Examples demonstrating the Embedded Compliance Layer across all modes and subscription levels.
+Examples demonstrating the Embedded Compliance Layer across all modes and registration levels.
 
 LLLL is the core skill of the Layrix Compliance OS — an Embedded Compliance Layer.
 It is NOT a legal tool. It is NOT a document generator.
@@ -23,7 +23,7 @@ It is NOT a legal tool. It is NOT a document generator.
 **Expected output:**
 
 ```
-Output Mode: LLLL Basic
+Output Mode: LLLL Unregistered
 ```
 
 ### Triggered Compliance Domains
@@ -95,7 +95,7 @@ Human compliance expert or legal professional review is recommended.
 **Expected output:**
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ### Triggered Domains
@@ -182,7 +182,7 @@ Human compliance expert or legal professional review is recommended.
 **Expected output:**
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ### Triggered Domains
@@ -251,7 +251,7 @@ Human compliance expert or legal professional review is recommended.
 **Expected output:**
 
 ```
-Output Mode: LLLL Pro — Deep Analysis
+Output Mode: LLLL Basic — Deep Analysis
 ```
 
 ### Sensitivity Assessment
@@ -339,7 +339,7 @@ Human compliance expert or legal professional review is recommended.
 **Expected output:**
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ### Project Summary
@@ -432,7 +432,7 @@ Human compliance expert or legal professional review is recommended.
 ## ⚖️ Layrix Compliance Layer
 
 ```
-Output Mode: LLLL Basic
+Output Mode: LLLL Unregistered
 ```
 
 Triggered domains:
@@ -485,21 +485,21 @@ Human compliance expert or legal professional review is recommended.
 
 ---
 
-## Example 7 — Basic vs Pro vs Team Level Comparison
+## Example 7 — Unregistered vs Basic (Registered) Level Comparison
 
-This example shows how the **same analysis** appears at different subscription levels.
+This example shows how the **same analysis** appears at different registration levels.
 
 **Context:** SaaS app with user auth, AI summaries, and Stripe billing. 5 compliance gaps detected (2 Critical, 1 High, 2 Medium).
 
-### LLLL Basic
+### LLLL Unregistered
 
 ```
-Output Mode: LLLL Basic
+Output Mode: LLLL Unregistered
 ```
 
 #### Gaps / Risk Areas
 
-All Critical + High shown. Medium total = 2 → total M+L ≤ 2 → fold ALL Medium/Low:
+All Critical + High shown. Medium total = 2 → total M+L ≤ 2 → fold ALL Medium/Low (Unregistered folding):
 
 | Gap | Domain | Check | Risk | Label |
 |-----|--------|-------|------|-------|
@@ -511,7 +511,7 @@ All Critical + High shown. Medium total = 2 → total M+L ≤ 2 → fold ALL Med
 
 #### Action Plan
 
-All P1 shown (from Critical + High). P2 + P3 total = 2 → fold ALL:
+All P1 shown (from Critical + High). P2 + P3 total = 2 → fold ALL (Unregistered folding):
 
 | Priority | Action | Owner |
 |----------|--------|-------|
@@ -523,10 +523,10 @@ All P1 shown (from Critical + High). P2 + P3 total = 2 → fold ALL:
 
 ---
 
-### LLLL Pro / Team (same analysis)
+### LLLL Basic (registered) (same analysis)
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 #### Gaps / Risk Areas
@@ -549,7 +549,7 @@ Output Mode: LLLL Pro
 | P2 | Define refund terms | Product |
 | P3 | Generate SBOM and review dependencies | Engineering |
 
-**Note:** Team output is identical to Pro in content. Team adds organizational features.
+**Note:** LLLL Basic (registered) shows all content without folding. Team features coming soon.
 
 ---
 
@@ -557,7 +557,7 @@ Output Mode: LLLL Pro
 
 Deep mode adds Sensitivity Assessment, Why This Matters Now, Consequences, and Human Review Flags at **all** subscription levels:
 
-**LLLL Basic — Deep Analysis** — Critical + High always shown, Medium/Low folded (total M+L = 2 → fold ALL):
+**LLLL Unregistered — Deep Analysis** — Critical + High always shown, Medium/Low folded (total M+L = 2 → fold ALL):
 
 | Gap | Domain | Check | Risk | Consequence if Ignored |
 |-----|--------|-------|------|----------------------|
@@ -567,7 +567,7 @@ Deep mode adds Sensitivity Assessment, Why This Matters Now, Consequences, and H
 
 (+2 Medium/Low gaps hidden)
 
-**LLLL Pro / Team — Deep Analysis** — deep mode fully expanded:
+**LLLL Basic (registered) — Deep Analysis** — deep mode fully expanded:
 
 | Gap | Domain | Check | Risk | Consequence if Ignored |
 |-----|--------|-------|------|----------------------|
@@ -599,7 +599,7 @@ Human compliance expert or legal professional review is recommended.
 ## ⚖️ Layrix Compliance Layer — Feature Change Detected
 
 ```
-Output Mode: LLLL Basic
+Output Mode: LLLL Unregistered
 ```
 
 New feature (AI anomaly detection + automated alerts) activates additional domains:
@@ -649,7 +649,7 @@ Human compliance expert or legal professional review is recommended.
 **Expected output (excerpt showing escalation pattern):**
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ### Triggered Domains
@@ -701,7 +701,7 @@ Human compliance expert or legal professional review is recommended.
 **Expected output (excerpt):**
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ### Completeness Summary
@@ -761,7 +761,7 @@ Human compliance expert or legal professional review is recommended.
 **Expected output:**
 
 ```
-Output Mode: LLLL Basic
+Output Mode: LLLL Unregistered
 ```
 
 ### Scan Metadata
@@ -799,7 +799,7 @@ Output Mode: LLLL Basic
 | LIC-001: AGPL-3.0 dependency (mongodb-client@4.2.0) | 🔴🔴 **Critical** | O2 | No |
 
 🔴 (+3 hidden: Permissive CORS config, Missing CSP header, Missing CODEOWNERS) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 
 ### Detailed Findings
 
@@ -858,7 +858,7 @@ Next:
 [5] /llll deep
 [6] /llll checklist
 [7] /llll brief
-[8] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+[8] 🟢 Register free to see all findings → layrix.ai 🟢
 
 ---
 
@@ -870,7 +870,7 @@ Next:
 **Expected output:**
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ⚠️ Foundation Alert: Software resilience issues detected that undermine compliance posture.
@@ -964,7 +964,7 @@ Next:
 ## ⚖️ Layrix Compliance Layer
 
 ```
-Output Mode: LLLL Basic
+Output Mode: LLLL Unregistered
 ```
 
 ⚠️ Foundation Alert: Software resilience issues detected that undermine compliance posture.
@@ -1022,7 +1022,7 @@ Next:
 [5] /llll diff
 [6] /llll scan
 [7] /llll grc
-[8] 🟢 Upgrade to Pro to unlock the full power of Layrix →
+[8] 🟢 Register free to see all findings → layrix.ai 🟢
 
 ---
 ⚠️ Disclaimer:

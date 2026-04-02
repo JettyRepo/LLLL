@@ -1,4 +1,4 @@
-# LLLL (Layrix Logic Layer Loop) Output Templates v3.0
+# LLLL (Layrix Logic Layer Loop) Output Templates v5.0
 
 Aligned with the Embedded Compliance Layer architecture and compliance-checklist-master.md.
 
@@ -8,46 +8,47 @@ It produces actionable compliance intelligence.
 
 ---
 
-## User Subscription Levels
+## Visibility Levels
 
-Basic, Pro, and Team are user subscription levels. All commands are available at every level. Deep (`/llll deep`) is a command mode, not a level.
+LLLL visibility is determined by registration status. All commands are available to all users. Deep (`/llll deep`) is a command mode, not a visibility level.
 
 | Level | Scope | Behavior |
 |-------|-------|----------|
-| **LLLL Basic** | Partial | Critical + High always shown. Medium/Low folded per rules below |
-| **LLLL Pro** | Full | Full checklist, full matrix, full change tickets, complete action plan |
-| **LLLL Team** | Full | Same content as Pro + organizational features (TODO P3: define Team-specific features) |
+| **LLLL Unregistered** | Partial | Critical + High always shown. Medium/Low folded per rules below |
+| **LLLL Basic** (registered, free) | Full | Full checklist, full matrix, full change tickets, complete action plan |
+| **Pro** (coming soon) | Full | MCP, project personalization, custom scans |
+| **Team** (coming soon) | Full | Same as Pro + team compliance dashboards, multi-user |
 
-Deep mode (`/llll deep`) adds Sensitivity Assessment, Why This Matters Now, Consequences, and Human Review Flags at ALL levels. In Basic, these sections follow the same Medium/Low folding. In Pro and Team, deep output is identical and fully expanded.
+Deep mode (`/llll deep`) adds Sensitivity Assessment, Why This Matters Now, Consequences, and Human Review Flags for ALL users. For Unregistered users, these sections follow the same Medium/Low folding. For LLLL Basic (registered) users, deep output is fully expanded.
 
 ### Output Mode Header
 
-Every output begins with the user's subscription level, followed by a registration hint for unregistered users:
+Every output begins with the user's visibility level, followed by a registration hint for unregistered users:
+
+```
+Output Mode: LLLL Unregistered
+
+🟢🟢 Register free at layrix.ai — unlock all findings in 30 seconds → 🟢🟢
+```
+
+Registered users (LLLL Basic) do not see the registration hint:
 
 ```
 Output Mode: LLLL Basic
-
-🟢🟢 Register at layrix.ai in 30 seconds → 🟢🟢
-```
-
-Registered users and Pro/Team users do not see the registration hint:
-
-```
-Output Mode: LLLL Pro
 ```
 
 When running `/llll deep`, append the mode:
 
 ```
-Output Mode: LLLL Basic — Deep Analysis
+Output Mode: LLLL Unregistered — Deep Analysis
 
-🟢🟢 Register at layrix.ai in 30 seconds → 🟢🟢
+🟢🟢 Register free at layrix.ai — unlock all findings in 30 seconds → 🟢🟢
 ```
 
 ### Risk Levels and Color Indicators
 
-| Level | Indicator | Meaning | Folded in Basic? |
-|-------|-----------|---------|-----------------|
+| Level | Indicator | Meaning | Folded in Unregistered? |
+|-------|-----------|---------|------------------------|
 | **Critical** | 🔴🔴 | Urgent + important — immediate serious consequences | Never |
 | **High** | 🔴 | Important but not urgent — significant risk over time | Never |
 | **Medium** | 🟡 | Weakens compliance posture — not immediately catastrophic | Yes |
@@ -58,9 +59,9 @@ Color indicators are **mandatory** on all risk-leveled items across all outputs:
 - Completeness scoring (🔴 Red / 🟡 Yellow / 🟢 Green)
 - Matrix rows, policy priorities, change tickets
 
-### Basic Folding Rules
+### Unregistered Folding Rules
 
-Folding is **severity-based within modules** — never removes modules or sections. All modules present in Pro are also present in Basic.
+Folding is **severity-based within modules** — never removes modules or sections. All modules present for LLLL Basic (registered) users are also present for Unregistered users.
 
 1. **Critical** and **High** items → always shown in full, never folded
 2. **Medium** and **Low** items → show the 2 most severe, fold the rest
@@ -71,7 +72,7 @@ Folding is **severity-based within modules** — never removes modules or sectio
 Fold marker format:
 ```
 🔴 (+N hidden: [Item Name 1], [Item Name 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
 
 Every output ends with:
@@ -164,12 +165,12 @@ Output Mode: LLLL Basic
 | No AI disclosure (AI in production) | I | I1 | 🔴🔴 **Critical** | NEEDS BUSINESS DECISION |
 | No data retention policy | D | D1 | 🔴 **High** | NEEDS BUSINESS DECISION |
 
-**LLLL Basic:** All Critical + High gaps shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** All Critical + High gaps shown. Medium/Low: show 2 most severe, fold rest with names listed.
 ```
 🔴 (+N hidden: [Gap Name 1], [Gap Name 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** Full gap table.
+**LLLL Basic (registered):** Full gap table.
 
 ### Action Plan
 
@@ -179,12 +180,12 @@ Output Mode: LLLL Basic
 | 🟡 P2 | [Important — address within sprint] | ... |
 | 🟢 P3 | [Recommended — plan for next cycle] | ... |
 
-**LLLL Basic:** All P1 actions shown. P2/P3: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** All P1 actions shown. P2/P3: show 2 most severe, fold rest with names listed.
 ```
 🔴 (+N hidden: [Action Name 1], [Action Name 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** Full action plan.
+**LLLL Basic (registered):** Full action plan.
 
 ### Coverage Confidence
 
@@ -215,7 +216,7 @@ Human compliance expert or legal professional review is recommended.
 Output Mode: LLLL [level] — Deep Analysis
 ```
 
-Deep mode is available at all subscription levels. In Basic, Critical + High always shown, Medium/Low folded per folding rules. In Pro and Team, output is identical and fully expanded.
+Deep mode is available to all users. For Unregistered users, Critical + High always shown, Medium/Low folded per folding rules. For LLLL Basic (registered) users, output is fully expanded.
 
 ### Sensitivity Assessment
 Low / Medium / **High**
@@ -255,12 +256,12 @@ Reasoning: [Why this sensitivity level — reference Domain M triggers if applic
 - [ ] Whether health data processing triggers HIPAA — NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT
 - [ ] Data retention period selection — NEEDS BUSINESS DECISION
 
-**LLLL Basic:** Critical + High Human Review Flags always shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** Critical + High Human Review Flags always shown. Medium/Low: show 2 most severe, fold rest with names listed.
 ```
 🔴 (+N hidden: [Flag Name 1], [Flag Name 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** All flags shown.
+**LLLL Basic (registered):** All flags shown.
 
 > This may require a compliance expert or legal professional review.
 
@@ -305,7 +306,7 @@ Human compliance expert or legal professional review is recommended.
 ## 3. Compliance Expert Handoff Brief Template (`/llll brief`)
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ### Project Summary
@@ -314,12 +315,12 @@ Output Mode: LLLL Pro
 ### Functional Scope
 [Bullet list of key features with compliance relevance]
 
-**LLLL Basic:** All features shown. Low-relevance features: show 2, fold rest with names listed.
+**LLLL Unregistered:** All features shown. Low-relevance features: show 2, fold rest with names listed.
 ```
 🔴 (+N hidden: [Feature 1], [Feature 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** All features listed.
+**LLLL Basic (registered):** All features listed.
 
 ### Triggered Compliance Domains
 
@@ -342,12 +343,12 @@ Output Mode: LLLL Pro
 | Data flow diagram | D | Map of personal data through all systems | Engineering |
 | AI model provider terms | K2 | Provider agreement re: data retention | Product |
 
-**LLLL Basic:** Critical + High items shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** Critical + High items shown. Medium/Low: show 2 most severe, fold rest with names listed.
 ```
 🔴 (+N hidden: [Item Name 1], [Item Name 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** Full table.
+**LLLL Basic (registered):** Full table.
 
 ### Business Decisions Still Needed
 
@@ -405,7 +406,7 @@ Human compliance expert or legal professional review is recommended.
 ## 4. Coverage Matrix Template (`/llll diff`)
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ### Triggered Domains
@@ -423,12 +424,12 @@ Output Mode: LLLL Pro
 | File upload | B | B3 | 🟡 Partial | Upload validation unclear | 🟡 **Medium** | Engineering |
 | File upload | G | G1 | 🔴 No | Content ownership terms missing | 🟡 **Medium** | Compliance expert |
 
-**LLLL Basic:** All Critical + High rows shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** All Critical + High rows shown. Medium/Low: show 2 most severe, fold rest with names listed.
 ```
 🔴 (+N hidden: [Feature — Check 1], [Feature — Check 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** Full matrix.
+**LLLL Basic (registered):** Full matrix.
 
 ### Policy Update Priorities
 
@@ -437,12 +438,12 @@ Output Mode: LLLL Pro
 3. 🟡 **Medium** — Refund Policy (F1): payment exists but refund terms incomplete
 4. 🟡 **Medium** — Content Terms (G1): user uploads exist but ownership undefined
 
-**LLLL Basic:** All Critical + High priorities shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** All Critical + High priorities shown. Medium/Low: show 2 most severe, fold rest with names listed.
 ```
 🔴 (+N hidden: [Priority Name 1], [Priority Name 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** All priorities listed.
+**LLLL Basic (registered):** All priorities listed.
 
 ### Change Tickets
 
@@ -460,12 +461,12 @@ Output Mode: LLLL Pro
 - Owner: Compliance expert / Legal professional
 - Priority: 🟡 P2
 
-**LLLL Basic:** All P1 tickets shown. P2/P3: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** All P1 tickets shown. P2/P3: show 2 most severe, fold rest with names listed.
 ```
 🔴 (+N hidden: [Ticket Name 1], [Ticket Name 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** All tickets.
+**LLLL Basic (registered):** All tickets.
 
 ### Coverage Confidence
 
@@ -493,10 +494,10 @@ Human compliance expert or legal professional review is recommended.
 ## 5. Change Ticket Template (standalone)
 
 ```
-Output Mode: LLLL Pro | LLLL Team
+Output Mode: LLLL Basic
 ```
 
-Change tickets are generated at Pro and Team levels.
+Change tickets are generated for LLLL Basic (registered) users. Unregistered users see P1 tickets; others are folded.
 
 ### Change Ticket
 
@@ -536,7 +537,7 @@ Human compliance expert or legal professional review is recommended.
 ## 6. Checklist Template (`/llll checklist`)
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ### Triggered Domains
@@ -584,12 +585,12 @@ Output Mode: LLLL Pro
 
 [Additional activated domain sections follow the same Domain → Input → Status → Owner pattern]
 
-**LLLL Basic:** All sections present. Medium/Low gap items: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** All sections present. Medium/Low gap items: show 2 most severe, fold rest with names listed.
 ```
 🔴 (+N hidden: [Item Name 1], [Item Name 2], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** Full checklist by domain.
+**LLLL Basic (registered):** Full checklist by domain.
 
 ### Priority Action Items
 
@@ -672,7 +673,7 @@ Human compliance expert or legal professional review is recommended.
 ## 8. Compliance Requirement List Template (Artifact)
 
 ```
-Output Mode: LLLL Pro
+Output Mode: LLLL Basic
 ```
 
 ### Product
@@ -748,12 +749,12 @@ Output Mode: LLLL [level]
 - **Fix:** [Specific remediation steps]
 - **Auto-fixable:** Yes → `/llll fix [FINDING-ID]` / No → manual fix required
 
-**LLLL Basic:** Critical + High findings always shown. Medium/Low: show 2 most severe, fold rest.
+**LLLL Unregistered:** Critical + High findings always shown. Medium/Low: show 2 most severe, fold rest.
 ```
 🔴 (+N hidden: [Finding-001], [Finding-002], ...) 🔴
-🟢 Upgrade to Pro to view all items → 🟢
+🟢 Register free at layrix.ai to see all findings → 🟢
 ```
-**LLLL Pro / Team:** All findings shown.
+**LLLL Basic (registered):** All findings shown.
 
 ### Recommended Tools
 
@@ -848,8 +849,8 @@ Output Mode: LLLL [level]
 | Incident response | A3 | ✅ / ❌ / ⚠️ | [source] | [date] |
 | Documentation | N3 | ✅ / ❌ / ⚠️ | [source] | [date] |
 
-**LLLL Basic:** All controls shown (governance is never folded — it is essential context).
-**LLLL Pro / Team:** All controls shown with extended detail.
+**LLLL Unregistered:** All controls shown (governance is never folded — it is essential context).
+**LLLL Basic (registered):** All controls shown with extended detail.
 
 ### Risk
 
