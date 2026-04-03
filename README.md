@@ -1,12 +1,10 @@
-<p align="center">
-  <img src="assets/header.svg" alt="LLLL — Embedded Compliance Layer" width="100%"/>
-</p>
+# LLLL (Layrix Logic Layer Loop)
 
 ### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
 
 ```bash
 # Install LLLL compliance engine
-git clone https://github.com/jettymarquis/LLLL.git ~/.claude/skills/llll
+git clone https://github.com/JettyMarquis/LLLL.git ~/.claude/skills/llll
 
 # Install LLLL Guard (blocks secrets and risky code before push)
 cd ~/.claude/skills/llll/llll-guard && npm install && npm run build && npm link
@@ -97,7 +95,7 @@ AI Governance Professional (AIGP) certification preparation.
 ### 1. Install LLLL Skill (compliance engine)
 
 ```bash
-git clone https://github.com/jeffhouyanlin-hub/LLLL.git ~/.claude/skills/llll
+git clone https://github.com/JettyMarquis/LLLL.git ~/.claude/skills/llll
 ```
 
 That's it — LLLL is now available as `/llll` in Claude Code.
