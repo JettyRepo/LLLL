@@ -11,6 +11,12 @@ llll-guard/dist/
 # Landing page (deployed via Cloudflare Pages, not GitHub)
 site/
 
+# Internal docs (not for end users)
+CHANGELOG.md
+TODO.md
+INCIDENT_RESPONSE.md
+assets/
+
 # Internal / competitive analysis
 LLLL_Competitive_Analysis_*.md
 LLLL_Full_Analysis_*.md
