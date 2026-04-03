@@ -6,7 +6,7 @@
 
 ```bash
 # Install LLLL compliance engine
-git clone https://github.com/jeffhouyanlin-hub/LLLL.git ~/.claude/skills/llll
+git clone https://github.com/jettymarquis/LLLL.git ~/.claude/skills/llll
 
 # Install LLLL Guard (blocks secrets and risky code before push)
 cd ~/.claude/skills/llll/llll-guard && npm install && npm run build && npm link
