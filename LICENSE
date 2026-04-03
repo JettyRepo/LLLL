@@ -37,9 +37,10 @@ scan patterns, guard patterns, output templates, and examples.
 
    You may use the Software commercially to analyze your own products,
    generate compliance reports for your own organization, and operate
-   LLLL Guard on your own repositories. This includes use by consultants
-   and agencies on behalf of their clients, provided the Software itself
-   is not redistributed or offered as a service.
+   LLLL Guard on your own repositories. Use is limited to your own
+   projects and your own organization. Use on behalf of third parties,
+   clients, or other organizations is not permitted without a separate
+   license agreement from the copyright holder.
 
 4. NO FORKING
 
