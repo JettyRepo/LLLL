@@ -920,7 +920,18 @@ Next:
 [5] 🟢 Register free to see all findings → layrix.ai 🟢
 ```
 
-**LLLL Basic (registered)** — no registration CTA:
+**LLLL Basic (registered)** — context-sensitive CTA as final item:
+
+#### Registered CTA logic
+
+The last menu item for registered users is a **context-sensitive business CTA**. Select based on the current output:
+
+| Condition | CTA |
+|-----------|-----|
+| Output contains any Critical or High finding | `🔵 Need certainty on critical findings? → review@layrix.ai` |
+| Output contains no Critical or High finding | `⭐ LLLL helped? Star on GitHub → github.com/JettyRepo/LLLL` |
+
+This CTA always appears as the **last numbered item** in the menu.
 
 From `/llll`:
 ```
@@ -933,6 +944,7 @@ Next:
 [6] /llll scan
 [7] /llll grc
 [8] /llll guard
+[9] [context CTA]
 ```
 
 From `/llll deep`:
@@ -947,6 +959,7 @@ Next:
 [7] /llll grc
 [8] /llll review
 [9] /llll guard
+[10] [context CTA]
 ```
 
 From `/llll scan`:
@@ -960,6 +973,7 @@ Next:
 [6] /llll checklist
 [7] /llll brief
 [8] /llll guard
+[9] [context CTA]
 ```
 
 From `/llll fix`:
@@ -971,6 +985,7 @@ Next:
 [4] /llll
 [5] /llll deep
 [6] /llll guard
+[7] [context CTA]
 ```
 
 From `/llll grc`:
@@ -983,6 +998,7 @@ Next:
 [5] /llll brief
 [6] /llll diff
 [7] /llll guard
+[8] [context CTA]
 ```
 
 From `/llll guard`:
@@ -993,6 +1009,7 @@ Next:
 [3] /llll scan
 [4] /llll
 [5] /llll deep
+[6] [context CTA]
 ```
 
 From `/llll review`:
@@ -1002,6 +1019,7 @@ Next:
 [2] /llll brief
 [3] /llll
 [4] /llll guard
+[5] [context CTA]
 ```
 
 Note: `/llll review` appears in menus for `/llll deep` and `/llll brief` only — it is relevant when expert-level items have been identified. It does not appear in every menu.
@@ -1221,12 +1239,12 @@ If the file is missing or the `subscription` field is absent, default to Unregis
 Registration status: REGISTERED → LLLL Basic / UNREGISTERED → LLLL Unregistered
 ```
 
-### When to show
+### When to show (top-of-output hint)
 
 - **Unregistered users** — show registration hint at the **very beginning** of every LLLL output, immediately after the `Output Mode:` header line and before any analysis content
-- **Registered users (LLLL Basic)** — never show registration hint
+- **Registered users (LLLL Basic)** — never show the registration hint at the top
 
-### Placement
+### Placement (top-of-output)
 
 ```
 Output Mode: LLLL Unregistered
@@ -1237,6 +1255,20 @@ Output Mode: LLLL Unregistered
 ```
 
 Never block usage. This is a soft suggestion only.
+
+### Registered user CTA (end-of-menu, context-sensitive)
+
+Registered users do not see the registration hint. Instead, the **last item in the Next Steps menu** is a context-sensitive business CTA:
+
+| Condition | CTA text |
+|-----------|----------|
+| Output has Critical or High findings | `🔵 Need certainty on critical findings? → review@layrix.ai` |
+| Output has no Critical or High findings | `⭐ LLLL helped? Star on GitHub → github.com/JettyRepo/LLLL` |
+
+This ensures the highest-visibility CTA slot is always used:
+- **Unregistered:** drives registration (top hint + menu last item)
+- **Registered + critical findings:** drives human expert revenue
+- **Registered + clean report:** drives GitHub stars and distribution
 
 ---
 

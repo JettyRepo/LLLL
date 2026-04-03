@@ -35,6 +35,7 @@ These patterns in outgoing diffs trigger an automatic hard block. Scanned agains
 | PG-H011 | Files matching `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*` | Private key files | secret |
 | PG-H012 | `\d{3}-\d{2}-\d{4}` | Social Security Number pattern | data |
 | PG-H013 | `\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}` | Credit card number pattern | data |
+| PG-H014 | Files matching `*Competitive_Analysis*`, `*Full_Analysis*`, `AGENT_PROMPT_*`, `MCP_analysis*` | Internal/competitive analysis files — must never be committed | internal |
 
 ---
 

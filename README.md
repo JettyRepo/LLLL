@@ -1,10 +1,12 @@
 # LLLL (Layrix Logic Layer Loop)
 
+> **No Fork / No Derivative Works** — This repository is source-available under the [Layrix Source-Available License v1.0](LICENSE). Forking, copying, modifying, or creating derivative works is **expressly prohibited** without prior written consent. Violations will be subject to DMCA takedown. Clone for local use only. See [LICENSE](LICENSE) for full terms.
+
 ### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
 
 ```bash
 # Install LLLL compliance engine
-git clone https://github.com/JettyMarquis/LLLL.git ~/.claude/skills/llll
+git clone https://github.com/JettyRepo/LLLL.git ~/.claude/skills/llll
 
 # Install LLLL Guard (blocks secrets and risky code before push)
 cd ~/.claude/skills/llll/llll-guard && npm install && npm run build && npm link
@@ -95,7 +97,7 @@ AI Governance Professional (AIGP) certification preparation.
 ### 1. Install LLLL Skill (compliance engine)
 
 ```bash
-git clone https://github.com/JettyMarquis/LLLL.git ~/.claude/skills/llll
+git clone https://github.com/JettyRepo/LLLL.git ~/.claude/skills/llll
 ```
 
 That's it — LLLL is now available as `/llll` in Claude Code.

@@ -1,0 +1,27 @@
+name: Fork Monitor
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # every 6 hours
+  workflow_dispatch:        # manual trigger
+
+jobs:
+  check-forks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for forks
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FORKS=$(gh api repos/${{ github.repository }}/forks --jq 'length')
+          if [ "$FORKS" -gt 0 ]; then
+            echo "::error::UNAUTHORIZED FORKS DETECTED: $FORKS fork(s) found"
+            echo ""
+            echo "Fork details:"
+            gh api repos/${{ github.repository }}/forks --jq '.[] | "  - \(.full_name) by \(.owner.login) (\(.created_at))"'
+            echo ""
+            echo "Action required: File DMCA takedown at https://support.github.com/contact/dmca-takedown"
+            exit 1
+          else
+            echo "No forks detected."
+          fi
