@@ -808,10 +808,24 @@ If you manually archive LLLL analyses, the recommended path is `.llll/scratch/` 
 - Creating the directory yourself (LLLL does not)
 - Setting owner-only permissions (`0700` dir, `0600` files)
 - Dropping in a `DO_NOT_UPLOAD.txt` marker so the directory's purpose is visible at a glance
-- Verifying your project root is NOT inside iCloud Drive / Dropbox / OneDrive / Google Drive / `~/Documents` (macOS with iCloud Desktop+Documents enabled)
+- Verifying your project root is NOT inside iCloud Drive / Dropbox / OneDrive / Google Drive / `~/Documents` (macOS with iCloud Desktop+Documents enabled), AND not automatically indexed by system backup tools (Time Machine, Backblaze, Arq, rsync.net) unless you explicitly want those backups
 - Enabling full-disk encryption on your machine (macOS FileVault, Linux LUKS, Windows BitLocker)
-- Redacting any sensitive content **before** saving — LLLL provides no runtime redaction in v5.0
+- Redacting any sensitive content **before** saving — LLLL provides no runtime redaction in v5.0. For `/llll scan` and `/llll fix` outputs, check your content against the SEC-001..SEC-008 regex patterns defined in `scan-patterns.md` (the same list LLLL uses for secret detection) before placing the file in `.llll/scratch/`
 - Cleaning up files you no longer need
+- **Treating files in `.llll/scratch/` as controlled personal data when applicable** — see the Personal Data subsection below
+
+**Personal data in saved files (GDPR / CCPA / equivalent regimes)**
+
+If you save LLLL analyses that reference or contain personal data — user emails, customer identifiers, test-account data, data-flow diagrams naming real users, compliance briefs for a project that processes personal data, or `/llll brief` outputs for regulated-sector products — **you become the data controller** for those files under GDPR Art. 4(7) and equivalent regimes (CCPA, PIPL, LGPD, UK GDPR). The compliance implications that attach:
+
+- **Storage limitation (GDPR Art. 5(1)(e))** — you need a retention policy aligned with the purpose for which the data was saved. The 90-day cleanup reminder is a nudge, not compliance — decide your own retention window
+- **Data minimization (GDPR Art. 5(1)(c))** — only save what you actually need; redact before saving
+- **Data subject rights (GDPR Arts. 15–22)** — if a subject exercises access / rectification / erasure rights, you must be able to locate and honor them against `.llll/scratch/` content. If you can't remember what you saved, you can't honor those rights
+- **Security of processing (GDPR Art. 32)** — the `0700` / `0600` permissions and gitignored location are baseline; full-disk encryption and backup-tool exclusion are additional layers **you** control
+
+LLLL (the tool) is **not** a data processor or controller — it never writes, never reads the contents of scratch files, never transmits. The moment you manually save a file to `.llll/scratch/`, the responsibility is entirely yours. This is the trade-off the opt-in manual design makes: maximum user control, maximum user responsibility.
+
+For **regulated sectors** (health, finance, lending, insurance, education, employment, children, biometric, public sector — Domain M in the LLLL checklist), this responsibility is more consequential. Consider whether the scratch workflow is appropriate for your project at all, or whether you should wait for the Pro/Team MCP tier (which will handle retention, encryption, and data subject rights server-side).
 
 ### Setup (run once per project, if you choose to use scratch)
 
@@ -832,6 +846,32 @@ chmod 0600 .llll/scratch/DO_NOT_UPLOAD.txt
 The `DO_NOT_UPLOAD.txt` marker is the **visible tag** — anyone opening the directory sees the purpose declaration immediately. Combined with the hidden path and the `.gitignore` coverage, this gives the directory multiple redundant "do-not-upload" signals: the path itself, the marker file, the gitignore entry, and this spec.
 
 LLLL does not run these commands for you. Copy-paste them into your shell once per project.
+
+### Gitignore integrity check (stateless)
+
+When LLLL is invoked, it performs this **read-only** check before producing any analysis:
+
+```bash
+if [ -d .llll/scratch ]; then
+  if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    if ! git check-ignore -q .llll/ 2>/dev/null; then
+      GITIGNORE_MISSING=1
+    fi
+  fi
+fi
+```
+
+**Rendering rule:** if `GITIGNORE_MISSING=1` (scratch dir exists but `.llll/` is NOT covered by the current repo's `.gitignore`), insert a warning line at the top of the output, directly after the registration hint (or after the `Output Mode:` line for registered users). **This warning is NOT first-of-session throttled** — it fires on every LLLL invocation until the user fixes their `.gitignore`:
+
+```
+> ⚠️ .llll/scratch/ exists but .llll/ is NOT in .gitignore — your scratch files may commit accidentally. Add with: echo '.llll/' >> .gitignore
+```
+
+**Why not throttled:** accidental commit of scratch content (which may contain secrets, personal data, or vulnerability details) is a **silent, high-impact, easily-preventable failure**. The cleanup reminder is a nudge that can wait; the gitignore warning is a correctness issue that should surface every time until fixed. One extra line per output is cheap insurance compared to a public-repo leak.
+
+The check is fully read-only: `git check-ignore` consults the ignore rules without modifying anything, and LLLL never reads or modifies `.gitignore` itself.
+
+If the user is not inside a git repo (e.g., a loose directory), the check is skipped silently — the gitignore warning only applies inside repos.
 
 ### Periodic cleanup reminder (stateless)
 
@@ -1386,15 +1426,25 @@ Output Mode: LLLL Unregistered
 
 Never block usage. This is a soft suggestion only.
 
-**Cleanup reminder placement (stateless, once per session):**
+**Startup check placement (stateless, at most two lines):**
 
-On the **first LLLL output in the current conversation** (judged from Claude's conversation context — no prior LLLL output visible), if `.llll/scratch/` exists and contains files older than 90 days, a single line appears directly after the registration hint (or after the `Output Mode:` line for registered users):
+When LLLL is invoked, up to two informational/warning lines may surface directly after the registration hint (or after the `Output Mode:` line for registered users), before any analysis content. They are produced by read-only checks in the `OBSERVATION STORAGE` section.
 
-```
-> 🧹 .llll/scratch/ has N files older than 90 days — consider: find .llll/scratch -mtime +90 -delete
-```
+1. **Gitignore integrity warning** — fires on **every invocation** (not throttled) if `.llll/scratch/` exists AND `.llll/` is NOT covered by the current repo's `.gitignore`:
 
-The reminder is informational; LLLL never deletes files. It does not appear on subsequent LLLL outputs in the same session, and it does not appear when `.llll/scratch/` does not exist or contains no stale files. See the `OBSERVATION STORAGE` section for details.
+   ```
+   > ⚠️ .llll/scratch/ exists but .llll/ is NOT in .gitignore — your scratch files may commit accidentally. Add with: echo '.llll/' >> .gitignore
+   ```
+
+2. **Cleanup reminder** — fires **once per session** on the first LLLL output in the current conversation (judged from Claude's conversation context) if `.llll/scratch/` contains files older than 90 days:
+
+   ```
+   > 🧹 .llll/scratch/ has N files older than 90 days — consider: find .llll/scratch -mtime +90 -delete
+   ```
+
+**Ordering when both fire:** gitignore warning first, cleanup reminder second, each on its own line. Correctness issues (gitignore) come before hygiene nudges (cleanup).
+
+Neither line is part of the analysis content. Both are purely informational — LLLL never modifies any file in response. When `.llll/scratch/` does not exist, both checks are skipped entirely. See the `OBSERVATION STORAGE` section for the shell checks and rendering rules.
 
 ### Registered user CTA (end-of-menu, context-sensitive)
 

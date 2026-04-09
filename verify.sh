@@ -48,6 +48,11 @@ grep -qE "append \`-S\`|\`-S\` flag|pre-save gates verify" SKILL.md && { echo "F
 grep -q "auditable history" SKILL.md && { echo "FAIL: 'auditable history' language still present"; exit 1; } || echo "PASS: Overclaim language removed"
 grep -q "ephemeral" SKILL.md && echo "PASS: Ephemeral language present" || { echo "FAIL: Ephemeral language missing"; exit 1; }
 grep -q "allowed-tools: Read, Grep, Glob, Bash$" SKILL.md && echo "PASS: allowed-tools reverted (no Write)" || { echo "FAIL: allowed-tools still has Write"; exit 1; }
+grep -q "data controller" SKILL.md && echo "PASS: Personal data / data-controller warning (H1)" || { echo "FAIL: H1 personal data warning missing"; exit 1; }
+grep -q "GDPR Art" SKILL.md && echo "PASS: GDPR articles cited (H1)" || { echo "FAIL: H1 GDPR citations missing"; exit 1; }
+grep -q "Gitignore integrity check" SKILL.md && echo "PASS: Runtime gitignore check documented (H2)" || { echo "FAIL: H2 gitignore check missing"; exit 1; }
+grep -q "git check-ignore -q \.llll/" SKILL.md && echo "PASS: Gitignore check command specified (H2)" || { echo "FAIL: H2 check command missing"; exit 1; }
+grep -q "GITIGNORE_MISSING" SKILL.md && echo "PASS: Gitignore warning render flag (H2)" || { echo "FAIL: H2 render flag missing"; exit 1; }
 
 # No internal files accidentally tracked
 LEAKED=$(git ls-files | grep -iE "(Competitive_Analysis|Full_Analysis|AGENT_PROMPT|MCP_analysis)" || true)
