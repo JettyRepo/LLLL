@@ -38,6 +38,21 @@ grep -q "Foundation Alert" SKILL.md && echo "PASS: Foundation Alert" || { echo "
 grep -q "/llll scan" SKILL.md && echo "PASS: /llll scan command" || { echo "FAIL: /llll scan missing"; exit 1; }
 grep -q "/llll guard" SKILL.md && echo "PASS: /llll guard command" || { echo "FAIL: /llll guard missing"; exit 1; }
 grep -q "/llll review" SKILL.md && echo "PASS: /llll review command" || { echo "FAIL: /llll review missing"; exit 1; }
+grep -q "OBSERVATION STORAGE" SKILL.md && echo "PASS: Observation Storage section" || { echo "FAIL: Observation Storage section missing"; exit 1; }
+grep -q "LLLL does not save" SKILL.md && echo "PASS: No-auto-save policy declared" || { echo "FAIL: No-auto-save policy missing"; exit 1; }
+grep -q "\.llll/scratch" SKILL.md && echo "PASS: Scratch directory documented" || { echo "FAIL: Scratch directory missing"; exit 1; }
+grep -q "DO_NOT_UPLOAD" SKILL.md && echo "PASS: Do-not-upload marker documented" || { echo "FAIL: Do-not-upload marker missing"; exit 1; }
+grep -qE "MCP" SKILL.md && grep -qE "Pro.*Team|Team.*Pro" SKILL.md && echo "PASS: Pro/Team MCP roadmap documented" || { echo "FAIL: Pro/Team MCP roadmap missing"; exit 1; }
+grep -q "mtime +90" SKILL.md && echo "PASS: Cleanup reminder (90-day) documented" || { echo "FAIL: Cleanup reminder missing"; exit 1; }
+grep -qE "append \`-S\`|\`-S\` flag|pre-save gates verify" SKILL.md && { echo "FAIL: -S flag reference still present"; exit 1; } || echo "PASS: -S flag fully removed"
+grep -q "auditable history" SKILL.md && { echo "FAIL: 'auditable history' language still present"; exit 1; } || echo "PASS: Overclaim language removed"
+grep -q "ephemeral" SKILL.md && echo "PASS: Ephemeral language present" || { echo "FAIL: Ephemeral language missing"; exit 1; }
+grep -q "allowed-tools: Read, Grep, Glob, Bash$" SKILL.md && echo "PASS: allowed-tools reverted (no Write)" || { echo "FAIL: allowed-tools still has Write"; exit 1; }
+grep -q "data controller" SKILL.md && echo "PASS: Personal data / data-controller warning (H1)" || { echo "FAIL: H1 personal data warning missing"; exit 1; }
+grep -q "GDPR Art" SKILL.md && echo "PASS: GDPR articles cited (H1)" || { echo "FAIL: H1 GDPR citations missing"; exit 1; }
+grep -q "Gitignore integrity check" SKILL.md && echo "PASS: Runtime gitignore check documented (H2)" || { echo "FAIL: H2 gitignore check missing"; exit 1; }
+grep -q "git check-ignore -q \.llll/" SKILL.md && echo "PASS: Gitignore check command specified (H2)" || { echo "FAIL: H2 check command missing"; exit 1; }
+grep -q "GITIGNORE_MISSING" SKILL.md && echo "PASS: Gitignore warning render flag (H2)" || { echo "FAIL: H2 render flag missing"; exit 1; }
 
 # No internal files accidentally tracked
 LEAKED=$(git ls-files | grep -iE "(Competitive_Analysis|Full_Analysis|AGENT_PROMPT|MCP_analysis)" || true)
