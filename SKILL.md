@@ -248,13 +248,15 @@ Deep (`/llll deep`) is a command mode, not a tier. It is available to all users.
 
 ### Pro (Coming Soon)
 - Same content visibility as Basic
-- MCP integration for cross-session state persistence
+- **MCP-backed auto-save**: automatic encrypted persistence of LLLL analyses via an MCP server, with server-side redaction, retention policies, and client-side encryption (free tier stays stateless by design — v5.0 LLLL does not write to disk)
+- Cross-session state and project compliance history
 - Project personalization and compliance profiles
 - Custom scan patterns
 - LLLL Guard: semantic diff analysis, policy mapping
 
 ### Team (Coming Soon)
 - Same content visibility as Basic
+- **MCP-backed shared observation history** with team-wide redaction policies, role-based access, and centralized retention
 - Team compliance dashboards
 - Multi-user role-based access
 - Shared compliance history
@@ -766,6 +768,134 @@ When feature planning outputs involve:
 
 ---
 
+## OBSERVATION STORAGE
+
+**LLLL does not save analysis output to disk.** All outputs are ephemeral — they exist in your Claude Code conversation and nowhere else. There is no save flag, no pre-save gate, no auto-persistence, no file written by LLLL anywhere. This is intentional for v5.0.
+
+This section documents:
+1. Why LLLL stays stateless in the free tier
+2. A recommended workflow if you want to manually keep an analysis
+3. The designated **do-not-upload** local directory (`.llll/scratch/`) for user-managed archives
+4. A stateless periodic cleanup reminder LLLL surfaces without ever touching your files
+5. The roadmap for automatic observation persistence (Pro/Team tier, via MCP)
+6. How this relates to `/llll guard`'s own persistence
+
+### Why no auto-save in v5.0
+
+Earlier design iterations explored auto-save with pre-save redaction gates and opt-in flags. Both were abandoned because plaintext persistence of `/llll scan` findings — even with redaction — creates an aggregated on-disk record of secrets and vulnerabilities that is itself a high-value target. The cleanest defense is not to persist at all in the free tier. Persistence is a product feature that belongs in a paid tier where it can be done properly (server-side redaction, encryption at rest, retention policies, integrity guarantees) — see the Pro/Team roadmap below.
+
+### Recommended workflow if you want to keep an analysis
+
+You have three options, all **manual**, all **user-controlled**:
+
+1. **Copy-paste**: the analysis is rendered in your Claude Code conversation — copy it to wherever you want
+2. **Shell redirect**: pipe terminal output to a file outside of LLLL itself (your shell, not the skill)
+3. **Manual scratch directory**: save to the designated local-only `.llll/scratch/` directory (see below)
+
+LLLL plays no role in any of these — the skill never uses the `Write` tool and is not granted write permission in `allowed-tools`.
+
+### `.llll/scratch/` — the designated do-not-upload directory
+
+If you manually archive LLLL analyses, the recommended path is `.llll/scratch/` in your project root. This path is:
+
+- **Gitignored**: the `.llll/` entry in this repo's `.gitignore` covers it (verify your own project's `.gitignore` has `.llll/` too)
+- **Hidden**: leading dot reduces accidental discovery, indexing, and cloud-sync agent visibility
+- **Consistent with `.llll/logs/guard-log.jsonl`**: one hidden root for all LLLL local artifacts
+- **Never touched by LLLL itself**: files only exist because **you** put them there
+
+**You are responsible for:**
+
+- Creating the directory yourself (LLLL does not)
+- Setting owner-only permissions (`0700` dir, `0600` files)
+- Dropping in a `DO_NOT_UPLOAD.txt` marker so the directory's purpose is visible at a glance
+- Verifying your project root is NOT inside iCloud Drive / Dropbox / OneDrive / Google Drive / `~/Documents` (macOS with iCloud Desktop+Documents enabled)
+- Enabling full-disk encryption on your machine (macOS FileVault, Linux LUKS, Windows BitLocker)
+- Redacting any sensitive content **before** saving — LLLL provides no runtime redaction in v5.0
+- Cleaning up files you no longer need
+
+### Setup (run once per project, if you choose to use scratch)
+
+```bash
+install -d -m 0700 .llll/scratch
+cat > .llll/scratch/DO_NOT_UPLOAD.txt <<'EOF'
+This directory contains local-only LLLL analysis records.
+
+DO NOT upload, share, sync, or commit any file in this directory.
+- .llll/ must be in .gitignore (verify with: git check-ignore .llll/)
+- Verify this project is NOT inside iCloud, Dropbox, OneDrive, Google Drive
+- Files may contain sensitive compliance findings, vulnerability details,
+  or dependency inventories. Treat as confidential local-only artifacts.
+EOF
+chmod 0600 .llll/scratch/DO_NOT_UPLOAD.txt
+```
+
+The `DO_NOT_UPLOAD.txt` marker is the **visible tag** — anyone opening the directory sees the purpose declaration immediately. Combined with the hidden path and the `.gitignore` coverage, this gives the directory multiple redundant "do-not-upload" signals: the path itself, the marker file, the gitignore entry, and this spec.
+
+LLLL does not run these commands for you. Copy-paste them into your shell once per project.
+
+### Periodic cleanup reminder (stateless)
+
+When LLLL is invoked, it performs this read-only check before producing any analysis:
+
+```bash
+if [ -d .llll/scratch ]; then
+  STALE=$(find .llll/scratch -maxdepth 1 -type f -mtime +90 2>/dev/null | wc -l | tr -d ' ')
+fi
+```
+
+**Rendering rule:** if `STALE > 0` **and** this is the first LLLL output in the current conversation (judged from Claude's conversation context — no prior LLLL output visible), insert a single line at the top of the output, directly after the registration hint (or after the `Output Mode:` line for registered users):
+
+```
+> 🧹 .llll/scratch/ has N files older than 90 days — consider: find .llll/scratch -mtime +90 -delete
+```
+
+**The reminder is strictly informational:**
+
+- LLLL **never deletes**, moves, or modifies any file in `.llll/scratch/`
+- The reminder appears **once per session** — subsequent LLLL outputs in the same conversation do not repeat it
+- The reminder is skipped when `.llll/scratch/` does not exist, or contains no files older than 90 days
+- The user chose to save these files, so the user decides when to clean them up
+
+This is the closest approximation to "periodic reminder" that works in a stateless skill — session-level throttling via conversation context, not cross-session state.
+
+### `/llll guard` has its own persistence — not affected by this section
+
+`/llll guard` writes to `.llll/logs/guard-log.jsonl` — an append-only JSONL audit log for override tracking. That persistence is **part of Guard's own mechanism** and is unaffected by this section. Guard logs are:
+
+- Always written when Guard is invoked (not opt-in, not user-controlled — Guard's job is override accountability, so its log is a required side effect of using Guard)
+- Structured JSONL, not markdown
+- Intended for override accountability and compliance audit, not user-facing record-keeping
+- Written by Guard-specific logic, not by this Observation Storage spec
+
+This section is specifically about **analysis output** (from `/llll`, `/llll deep`, `/llll scan`, etc.). Guard's own behavior is defined in the `/llll guard` section and is independent.
+
+### What LLLL itself never does (v5.0)
+
+- Never writes any observation, analysis, or session record to disk
+- Never creates `.llll/scratch/` for you
+- Never modifies `.gitignore`
+- Never deletes, moves, or renames any file in `.llll/scratch/`
+- Never reads the **contents** of `.llll/scratch/` files (only counts stale ones via `find`, for the cleanup reminder)
+- Never transmits analysis output to any remote service
+
+The skill's `allowed-tools` is deliberately `Read, Grep, Glob, Bash` — **`Write` is not listed**, so the skill cannot write files even if asked. This is the tool-layer enforcement of the no-write policy.
+
+### Auto-save roadmap (Pro/Team tier, via MCP)
+
+Automatic observation persistence is planned for **Pro/Team tiers** and will be delivered through an **MCP (Model Context Protocol) server** rather than bolted into the free-tier skill. The MCP approach enables what the free tier cannot do safely:
+
+- **Server-side redaction** — secrets never touch the client at all
+- **Encryption at rest** — not plaintext markdown
+- **Retention policies** — automatic rotation, not user-managed
+- **Cross-session state** — project compliance history, trend tracking, diff detection over time
+- **Integrity guarantees** — append-only logs with hash chains for compliance evidence
+- **Team workflows** — role-based access, reviewer handoff, shared observation history
+- **GRC feed integration** — structured storage optimized for dashboard queries
+
+Until the MCP layer ships, v5.0 LLLL remains deliberately stateless. `.llll/scratch/` is a **user-managed workaround**, not a LLLL feature — the product answer for persistence is the MCP server.
+
+---
+
 ## MANDATORY NEXT STEPS MENU
 
 **HARD RULE: Every LLLL output MUST end with the Next steps menu. No exceptions.**
@@ -1050,7 +1180,7 @@ Coming Soon:
 - 🔜 **Pro** — MCP integration, project personalization, custom scans
 - 🔜 **Team** — compliance dashboards, multi-user access, CI gates
 
-> No compliance data leaves your environment. LLLL runs locally in Claude Code.
+> No compliance data leaves your environment. LLLL runs locally in Claude Code. Outputs are ephemeral — LLLL does not save to disk. Auto-save is planned for Pro/Team via an MCP server.
 ```
 
 ---
@@ -1137,9 +1267,9 @@ Human compliance expert or legal professional review is recommended.
 ### Data handling notice
 
 **All users (v5.0):**
-> No compliance data leaves your environment. LLLL runs locally in Claude Code.
+> No compliance data leaves your environment. LLLL runs locally in Claude Code. **Outputs are ephemeral** — LLLL does not save anything to disk. If you want to keep an analysis for your own records, the recommended workflow is to manually place it under `.llll/scratch/` in your project root — a user-managed, gitignored, local-only directory LLLL never writes to. LLLL periodically reminds you to prune old files but never creates, modifies, or deletes files on your behalf.
 
-Pro/Team features (coming soon) will include optional encrypted cloud storage for cross-session compliance tracking.
+Pro/Team features (coming soon) will add automatic observation persistence via an MCP server — with server-side redaction, encryption at rest, retention policies, and cross-session state. v5.0 stays stateless by design.
 
 ### Mandatory output tail (every LLLL output must end with this sequence)
 
@@ -1255,6 +1385,16 @@ Output Mode: LLLL Unregistered
 ```
 
 Never block usage. This is a soft suggestion only.
+
+**Cleanup reminder placement (stateless, once per session):**
+
+On the **first LLLL output in the current conversation** (judged from Claude's conversation context — no prior LLLL output visible), if `.llll/scratch/` exists and contains files older than 90 days, a single line appears directly after the registration hint (or after the `Output Mode:` line for registered users):
+
+```
+> 🧹 .llll/scratch/ has N files older than 90 days — consider: find .llll/scratch -mtime +90 -delete
+```
+
+The reminder is informational; LLLL never deletes files. It does not appear on subsequent LLLL outputs in the same session, and it does not appear when `.llll/scratch/` does not exist or contains no stale files. See the `OBSERVATION STORAGE` section for details.
 
 ### Registered user CTA (end-of-menu, context-sensitive)
 
