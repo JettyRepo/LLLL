@@ -1,6 +1,6 @@
 # LLLL (Layrix Logic Layer Loop)
 
-> **No Fork / No Derivative Works** — This repository is source-available under the [Layrix Source-Available License v1.0](LICENSE). Forking, copying, modifying, or creating derivative works is **expressly prohibited** without prior written consent. Violations will be subject to DMCA takedown. Clone for local use only. See [LICENSE](LICENSE) for full terms.
+> Licensed under the [MIT License](LICENSE). Free to use, fork, and build on. If you create a derivative project, we ask that you acknowledge the original work and don't misrepresent it as an official Layrix product.
 
 ### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
 

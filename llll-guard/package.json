@@ -24,7 +24,7 @@
     "layrix"
   ],
   "author": "Layrix",
-  "license": "SEE LICENSE IN ../LICENSE",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^5.4.0",
     "commander": "^13.0.0",
