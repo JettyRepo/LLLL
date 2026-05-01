@@ -5,16 +5,15 @@
 ### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
 
 ```bash
-# Step 1 — Install LLLL
-git clone https://github.com/JettyRepo/LLLL.git ~/.llll
+# Step 1 — Install LLLL (Claude Code)
+git clone https://github.com/JettyRepo/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
+# Restart Claude Code → type /llll
 
-# Step 2 — Connect to your AI coding tool
-~/.llll/install-claude-code.sh   # Claude Code
-# Opencode and Codex CLI support coming soon
-
-# Step 3 — Auto-block on every git push (optional, per-project)
+# Step 2 — Auto-block on every git push (optional, per-project)
 # Runs without AI — complements /llll guard push
 cd /your/project && ~/.llll/guard install-hook
+
+# Opencode and Codex CLI support coming soon
 ```
 
 **Pre-push compliance gate — optional, per-project**
@@ -100,18 +99,10 @@ AI Governance Professional (AIGP) certification preparation.
 
 ## Installation
 
-### Step 1 — Clone LLLL
+### Step 1 — Install LLLL (Claude Code)
 
 ```bash
-git clone https://github.com/JettyRepo/LLLL.git ~/.llll
-```
-
-### Step 2 — Connect to your AI coding tool
-
-**Claude Code**
-
-```bash
-~/.llll/install-claude-code.sh
+git clone https://github.com/JettyRepo/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
 ```
 
 Creates a symlink `~/.claude/skills/llll → ~/.llll` so Claude Code auto-discovers LLLL. Restart Claude Code, then use `/llll` immediately.
