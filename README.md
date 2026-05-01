@@ -5,8 +5,13 @@
 ### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
 
 ```bash
-# Install LLLL
+# Install LLLL (works with Claude Code, opencode, and Codex CLI)
 git clone https://github.com/JettyRepo/LLLL.git ~/.claude/skills/llll
+
+# Configure your AI coding tool
+~/.claude/skills/llll/install-opencode.sh   # opencode
+~/.claude/skills/llll/install-codex.sh      # Codex CLI
+# Claude Code: auto-discovered, no extra step needed
 
 # Activate pre-push compliance gate in your project
 cd /your/project && ~/.claude/skills/llll/guard install-hook
@@ -91,15 +96,36 @@ AI Governance Professional (AIGP) certification preparation.
 
 ## Installation
 
-### 1. Install LLLL Skill (compliance engine)
+### Step 1 — Clone LLLL
 
 ```bash
 git clone https://github.com/JettyRepo/LLLL.git ~/.claude/skills/llll
 ```
 
-That's it — LLLL is now available as `/llll` in Claude Code.
+### Step 2 — Configure your AI coding tool
 
-### 2. Install pre-push hook (optional — in your project repo)
+**Claude Code** — auto-discovered from `~/.claude/skills/`. No further setup needed. Use `/llll` immediately.
+
+**opencode**
+
+```bash
+~/.claude/skills/llll/install-opencode.sh
+# Existing config? Add --merge flag (requires jq)
+```
+
+Adds the `llll` agent and `/llll` command to `~/.config/opencode/config.json`.
+
+**Codex CLI**
+
+```bash
+~/.claude/skills/llll/install-codex.sh
+```
+
+Appends LLLL behavior to `~/.codex/AGENTS.md`. Idempotent — safe to re-run.
+
+### Step 3 — Activate pre-push compliance gate (optional)
+
+Run once in any project repo:
 
 ```bash
 cd /your/project
@@ -108,17 +134,29 @@ cd /your/project
 
 Every `git push` will now be scanned automatically. Secrets and policy-relevant changes are blocked before they leave the machine.
 
+To uninstall: `rm /your/project/.git/hooks/pre-push`
+
+### Guard commands (available anywhere after install-hook)
+
+```bash
+~/.claude/skills/llll/guard push              # scan outgoing commits
+~/.claude/skills/llll/guard release           # scan release artifacts
+~/.claude/skills/llll/guard override PG-S004 "justification"
+```
+
 ## File Structure
 
 ```
-SKILL.md                        — Core skill definition, embedded layer architecture, mode system
+SKILL.md                        — Core skill definition, mode system, visibility model, all /llll commands
 compliance-checklist-master.md  — Master compliance rule library (domains A-O, 15 domains)
 checklist-schema.md             — Intake schema aligned with master domains
 output-templates.md             — Output templates for all modes and visibility levels
 examples.md                     — Usage examples including passive activation and continuous compliance
 scan-patterns.md                — Reference data for /llll scan
-guard-patterns.md               — Detection rules for /llll guard push and release
-guard                           — LLLL Guard shell script (push/release compliance gate)
+guard-patterns.md               — Detection rules for guard push and release
+guard                           — LLLL Guard (push/release compliance gate shell script)
+install-opencode.sh             — opencode integration installer
+install-codex.sh                — Codex CLI integration installer
 ```
 
 ## Architecture
@@ -174,7 +212,7 @@ LLLL is powered by AI and is part of the Layrix Compliance OS. All outputs are g
 - **Incomplete coverage.** LLLL may miss applicable regulations, misclassify risk levels, or fail to detect gaps.
 - **No guarantee of accuracy.** A diagnosis of "no gaps found" does not mean no gaps exist.
 - **Prompt injection risk.** LLLL reads project files as input context. Malicious content in scanned files could attempt to manipulate compliance outputs.
-- **Model dependency.** LLLL runs on Claude and inherits its capabilities and limitations.
+- **Model dependency.** LLLL runs on Claude (Claude Code), GPT (Codex CLI), or the model configured in opencode, and inherits that model's capabilities and limitations.
 - **No state persistence.** LLLL does not retain analysis history between sessions. (Pro: cross-session state persistence via encrypted cloud storage is planned.)
 - **Data handling.** No compliance data leaves your local environment. LLLL runs locally in Claude Code.
 
