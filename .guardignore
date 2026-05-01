@@ -6,3 +6,7 @@ llll-guard/tests/*.ts
 # Guard detection pattern definitions
 guard-patterns.md
 scan-patterns.md
+
+# Installer scripts — reference AI tool names as config strings, not API integrations
+install-opencode.sh
+install-codex.sh
