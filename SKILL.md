@@ -122,11 +122,14 @@ When new features are described during a session:
 
 ## CHECKLIST-DRIVEN ENGINE
 
-You MUST use the file:
+You MUST use the file `compliance-checklist-master.md` as your underlying compliance framework.
 
-`compliance-checklist-master.md`
+This file lives in the **same directory as this SKILL.md**, not in the user's project. When reading it, try these paths in order:
+1. `~/.llll/compliance-checklist-master.md` (canonical install location)
+2. `~/.claude/skills/llll/compliance-checklist-master.md` (Claude Code symlink)
+3. The directory containing this SKILL.md file
 
-as your underlying compliance framework.
+Do NOT attempt to read it from the user's project root — it is not there. If both paths fail, degrade gracefully using training-derived domain knowledge and note the limitation in your output.
 
 NEVER dump the entire checklist master unless explicitly requested.
 Surface only the domains and checks triggered by the current context.
@@ -374,7 +377,7 @@ Gap:
 
 ScanFinding:
 - finding_id (e.g. SEC-001, OWA-003, GIT-002)
-- pattern_source (scan-patterns.md reference)
+- pattern_source (Scan Patterns section ID, e.g. SEC-001, OWA-003, GIT-002)
 - severity (Critical / High / Medium / Low)
 - domain_check (mapped checklist master ID)
 - location (file:line or command output)
@@ -509,13 +512,11 @@ Output:
 
 ### /llll scan — Automated Security and Hygiene Scan
 
-Scan patterns reference: `scan-patterns.md`
-
 This mode uses Bash, Grep, and Glob tools to perform concrete, executable security and hygiene checks against the actual codebase. Unlike other modes that reason about compliance posture, `/llll scan` produces findings backed by specific file locations and command outputs.
 
 MUST:
 1. Detect tech stack (check for package.json, requirements.txt, Cargo.toml, go.mod, Gemfile, Dockerfile)
-2. Run applicable scans from scan-patterns.md in this order:
+2. Run applicable scans from the inline patterns below in this order:
    a. Git hygiene checks (GIT-001 through GIT-007)
    b. Secret detection (SEC-001 through SEC-008)
    c. OWASP code pattern scan (OWA-001 through OWA-015)
@@ -524,7 +525,178 @@ MUST:
    f. Dockerfile security (if Dockerfile exists)
 3. Classify each finding by severity (Critical/High/Medium/Low) and map to domain check ID
 4. Identify which findings are auto-fixable
-5. Produce structured scan report per scan-patterns.md output structure
+5. Produce structured scan report per the Scan Output Structure subsection below
+
+#### Scan Patterns
+
+##### 1. Secret Detection Patterns
+
+Scan source code files (excluding node_modules, .git, vendor, dist, build directories) for hardcoded secrets.
+
+| Pattern ID | Regex Pattern | Description | Severity |
+|-----------|---------------|-------------|----------|
+| SEC-001 | `(?i)(api[_-]?key\|api[_-]?secret\|access[_-]?key)\s*[=:]\s*['"][A-Za-z0-9+/=]{16,}['"]` | Hardcoded API key assignment | Critical |
+| SEC-002 | `(?i)password\s*[=:]\s*['"][^'"]{4,}['"]` | Hardcoded password (excluding test files) | Critical |
+| SEC-003 | `AKIA[0-9A-Z]{16}` | AWS Access Key ID | Critical |
+| SEC-004 | `sk-[a-zA-Z0-9]{20,}` | OpenAI / Stripe secret key pattern | Critical |
+| SEC-005 | `ghp_[a-zA-Z0-9]{36}` | GitHub personal access token | Critical |
+| SEC-006 | `-----BEGIN (RSA\|DSA\|EC\|OPENSSH) PRIVATE KEY-----` | Private key in source | Critical |
+| SEC-007 | `(?i)(database_url\|db_password\|db_pass)\s*[=:]\s*['"][^'"]+['"]` | Database credential | Critical |
+| SEC-008 | `(?i)bearer\s+[a-zA-Z0-9._\-]{20,}` | Hardcoded bearer token | High |
+
+Exclude from scanning: `*.md`, `*.txt`, `*.lock`, `*.sum`, test fixtures explicitly named as examples.
+
+##### 2. OWASP Code Pattern Scan
+
+Scan application source code for common vulnerability patterns.
+
+| Pattern ID | Regex Pattern | Language | Vulnerability | Severity | Domain Check |
+|-----------|---------------|----------|---------------|----------|-------------|
+| OWA-001 | `\beval\s*\(` | JS/Python | Code injection | Critical | B5 |
+| OWA-002 | `\bexec\s*\(` | Python | Command injection | Critical | B5 |
+| OWA-003 | `child_process\.(exec\|execSync)\s*\(` | Node.js | Command injection | Critical | B5 |
+| OWA-004 | `os\.system\s*\(` | Python | Command injection | Critical | B5 |
+| OWA-005 | `subprocess\.(call\|run\|Popen)\s*\(.*shell\s*=\s*True` | Python | Shell injection | Critical | B5 |
+| OWA-006 | `innerHTML\s*=` | JS | DOM XSS | High | B6 |
+| OWA-007 | `dangerouslySetInnerHTML` | React | XSS via raw HTML | High | B6 |
+| OWA-008 | `v-html\s*=` | Vue | XSS via raw HTML | High | B6 |
+| OWA-009 | `\$\{.*\}.*(?:SELECT\|INSERT\|UPDATE\|DELETE\|DROP)` | JS/TS | SQL injection via template literal | Critical | B5 |
+| OWA-010 | `f".*(?:SELECT\|INSERT\|UPDATE\|DELETE\|DROP).*\{` | Python | SQL injection via f-string | Critical | B5 |
+| OWA-011 | `".*(?:SELECT\|INSERT\|UPDATE\|DELETE).*"\s*%` | Python | SQL injection via % formatting | Critical | B5 |
+| OWA-012 | `(?i)document\.write\s*\(` | JS | DOM manipulation XSS | High | B6 |
+| OWA-013 | `(?i)(md5\|sha1)\s*\(` | Any | Weak hashing algorithm | High | B7 |
+| OWA-014 | `(?i)DEBUG\s*=\s*(True\|true\|1\|"true")` | Any | Debug mode enabled | High | B8 |
+| OWA-015 | `(?i)Access-Control-Allow-Origin.*\*` | Any | Permissive CORS | Medium | B8 |
+
+##### 3. Git Hygiene Checks
+
+| Check ID | Command | What It Checks | Severity |
+|----------|---------|----------------|----------|
+| GIT-001 | `test -f .gitignore` | .gitignore file exists | High |
+| GIT-002 | `grep -q "\.env" .gitignore` | .env excluded from tracking | Critical |
+| GIT-003 | `git log --all --diff-filter=A -- '*.env' '.env.*'` | .env files never committed to history | Critical |
+| GIT-004 | `git log --all --diff-filter=A -- '*.pem' '*.key' 'id_rsa*'` | Private keys never committed | Critical |
+| GIT-005 | `gh api repos/{owner}/{repo}/branches/main/protection 2>/dev/null` | Branch protection on main | High |
+| GIT-006 | `test -f LICENSE` | LICENSE file exists | High |
+| GIT-007 | `test -f CODEOWNERS` | CODEOWNERS file exists | Low |
+
+##### 4. Dependency Audit Commands
+
+| Tech Stack | Audit Command | Lock File |
+|-----------|---------------|-----------|
+| Node.js (npm) | `npm audit --json 2>/dev/null` | `package-lock.json` |
+| Node.js (yarn) | `yarn audit --json 2>/dev/null` | `yarn.lock` |
+| Node.js (pnpm) | `pnpm audit --json 2>/dev/null` | `pnpm-lock.yaml` |
+| Python (pip) | `pip audit --format=json 2>/dev/null` | `requirements.txt` |
+| Python (pipenv) | `pipenv check --json 2>/dev/null` | `Pipfile.lock` |
+| Python (poetry) | `poetry audit 2>/dev/null` | `poetry.lock` |
+| Rust | `cargo audit --json 2>/dev/null` | `Cargo.lock` |
+| Go | `govulncheck ./... 2>/dev/null` | `go.sum` |
+| Ruby | `bundle audit check --format=json 2>/dev/null` | `Gemfile.lock` |
+
+If the audit command is not installed, report as: `NEEDS TECHNICAL CONFIRMATION — [tool] not installed. Install with [install command] and re-run scan.`
+
+##### 5. License Risk Scan
+
+| Tech Stack | License Command |
+|-----------|----------------|
+| Node.js | `npx license-checker --json --production 2>/dev/null` or parse `package.json` license fields |
+| Python | `pip-licenses --format=json 2>/dev/null` or parse metadata |
+| Rust | `cargo license --json 2>/dev/null` |
+| Go | `go-licenses report ./... 2>/dev/null` |
+
+**License Risk Classification**
+
+| License | Risk Level | Commercial Impact |
+|---------|-----------|------------------|
+| MIT, BSD-2, BSD-3, ISC, Unlicense | 🟢 Low | Permissive — no restrictions on commercial use |
+| Apache 2.0 | 🟢 Low | Permissive — patent grant included |
+| MPL-2.0 | 🟡 Medium | File-level copyleft — modified files must be shared |
+| LGPL-2.1, LGPL-3.0 | 🟡 Medium | Dynamic linking OK, static linking may trigger copyleft |
+| GPL-2.0, GPL-3.0 | 🔴 High | Strong copyleft — derivative works must use same license |
+| AGPL-3.0 | 🔴🔴 Critical | Network copyleft — SaaS/API use triggers disclosure obligation |
+| SSPL | 🔴🔴 Critical | Service-level copyleft — offering as a service triggers disclosure |
+| No license / Unknown | 🔴 High | Default copyright — cannot legally use, modify, or distribute |
+
+##### 6. Dockerfile Security Patterns
+
+If a Dockerfile exists, scan for common misconfigurations.
+
+| Pattern ID | Pattern | Issue | Severity |
+|-----------|---------|-------|----------|
+| DOC-001 | `^FROM .+:latest` | Using :latest tag (non-reproducible) | Medium |
+| DOC-002 | No `USER` instruction | Running as root | High |
+| DOC-003 | `COPY .env` or `ADD .env` | Secrets in image layer | Critical |
+| DOC-004 | `ARG.*PASSWORD\|ARG.*SECRET\|ARG.*KEY` | Secrets as build args (visible in history) | High |
+| DOC-005 | No `.dockerignore` | Potential secret leakage into build context | Medium |
+
+##### 7. Scan Output Structure
+
+```
+## LLLL Scan Report
+
+Output Mode: LLLL [level]
+
+Scan target: [repository path]
+Scan time: [ISO 8601 timestamp]
+Tech stack: [detected technologies]
+
+### Findings Summary
+
+| Severity | Count | Auto-fixable |
+|----------|-------|-------------|
+| 🔴🔴 Critical | N | N |
+| 🔴 High | N | N |
+| 🟡 Medium | N | N |
+| 🟢 Low | N | N |
+
+### Layer 0 — Software Resilience
+
+[Git hygiene, version control, testing existence findings]
+
+### Layer 1 — Security Posture
+
+[Secret detection, OWASP patterns, dependency vulnerabilities, license risks]
+
+### Detailed Findings
+
+#### [FINDING-ID]: [Title]
+- **Severity:** [Critical/High/Medium/Low with indicator]
+- **Domain:** [N/O/B/C] — Check [ID]
+- **Location:** [file:line or command output]
+- **Description:** [What was found]
+- **Risk:** [What could go wrong]
+- **Fix:** [Specific remediation steps]
+- **Auto-fixable:** Yes/No
+- **Fix command:** `/llll fix [FINDING-ID]` (if auto-fixable)
+
+### Recommended Tools
+
+[For findings that require ongoing monitoring beyond Claude Code's session-based capability, recommend specific tools:]
+- Dependency monitoring: Dependabot (GitHub native), Snyk, Renovate
+- Secret scanning: GitHub Secret Scanning, GitLeaks, TruffleHog
+- SAST: SonarQube, Semgrep, CodeQL
+- Container scanning: Trivy, Grype
+- License compliance: FOSSA, Snyk License, WhiteSource
+
+### Coverage Confidence
+[Standard LLLL coverage confidence section]
+
+### Education Insight
+[Standard LLLL education insight]
+
+---
+⚠️ Disclaimer:
+This content is generated by AI and may be incomplete or inaccurate.
+Human compliance expert or legal professional review is recommended.
+
+Next:
+[1] /llll fix [highest-severity auto-fixable finding]
+[2] /llll scan (re-scan)
+[3] /llll grc (GRC dashboard)
+[4] /llll
+[5] /llll deep
+```
 
 Output:
 1. Scan metadata (target, time, tech stack)
@@ -670,8 +842,6 @@ Folding: No folding — the review request is always shown in full for all regis
 
 LLLL Guard adds compliance gates to the development workflow, preventing risky code, secrets, and policy-relevant changes from leaving the repository.
 
-Guard patterns reference: `guard-patterns.md`
-
 LLLL Guard operates at two gates:
 
 1. **Push Gate** — scans outgoing git diffs before push
@@ -693,7 +863,7 @@ Scans outgoing git changes before push.
 MUST:
 1. Identify commits being pushed (not yet on remote)
 2. Generate combined diff of outgoing changes using `git diff @{push}..HEAD` or `git diff origin/[branch]..HEAD`
-3. Scan added lines in diff against push gate rules in guard-patterns.md
+3. Scan added lines in diff against the Push Gate rules in the Guard Patterns subsection below
 4. Scan changed file paths against file pattern rules
 5. Classify each finding: HARD_BLOCK / SOFT_BLOCK / WARN
 6. Produce verdict
@@ -719,7 +889,7 @@ Scans release artifacts before npm publish or equivalent distribution.
 MUST:
 1. Run `npm pack --dry-run` (or equivalent) to list files that will be included in the release
 2. If `npm pack` is not available, scan the `dist/`, `lib/`, or `build/` directory
-3. Check file list against release gate rules in guard-patterns.md
+3. Check file list against the Release Gate rules in the Guard Patterns subsection below
 4. Scan file contents for secrets and source maps
 5. Verify package.json `"files"` or `.npmignore` whitelist exists
 6. Classify findings
@@ -753,6 +923,130 @@ Output:
 2. Justification recorded
 3. Updated verdict
 4. Warning: "This override is logged for compliance audit"
+
+#### Guard Patterns
+
+##### 1. Severity Model
+
+| Level | Meaning | Effect |
+|-------|---------|--------|
+| **HARD_BLOCK** | Must not leave the repository under any circumstances | Push/release blocked, no override allowed |
+| **SOFT_BLOCK** | Should not leave without policy review or explicit justification | Push/release blocked, overridable with `/llll override` |
+| **WARN** | Notable change that may need attention | Push/release proceeds, warning logged |
+| **PASS** | No issues detected | Push/release proceeds |
+
+##### 2. Push Gate — HARD_BLOCK Triggers
+
+These patterns in outgoing diffs trigger an automatic hard block. Scanned against added lines in the diff.
+
+| Pattern ID | Regex / Heuristic | Description | Category |
+|-----------|-------------------|-------------|----------|
+| PG-H001 | `AKIA[0-9A-Z]{16}` | AWS Access Key ID | secret |
+| PG-H002 | `sk-[a-zA-Z0-9]{20,}` | OpenAI / Stripe secret key | secret |
+| PG-H003 | `ghp_[a-zA-Z0-9]{36}` | GitHub personal access token | secret |
+| PG-H004 | `gho_[a-zA-Z0-9]{36}` | GitHub OAuth access token | secret |
+| PG-H005 | `-----BEGIN (RSA\|DSA\|EC\|OPENSSH) PRIVATE KEY-----` | Private key material | secret |
+| PG-H006 | `(?i)(api[_-]?key\|api[_-]?secret\|access[_-]?key)\s*[=:]\s*['"][A-Za-z0-9+/=]{16,}['"]` | Hardcoded API key assignment | secret |
+| PG-H007 | `(?i)(password\|passwd\|pwd)\s*[=:]\s*['"][^'"]{8,}['"]` | Hardcoded password (>8 chars) | secret |
+| PG-H008 | `(?i)(database_url\|db_password\|db_pass\|mongo_uri\|redis_url)\s*[=:]\s*['"][^'"]+['"]` | Database credential | secret |
+| PG-H009 | `(?i)bearer\s+[A-Za-z0-9\-._~+/]+=*` | Hardcoded bearer token | secret |
+| PG-H010 | New or modified `.env` file (not `.env.example`, `.env.template`, `.env.sample`) | Environment file with potential secrets | secret |
+| PG-H011 | Files matching `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*` | Private key files | secret |
+| PG-H012 | `\d{3}-\d{2}-\d{4}` | Social Security Number pattern | data |
+| PG-H013 | `\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}` | Credit card number pattern | data |
+| PG-H014 | Files matching `*Competitive_Analysis*`, `*Full_Analysis*`, `AGENT_PROMPT_*`, `MCP_analysis*` | Internal/competitive analysis files | internal |
+
+##### 3. Push Gate — SOFT_BLOCK Triggers
+
+| Pattern ID | Heuristic | Description | Category | Maps to Domain |
+|-----------|-----------|-------------|----------|----------------|
+| PG-S001 | New file upload endpoint, multipart handler, `multer`, `formidable`, `busboy` | Upload capability added without policy review | feature | G |
+| PG-S002 | New payment/billing/subscription code, `stripe`, `paypal`, `braintree`, pricing logic | Payment feature added without compliance review | feature | F |
+| PG-S003 | Age verification, minor/child references, `coppa`, `age_gate`, `parental_consent` | Minors-related feature | feature | M |
+| PG-S004 | New AI/ML model integration, LLM API call, `openai`, `anthropic`, `langchain`, model inference | AI feature added without transparency review | feature | I, J, K |
+| PG-S005 | New tracking/analytics/telemetry, `mixpanel`, `segment`, `amplitude`, `ga4`, pixel tracking | User tracking added without privacy review | feature | D |
+| PG-S006 | Geolocation/GPS/location access, `navigator.geolocation`, location permissions | Location data access without privacy review | feature | D |
+| PG-S007 | Biometric/facial recognition/fingerprint, `faceapi`, `fingerprint`, biometric auth | Biometric feature without policy review | feature | M |
+| PG-S008 | Profiling/scoring/ranking algorithm, credit scoring, risk assessment, eligibility logic | Automated decision without review | feature | J |
+| PG-S009 | New AGPL/GPL dependency added to package.json, requirements.txt, Cargo.toml, go.mod | Copyleft license risk introduced | license | O |
+| PG-S010 | Data retention changes, `TTL`, `expiry`, `retention`, `purge`, `delete_after` | Data lifecycle change without privacy review | feature | D |
+
+##### 4. Push Gate — WARN Triggers
+
+| Pattern ID | Heuristic | Description | Category |
+|-----------|-----------|-------------|----------|
+| PG-W001 | `TODO\|FIXME\|HACK\|XXX\|TEMP` in newly added lines | Unresolved markers in outgoing code | hygiene |
+| PG-W002 | `console\.log\|console\.debug\|print(\|debugger;` in production code (not test files) | Debug output in production code | hygiene |
+| PG-W003 | New dependency added to manifest (package.json, requirements.txt, etc.) | New dependency — review for license and security | dependency |
+
+##### 5. Release Gate — HARD_BLOCK Triggers
+
+| Pattern ID | Pattern | Description | Category |
+|-----------|---------|-------------|----------|
+| RG-H001 | `.env` file in release artifact | Secrets in release package | secret |
+| RG-H002 | `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*` in release | Private keys in release package | secret |
+| RG-H003 | Files matching secret patterns (PG-H001 through PG-H009) in release content | Embedded secrets in release artifacts | secret |
+| RG-H004 | `*.map` files in release artifact | Source maps expose original source code | leakage |
+| RG-H005 | Source map files with `sourcesContent` field populated | Full source code embedded in source maps | leakage |
+| RG-H006 | References to private archives, internal buckets (`s3://`, `gs://`, internal URLs) in release | Internal infrastructure references exposed | leakage |
+
+##### 6. Release Gate — SOFT_BLOCK Triggers
+
+| Pattern ID | Pattern | Description | Category |
+|-----------|---------|-------------|----------|
+| RG-S001 | `src/` directory in release artifact | Source code included in production package | leakage |
+| RG-S002 | `test/`, `tests/`, `__tests__/`, `spec/`, `*.test.*`, `*.spec.*` in release | Test files included in release | leakage |
+| RG-S003 | `internal/`, `private/` directories in release | Internal assets exposed in release | leakage |
+| RG-S004 | `prompts/`, `*.prompt`, `SKILL.md`, `system-prompt*` in release | Prompt files or skill definitions in release | leakage |
+| RG-S005 | `tools/`, `scripts/`, `Makefile`, `Taskfile*` in release | Development tooling in release package | leakage |
+| RG-S006 | No `.npmignore` AND no `"files"` field in package.json | No release whitelist policy | policy |
+| RG-S007 | Release artifact total size > 10MB without justification | Unusually large package | policy |
+
+##### 7. Exclusions
+
+**Push Gate Exclusions:** `*.md`, `*.txt`, `*.lock`, `*.sum`, `yarn.lock`, `package-lock.json`, `CHANGELOG*`, `CHANGES*`, `HISTORY*`, `LICENSE*`
+
+**Release Gate Exclusions:** `node_modules/`, `.git/`
+
+**User-Defined Exclusions:** Users can create a `.guardignore` file (gitignore-style syntax) to exclude additional files.
+
+##### 8. Guard Domain Mapping
+
+| Guard Finding | Recommended LLLL Command | Triggered Domain |
+|--------------|--------------------------|------------------|
+| PG-S001 (uploads) | `/llll diff` | Domain G (UGC) |
+| PG-S002 (payments) | `/llll diff` | Domain F (Payments) |
+| PG-S003 (minors) | `/llll deep` | Domain M (Sensitive Sector) |
+| PG-S004 (AI) | `/llll diff` | Domains I, J, K (AI) |
+| PG-S005 (tracking) | `/llll diff` | Domain D (Privacy) |
+| PG-S006 (location) | `/llll diff` | Domain D (Privacy) |
+| PG-S007 (biometric) | `/llll deep` | Domain M (Sensitive Sector) |
+| PG-S008 (profiling) | `/llll diff` | Domain J (Automated Decisions) |
+| PG-S009 (copyleft) | `/llll scan` | Domain O (Licensing) |
+| PG-S010 (retention) | `/llll diff` | Domain D (Privacy) |
+
+##### 9. Override Rules
+
+- **HARD_BLOCK**: Cannot be overridden. Must fix before retrying.
+- **SOFT_BLOCK**: Overridable with `/llll override`. Requires finding ID, justification, actor, and timestamp. Logged to `.llll/logs/guard-log.jsonl`.
+
+##### 10. Guard Output Structure
+
+```
+┌────────────────────────────────────────┐
+│ LLLL Guard — Push Gate                 │
+│ Result: HARD_BLOCK                     │
+│ Findings: 2 HARD_BLOCK, 1 WARN        │
+│ Scanned: 3 commits, 12 files changed  │
+└────────────────────────────────────────┘
+
+[PG-H001] AWS Access Key Detected — HARD_BLOCK
+  File: src/config/aws.ts:42
+  Match: AKIA...EXAMPLE (redacted)
+  Category: secret
+  Action: Remove the key, use environment variable instead
+  Fix: /llll fix PG-H001
+```
 
 ---
 
@@ -810,7 +1104,7 @@ If you manually archive LLLL analyses, the recommended path is `.llll/scratch/` 
 - Dropping in a `DO_NOT_UPLOAD.txt` marker so the directory's purpose is visible at a glance
 - Verifying your project root is NOT inside iCloud Drive / Dropbox / OneDrive / Google Drive / `~/Documents` (macOS with iCloud Desktop+Documents enabled), AND not automatically indexed by system backup tools (Time Machine, Backblaze, Arq, rsync.net) unless you explicitly want those backups
 - Enabling full-disk encryption on your machine (macOS FileVault, Linux LUKS, Windows BitLocker)
-- Redacting any sensitive content **before** saving — LLLL provides no runtime redaction in v5.0. For `/llll scan` and `/llll fix` outputs, check your content against the SEC-001..SEC-008 regex patterns defined in `scan-patterns.md` (the same list LLLL uses for secret detection) before placing the file in `.llll/scratch/`
+- Redacting any sensitive content **before** saving — LLLL provides no runtime redaction in v5.0. For `/llll scan` and `/llll fix` outputs, check your content against the SEC-001..SEC-008 SEC-001..SEC-008 regex patterns defined in the `/llll scan` Scan Patterns subsection above (the same list LLLL uses for secret detection) before placing the file in `.llll/scratch/`
 - Cleaning up files you no longer need
 - **Treating files in `.llll/scratch/` as controlled personal data when applicable** — see the Personal Data subsection below
 

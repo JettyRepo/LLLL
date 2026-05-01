@@ -6,14 +6,20 @@
 
 ```bash
 # Step 1 — Install LLLL
-git clone https://github.com/JettyRepo/LLLL.git ~/.claude/skills/llll
-# Step 2 — Configure your AI coding tool
-# Claude Code: auto-discovered, no extra step needed
-~/.claude/skills/llll/install-opencode.sh   # opencode
-~/.claude/skills/llll/install-codex.sh      # Codex CLI
-# Step 3 — Activate pre-push compliance gate in your project
-cd /your/project && ~/.claude/skills/llll/guard install-hook
+git clone https://github.com/JettyRepo/LLLL.git ~/.llll
+
+# Step 2 — Connect to your AI coding tool
+~/.llll/install-claude-code.sh   # Claude Code
+# Opencode and Codex CLI support coming soon
+
+# Step 3 — Auto-block on every git push (optional, per-project)
+# Runs without AI — complements /llll guard push
+cd /your/project && ~/.llll/guard install-hook
 ```
+
+**Pre-push compliance gate — optional, per-project**
+
+Installs a git pre-push hook that runs automatically on every `git push`, without needing to invoke the AI. Complements `/llll guard push` (manual, AI-invoked) as an always-on safety net.
 
 > Every `git push` is now guarded. Leaked API keys, hardcoded credentials, and source maps are **blocked before they leave your machine**.
 >
@@ -97,29 +103,20 @@ AI Governance Professional (AIGP) certification preparation.
 ### Step 1 — Clone LLLL
 
 ```bash
-git clone https://github.com/JettyRepo/LLLL.git ~/.claude/skills/llll
+git clone https://github.com/JettyRepo/LLLL.git ~/.llll
 ```
 
-### Step 2 — Configure your AI coding tool
+### Step 2 — Connect to your AI coding tool
 
-**Claude Code** — auto-discovered from `~/.claude/skills/`. No further setup needed. Use `/llll` immediately.
-
-**opencode**
+**Claude Code**
 
 ```bash
-~/.claude/skills/llll/install-opencode.sh
-# Existing config? Add --merge flag (requires jq)
+~/.llll/install-claude-code.sh
 ```
 
-Adds the `llll` agent and `/llll` command to `~/.config/opencode/config.json`.
+Creates a symlink `~/.claude/skills/llll → ~/.llll` so Claude Code auto-discovers LLLL. Restart Claude Code, then use `/llll` immediately.
 
-**Codex CLI**
-
-```bash
-~/.claude/skills/llll/install-codex.sh
-```
-
-Appends LLLL behavior to `~/.codex/AGENTS.md`. Idempotent — safe to re-run.
+> Opencode and Codex CLI support coming soon.
 
 ### Step 3 — Activate pre-push compliance gate (optional)
 
@@ -127,19 +124,19 @@ Run once in any project repo:
 
 ```bash
 cd /your/project
-~/.claude/skills/llll/guard install-hook
+~/.llll/guard install-hook
 ```
 
 Every `git push` will now be scanned automatically. Secrets and policy-relevant changes are blocked before they leave the machine.
 
 To uninstall: `rm /your/project/.git/hooks/pre-push`
 
-### Guard commands (available anywhere after install-hook)
+### Guard commands (available anywhere)
 
 ```bash
-~/.claude/skills/llll/guard push              # scan outgoing commits
-~/.claude/skills/llll/guard release           # scan release artifacts
-~/.claude/skills/llll/guard override PG-S004 "justification"
+~/.llll/guard push              # scan outgoing commits
+~/.llll/guard release           # scan release artifacts
+~/.llll/guard override PG-S004 "justification"
 ```
 
 ## File Structure

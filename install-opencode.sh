@@ -2,20 +2,26 @@
 # LLLL installer for opencode
 # Usage: ./install-opencode.sh [--merge]
 #
-# Creates ~/.config/opencode/config.json with the LLLL agent and /llll command.
+# Copies LLLL data files to ~/.llll/opencode/ and creates (or merges into)
+# ~/.config/opencode/config.json with the LLLL agent and /llll command.
 # If the config already exists, prints the snippet to merge manually (or use --merge
 # to attempt an automatic merge with jq).
 
 set -euo pipefail
 
 INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_MD="$INSTALL_DIR/SKILL.md"
-CHECKLIST="$INSTALL_DIR/compliance-checklist-master.md"
-SCAN_PATTERNS="$INSTALL_DIR/scan-patterns.md"
-GUARD_PATTERNS="$INSTALL_DIR/guard-patterns.md"
+DATA_DIR="$HOME/.llll/opencode"
 CONFIG="$HOME/.config/opencode/config.json"
 MERGE=0
 [[ "${1:-}" == "--merge" ]] && MERGE=1
+
+# Copy data files to dedicated opencode directory
+mkdir -p "$DATA_DIR"
+cp "$INSTALL_DIR/SKILL.md"                       "$DATA_DIR/SKILL.md"
+cp "$INSTALL_DIR/compliance-checklist-master.md" "$DATA_DIR/checklist.md"
+cp "$INSTALL_DIR/scan-patterns.md"               "$DATA_DIR/scan-patterns.md"
+cp "$INSTALL_DIR/guard-patterns.md"              "$DATA_DIR/guard-patterns.md"
+echo "✓ Data files copied to $DATA_DIR"
 
 AGENT_BLOCK=$(cat << EOF
 {
@@ -30,7 +36,7 @@ EOF
 COMMAND_BLOCK=$(cat << EOF
 {
   "description": "LLLL — /llll [deep|checklist|brief|diff|scan|fix|grc|review|guard push|guard release]",
-  "template": "{file:${SKILL_MD}}\n\nActivate LLLL. User invoked: /llll \$ARGUMENTS\n\nDispatch to the correct mode based on the first word of the arguments:\n- (empty) → Diagnosis\n- deep → Deep Analysis\n- checklist → Checklist\n- brief → Expert Handoff Brief\n- diff → Feature vs Policy Coverage\n- scan → Automated Security Scan\n- fix [ID] → Fix mode\n- grc → GRC Dashboard\n- review → Human Expert Escalation\n- guard push → Pre-push compliance gate\n- guard release → Pre-release artifact scan\n- override [ID] [justification] → Override SOFT_BLOCK\n\nCompliance data:\n- Checklist: ${CHECKLIST}\n- Scan patterns: ${SCAN_PATTERNS}\n- Guard patterns: ${GUARD_PATTERNS}",
+  "template": "{file:${DATA_DIR}/SKILL.md}\n\nActivate LLLL. User invoked: /llll \$ARGUMENTS\n\nDispatch to the correct mode based on the first word of the arguments:\n- (empty) → Diagnosis\n- deep → Deep Analysis\n- checklist → Checklist\n- brief → Expert Handoff Brief\n- diff → Feature vs Policy Coverage\n- scan → Automated Security Scan\n- fix [ID] → Fix mode\n- grc → GRC Dashboard\n- review → Human Expert Escalation\n- guard push → Pre-push compliance gate\n- guard release → Pre-release artifact scan\n- override [ID] [justification] → Override SOFT_BLOCK\n\nCompliance data:\n- Checklist: ${DATA_DIR}/checklist.md\n- Scan patterns: ${DATA_DIR}/scan-patterns.md\n- Guard patterns: ${DATA_DIR}/guard-patterns.md",
   "agent": "llll",
   "subtask": true
 }
