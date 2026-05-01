@@ -10,3 +10,6 @@ scan-patterns.md
 # Installer scripts — reference AI tool names as config strings, not API integrations
 install-opencode.sh
 install-codex.sh
+
+# Guard script itself — contains detection pattern strings as source code
+guard
