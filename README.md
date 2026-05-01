@@ -5,14 +5,11 @@
 ### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
 
 ```bash
-# Install LLLL compliance engine
+# Install LLLL
 git clone https://github.com/JettyRepo/LLLL.git ~/.claude/skills/llll
 
-# Install LLLL Guard (blocks secrets and risky code before push)
-cd ~/.claude/skills/llll/llll-guard && npm install && npm run build && npm link
-
 # Activate pre-push compliance gate in your project
-cd /path/to/your/project && llll-guard install-hook
+cd /your/project && ~/.claude/skills/llll/guard install-hook
 ```
 
 > Every `git push` is now guarded. Leaked API keys, hardcoded credentials, and source maps are **blocked before they leave your machine**.
@@ -102,19 +99,11 @@ git clone https://github.com/JettyRepo/LLLL.git ~/.claude/skills/llll
 
 That's it — LLLL is now available as `/llll` in Claude Code.
 
-### 2. Install LLLL Guard CLI (optional — push/release compliance gate)
+### 2. Install pre-push hook (optional — in your project repo)
 
 ```bash
-cd ~/.claude/skills/llll/llll-guard
-npm install && npm run build
-npm link
-```
-
-### 3. Install pre-push hook (optional — in your project repo)
-
-```bash
-cd /path/to/your/project
-llll-guard install-hook
+cd /your/project
+~/.claude/skills/llll/guard install-hook
 ```
 
 Every `git push` will now be scanned automatically. Secrets and policy-relevant changes are blocked before they leave the machine.
@@ -129,7 +118,7 @@ output-templates.md             — Output templates for all modes and visibilit
 examples.md                     — Usage examples including passive activation and continuous compliance
 scan-patterns.md                — Reference data for /llll scan
 guard-patterns.md               — Detection rules for /llll guard push and release
-llll-guard/                     — Node.js CLI for push/release compliance gates
+guard                           — LLLL Guard shell script (push/release compliance gate)
 ```
 
 ## Architecture
