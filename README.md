@@ -5,15 +5,13 @@
 ### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
 
 ```bash
-# Install LLLL (works with Claude Code, opencode, and Codex CLI)
+# Step 1 — Install LLLL
 git clone https://github.com/JettyRepo/LLLL.git ~/.claude/skills/llll
-
-# Configure your AI coding tool
+# Step 2 — Configure your AI coding tool
+# Claude Code: auto-discovered, no extra step needed
 ~/.claude/skills/llll/install-opencode.sh   # opencode
 ~/.claude/skills/llll/install-codex.sh      # Codex CLI
-# Claude Code: auto-discovered, no extra step needed
-
-# Activate pre-push compliance gate in your project
+# Step 3 — Activate pre-push compliance gate in your project
 cd /your/project && ~/.claude/skills/llll/guard install-hook
 ```
 
