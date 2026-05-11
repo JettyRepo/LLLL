@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Layrix — La couche de conformité intégrée pour l'ère de l'IA</title>
+<meta name="description" content="L'IA construit du logiciel à la vitesse de la lumière. Layrix le garde livrable — une couche de conformité intégrée pour le développement à l'ère de l'IA." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../site-shared.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="../site-chrome.jsx"></script>
+<script type="text/babel">
+const ink='var(--ink)', paper='var(--paper)', paper2='var(--paper-2)', muted='var(--muted)', rule='var(--rule)', accent='var(--accent)';
+
+function Hero() {
+  return (
+    <section style={{ padding: '88px clamp(20px, 5vw, 56px) 0', textAlign:'center' }}>
+      <div className="marq-tag">
+        <span className="marq-dot" style={{ width:6, height:6, borderRadius:3, background:accent, display:'inline-block' }} />
+        Layrix · Plateforme de conformité IA · 2026
+      </div>
+      <h1 style={{ fontFamily:'var(--display)', fontWeight:500, fontSize:'clamp(56px, 9vw, 144px)', lineHeight:0.92, letterSpacing:'-0.05em', margin:'40px auto 0', maxWidth: 1200 }}>
+        L'IA construit vite.<br/>
+        <span style={{ fontStyle:'italic', color: accent }}>Layrix garde le tout livrable.</span>
+      </h1>
+      <p style={{ fontSize:19, lineHeight:1.6, color:muted, maxWidth: 760, margin:'40px auto 0' }}>
+        Une couche de conformité intégrée pour le développement à l'ère de l'IA. Le moteur <strong style={{ color: ink }}>LLLL</strong>, l'<strong style={{ color: ink }}>évaluation par des experts</strong>, et la <strong style={{ color: ink }}>préparation AIGP</strong> — dans une même plateforme.
+      </p>
+      <div style={{ display:'flex', gap:12, justifyContent:'center', marginTop: 40, flexWrap:'wrap' }}>
+        <a className="marq-cta marq-link" href="../LLLL.html" style={{ padding:'16px 28px', background:ink, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Découvrir LLLL →</a>
+        <a className="marq-cta marq-link" href="../AIGP.html" style={{ padding:'16px 28px', border:`1px solid ${ink}`, color:ink, fontSize:14, fontWeight:500, borderRadius:999 }}>Préparation AIGP</a>
+      </div>
+    </section>
+  );
+}
+
+function Products() {
+  const items = [
+    ['Moteur', 'LLLL', 'Tapez /llll sur une fonctionnalité, un PRD, un dépôt — recevez les domaines déclenchés, les écarts fichier:ligne, les actions assignées, et le mémo prêt pour le juriste.', '../LLLL.html', 'Voir le moteur →'],
+    ['Service humain', 'Évaluation par des experts', "Quand l'enjeu est élevé — un lancement réglementé, un audit de conseil — un spécialiste de Layrix lit votre code et vous dit ce que la machine a manqué.", '../Experts.html', 'Demander un devis →'],
+    ['Habilitation', 'Préparation AIGP', "Un système de préparation d'examen complet : 500+ points de connaissance dans six modes d'apprentissage interconnectés. 200 $ une seule fois.", '../AIGP.html', "Voir le contenu →"],
+  ];
+  return (
+    <SectionRow idx="01" kicker="La plateforme · trois piliers"
+      title={<>Une stratégie. <span style={{ fontStyle:'italic', color: accent }}>Trois pratiques.</span></>}
+      lead="Le moteur trouve. Les humains tranchent. La formation prépare l'équipe à les utiliser tous les deux.">
+      <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:16, marginTop: 56 }}>
+        {items.map(([tag, h, b, href, cta]) => (
+          <a key={h} className="marq-card marq-link" href={href} style={{ display:'block', background: paper2, padding:'32px 28px', borderRadius:14, border:`1px solid ${rule}` }}>
+            <div className="marq-kicker">{tag}</div>
+            <h3 style={{ fontFamily:'var(--display)', fontSize: 32, fontWeight: 500, marginTop: 14, letterSpacing:'-0.025em', lineHeight: 1.1 }}>{h}</h3>
+            <p style={{ fontSize: 14.5, lineHeight: 1.6, color: muted, marginTop: 14 }}>{b}</p>
+            <div style={{ marginTop: 24, fontSize: 13, color: accent, fontWeight: 500 }}>{cta}</div>
+          </a>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function Why() {
+  return (
+    <SectionRow idx="02" kicker="Pourquoi maintenant"
+      title={<>Le code arrive plus vite que <span style={{ fontStyle:'italic', color: accent }}>les régulateurs.</span></>}
+      lead="Les outils d'IA générative produisent un volume de logiciel sans précédent. Les obligations — RGPD, Loi sur l'IA de l'UE, NIST AI RMF, lois sectorielles — ne suivent pas la cadence. Layrix comble cet écart : un contrôle continu, là où le code est écrit.">
+      <div style={{ marginTop: 48, background: ink, color: paper, padding: 'clamp(36px, 5vw, 64px)', borderRadius: 16 }}>
+        <p style={{ fontFamily:'var(--display)', fontSize: 'clamp(24px, 3vw, 40px)', fontWeight: 400, lineHeight: 1.35, letterSpacing:'-0.02em', maxWidth: 980 }}>
+          « Ce qui vous fait <em style={{ color: accent }}>poursuivre, sanctionner ou retirer du App Store</em> — détecté avant que le code ne quitte votre machine. »
+        </p>
+      </div>
+    </SectionRow>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <Header current="home" langHref="../index.html" langActive="FR" langOther="EN" />
+      <Hero />
+      <Products />
+      <Why />
+      <Footer extra={<p style={{ marginTop: 16, fontSize: 11, color: muted, lineHeight: 1.6 }}>Caerus Enterprises Inc. · 1045 Howe St, Vancouver, BC V6Z 2A9, Canada</p>} />
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
