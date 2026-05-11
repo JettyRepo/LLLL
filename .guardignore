@@ -13,3 +13,6 @@ install-codex.sh
 
 # Guard script itself — contains detection pattern strings as source code
 guard
+
+# Claude Design source archive — frozen design exports, not production code
+design-source/**
