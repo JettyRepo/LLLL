@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Expert Review · Layrix</title>
+<meta name="description" content="Human review for the things LLLL can't sign off on. Named senior practitioners — privacy law, AI governance, security engineering. Project-based, quoted per request." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="site-shared.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="site-chrome.jsx"></script>
+<script type="text/babel">
+const ink='var(--ink)', paper='var(--paper)', paper2='var(--paper-2)', muted='var(--muted)', rule='var(--rule)', rust='var(--rust)';
+
+function Hero() {
+  return (
+    <section style={{ padding: '88px clamp(20px, 5vw, 56px) 0', textAlign:'center' }}>
+      <div className="marq-tag" style={{ borderColor: rust, color: rust }}>Layrix Expert Review</div>
+      <h1 style={{ fontFamily:'var(--display)', fontWeight:500, fontSize:'clamp(56px, 8vw, 124px)', lineHeight:0.95, letterSpacing:'-0.045em', margin:'36px auto 0', maxWidth: 1200 }}>
+        Human review for<br/><span style={{ fontStyle:'italic', color: rust }}>the things LLLL can't sign off on.</span>
+      </h1>
+      <p style={{ fontSize:19, lineHeight:1.6, color:muted, maxWidth: 760, margin:'40px auto 0' }}>
+        When the stakes are high — a regulated launch, a board audit, a contract clause that an automated tool cannot reason about — a Layrix specialist reads your code and tells you what the machine missed.
+      </p>
+      <a className="marq-cta marq-link" href="mailto:review@layrix.ai?subject=Expert%20Review%20Request" style={{ display:'inline-block', marginTop: 40, padding:'16px 28px', background:ink, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Request a quote →</a>
+    </section>
+  );
+}
+
+function Steps() {
+  const steps = [
+    ['Step 01', 'Submit', 'Based on your findings, use /llll brief to generate the handoff document — project summary, observed signals, missing evidence, open legal questions. Send it to us.'],
+    ['Step 02', 'Quote', 'Within two business days we return a quote with a defined scope, a deliverable, and a turnaround date. Only after you accept the quote do we ask for code or supporting evidence.'],
+    ['Step 03', 'Deliver', 'Our specialists review the code and materials, write a structured report, and walk you through it on a 30-minute call. You receive the report as a watermarked PDF.'],
+  ];
+  return (
+    <SectionRow idx="01" kicker="How it works" tone={rust}
+      title={<>Three steps. <span style={{ fontStyle:'italic', color: rust }}>No surprises.</span></>}>
+      <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap: 0, marginTop: 56, border: `1px solid ${ink}`, borderRadius: 16, overflow:'hidden' }}>
+        {steps.map(([n, h, b], i) => (
+          <div key={n} style={{ padding: '36px 32px', background: paper2, borderLeft: i ? `1px solid ${rule}` : 'none' }}>
+            <div className="marq-kicker" style={{ color: rust }}>{n}</div>
+            <h3 style={{ fontFamily:'var(--display)', fontSize: 32, fontWeight: 500, marginTop: 14, letterSpacing:'-0.025em' }}>{h}</h3>
+            <p style={{ fontSize: 14.5, lineHeight: 1.65, color: muted, marginTop: 14 }}>{b}</p>
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function WhatGet() {
+  const items = [
+    ['Structured findings report', 'Issues, severity, citations to law and standard, recommended fixes mapped to specific lines of code.'],
+    ['30-minute walkthrough call', 'With the named specialist who reviewed your project. Ask anything; we explain in plain language.'],
+    ['One free re-review', 'Of a single revision after you have applied the recommended fixes — same engagement, no extra cost.'],
+    ['Watermarked delivery PDF', 'Tagged with your engagement ID for your audit trail. Yours to keep.'],
+  ];
+  return (
+    <SectionRow idx="02" kicker="What you get" tone={rust}
+      title={<>A report, a call, <span style={{ fontStyle:'italic', color: rust }}>and a second look.</span></>}>
+      <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap: '14px 32px', marginTop: 48 }}>
+        {items.map(([h, b]) => (
+          <div key={h} style={{ padding: '24px 0', borderTop: `1px solid ${rule}` }}>
+            <h4 style={{ fontFamily:'var(--display)', fontSize: 24, fontWeight: 500, marginBottom: 8, letterSpacing:'-0.02em' }}>{h}</h4>
+            <p style={{ fontSize: 14.5, color: muted, lineHeight: 1.6 }}>{b}</p>
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function Reviewers() {
+  return (
+    <SectionRow idx="03" kicker="Who reviews your code" tone={rust}
+      title={<>Named senior specialists. <span style={{ fontStyle:'italic', color: rust }}>Not a QA pool.</span></>}>
+      <div style={{ marginTop: 48, background: ink, color: paper, borderRadius: 16, padding: 'clamp(32px, 4vw, 48px)' }}>
+        <p style={{ fontFamily:'var(--display)', fontSize: 'clamp(22px, 2.4vw, 30px)', fontWeight: 400, lineHeight: 1.4, letterSpacing:'-0.015em', maxWidth: 920 }}>
+          Senior practitioners with backgrounds in <em style={{ color: 'var(--rust)' }}>privacy law</em>, <em style={{ color: 'var(--rust)' }}>AI governance</em>, and <em style={{ color: 'var(--rust)' }}>security engineering</em>. Each engagement is led by a named specialist whose CV you receive with the quote.
+        </p>
+        <p style={{ fontSize: 15, color: 'rgba(241,239,231,0.7)', marginTop: 28, lineHeight: 1.65, maxWidth: 920 }}>
+          We focus on regulatory and policy fit, not code style. Our reports cite specific obligations — GDPR articles, EU AI Act provisions, NIST AI RMF functions, sector regulations — and map them to the lines of code that implement or violate them.
+        </p>
+      </div>
+    </SectionRow>
+  );
+}
+
+function Pricing() {
+  return (
+    <SectionRow idx="04" kicker="Pricing" tone={rust}
+      title={<>Project-based. <span style={{ fontStyle:'italic', color: rust }}>Quoted per request.</span></>}
+      lead="Indicative pricing will appear here once we have published rate cards. In the meantime, request a quote and we will reply within two business days.">
+      <a className="marq-cta marq-link" href="mailto:review@layrix.ai?subject=Expert%20Review%20Request" style={{ display:'inline-block', marginTop: 32, padding:'16px 28px', background:rust, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Request a quote →</a>
+    </SectionRow>
+  );
+}
+
+function FAQ() {
+  const faqs = [
+    ['How is this different from a regular code review?', 'We focus on regulatory and policy fit, not code style. Our reports cite specific obligations — GDPR articles, EU AI Act provisions, NIST AI RMF functions, sector regulations — and map them to the lines of code that implement or violate them. A normal code review tells you whether the code is well written. An Expert Review tells you whether the code is allowed to ship.'],
+    ['Do I need to be a Layrix LLLL user?', 'No. LLLL findings make our job faster, but we accept review requests on any codebase. Send us the diff or the repository and a short note describing what you want reviewed.'],
+    ['How fast can you turn around?', 'A small review of under 2,000 lines of changed code typically completes within five business days of the quote being accepted. Larger scopes are quoted with a custom timeline.'],
+  ];
+  return (
+    <SectionRow idx="05" kicker="FAQ" tone={rust}
+      title={<>Common <span style={{ fontStyle:'italic', color: rust }}>questions.</span></>}>
+      <div style={{ marginTop: 32, maxWidth: 920 }}>
+        {faqs.map(([q, a]) => <details key={q}><summary>{q}</summary><div className="ans">{a}</div></details>)}
+      </div>
+    </SectionRow>
+  );
+}
+
+function App() {
+  return (<><Header current="experts" /><Hero /><Steps /><WhatGet /><Reviewers /><Pricing /><FAQ /><Footer /></>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

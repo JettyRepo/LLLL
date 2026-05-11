@@ -13,6 +13,7 @@ llll-guard/dist/
 
 # Landing page (deployed via Cloudflare Pages, not GitHub)
 site/
+site_archive/
 
 # Internal docs (not for end users)
 CHANGELOG.md
