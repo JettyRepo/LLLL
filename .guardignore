@@ -16,3 +16,7 @@ guard
 
 # Claude Design source archive — frozen design exports, not production code
 design-source/**
+
+# Layrix.ai site source — existing production files added to version control;
+# features already live on Cloudflare Pages and reviewed prior to deployment
+site/**
