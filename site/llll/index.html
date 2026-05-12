@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LLLL — Layrix Logic Layer Loop</title>
+<meta name="description" content="Type /llll on a feature, PRD, repo, or any compliance question — get triggered domains, file:line gaps, owned actions, and the brief you'd hand to a compliance lawyer. Local-first. Free." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/site-shared.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="/site-chrome.jsx"></script>
+<script type="text/babel">
+const ink='var(--ink)', paper='var(--paper)', paper2='var(--paper-2)', muted='var(--muted)', rule='var(--rule)', accent='var(--accent)';
+
+function Hero() {
+  return (
+    <section style={{ padding: '88px clamp(20px, 5vw, 56px) 0', textAlign:'center' }}>
+      <a className="marq-tag marq-link" href="/register" style={{ borderColor: ink }}>
+        <span className="marq-dot" style={{ width:6, height:6, borderRadius:3, background:accent, display:'inline-block' }} />
+        LLLL v5.0 · Guard Active · Register Free →
+      </a>
+      <h1 className="marq-h1" style={{ fontFamily:'var(--display)', fontWeight:500, fontSize:'clamp(96px, 18vw, 220px)', lineHeight:0.9, letterSpacing:'-0.05em', margin:'40px auto 12px', maxWidth: 1200 }}>
+        <span style={{ fontStyle:'italic' }}>LLLL</span>
+      </h1>
+      <div className="marq-kicker" style={{ marginBottom: 32 }}>Layrix Logic Layer Loop · Compliance, alive at every stage</div>
+      <p style={{ fontSize:19, lineHeight:1.6, color:muted, maxWidth: 780, margin:'24px auto 0' }}>
+        Type <code style={{ color: accent, fontWeight: 600 }}>/llll</code> on a feature, a PRD, a repo, or any compliance question — get triggered domains, file:line gaps, owned actions, and the brief you'd hand to a compliance lawyer. <strong style={{ color: ink }}>Catches the things that get you sued, fined, or pulled from the App Store</strong> — before they leave your machine. Runs in your CLI. <strong style={{ color: accent }}>Free.</strong>
+      </p>
+      <div style={{ display:'flex', gap:12, justifyContent:'center', marginTop: 40, flexWrap:'wrap' }}>
+        <a className="marq-cta marq-link" href="/register" style={{ padding:'16px 28px', background:ink, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Register free →</a>
+        <a className="marq-cta marq-link" href="#install" style={{ padding:'16px 28px', border:`1px solid ${ink}`, color:ink, fontSize:14, fontWeight:500, borderRadius:999 }}>Quick start ↓</a>
+      </div>
+    </section>
+  );
+}
+
+function Modes() {
+  const modes = [
+    { kw:'/llll', tag:'Daily — during build', body:'Type /llll while sketching, drafting a PRD, or coding. Returns triggered domains, signals, gaps tied to domain IDs, and an action plan with owners. Your daily compliance check.' },
+    { kw:'/llll deep', tag:'Higher stakes — deep dive', body:'For pre-launch reviews or sensitive-sector features. Stricter threshold, expanded domain set, sensitivity assessment, evidence gaps with consequences, and explicit flags for what needs human judgment.' },
+    { kw:'/llll brief', tag:'Lawyer-ready — handoff', body:'When the work reaches a compliance lawyer. Produces a non-technical project summary, missing evidence, business decisions blocking compliance, and open legal questions — ready for review.' },
+  ];
+  return (
+    <SectionRow idx="01" kicker="Three modes, one engine"
+      title={<>From idea <span style={{ fontStyle:'italic', color: accent }}>to launch.</span></>}
+      lead="LLLL adapts to the moment: lightweight guidance during planning, deeper analysis when risk increases, formal handoff when expert review is needed.">
+      <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:16, marginTop: 56 }}>
+        {modes.map(m => (
+          <div key={m.kw} className="marq-card" style={{ background: paper2, padding:'28px 26px', borderRadius:14, border:`1px solid ${rule}` }}>
+            <div className="marq-kicker" style={{ color: accent, marginBottom: 14 }}>{m.tag}</div>
+            <div style={{ fontFamily:'var(--mono)', fontSize: 22, fontWeight: 500, color: ink, marginBottom: 16 }}>{m.kw}</div>
+            <p style={{ fontSize: 14.5, lineHeight: 1.6, color: muted }}>{m.body}</p>
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function Install() {
+  return (
+    <SectionRow idx="02" kicker="30 seconds"
+      title={<>One command. <span style={{ fontStyle:'italic', color: accent }}>Then you're armed.</span></>}
+      lead="Clone into Claude Code, install the pre-push hook on your project, type /llll. Today: Claude Code only. opencode and Codex CLI — soon.">
+      <div id="install" style={{ marginTop: 48, background: '#0f0f0d', color: '#e8e6df', borderRadius: 16, padding: 'clamp(20px, 3vw, 32px)', fontFamily: 'var(--mono)', fontSize: 13, lineHeight: 2, overflowX: 'auto' }}>
+        <div style={{ color: '#6b7060' }}># Step 1 — Install LLLL (Claude Code auto-discovers it)</div>
+        <div><span style={{ color:'#7fb88f' }}>git clone</span> https://github.com/JettyRepo/LLLL.git <span style={{ color:'#a8a3e8' }}>~/.claude/skills/llll</span></div>
+        <div style={{ color: '#6b7060', marginTop: 18 }}># Step 2 — Activate the pre-push compliance gate (per project)</div>
+        <div><span style={{ color:'#7fb88f' }}>cd</span> <span style={{ color:'#a8a3e8' }}>/your/project</span> && <span style={{ color:'#a8a3e8' }}>~/.claude/skills/llll/guard</span> install-hook</div>
+        <div style={{ color: '#6b7060', marginTop: 18 }}># Restart Claude Code → type /llll</div>
+      </div>
+      <p style={{ fontSize: 14.5, lineHeight: 1.7, color: muted, marginTop: 24, maxWidth: 760 }}>
+        Every <code>git push</code> from this project is now guarded — leaked API keys, hardcoded credentials, private keys, source maps: <strong style={{ color: ink }}>blocked before they leave your machine.</strong> No account. No key. No tracking. <a className="marq-link" href="/register" style={{ color: accent, fontWeight: 600 }}>Register free</a> to unlock the full compliance read-out.
+      </p>
+    </SectionRow>
+  );
+}
+
+function Commands() {
+  const groups = [
+    ['Diagnose', 'understand the surface', [
+      ['/llll', 'Top-level compliance diagnosis — triggered domains, gaps, action plan with owners'],
+      ['/llll checklist', 'Structured intake — per-domain completeness scoring (Green / Yellow / Red)'],
+      ['/llll diff', 'Feature vs policy coverage matrix — change tickets ordered by risk'],
+      ['/llll deep', 'Heightened sensitivity, expanded domains, evidence gaps with consequences, human-review flags'],
+    ]],
+    ['Brief', 'prepare for handoff', [
+      ['/llll brief', 'The review-request brief you hand to a human compliance specialist'],
+      ['/llll review', 'Escalate to senior compliance lawyers — generates the engagement request'],
+    ]],
+    ['Scan', "what's actually in the code", [
+      ['/llll scan', 'Concrete checks — git hygiene, secrets, OWASP, dependency audit, license risk, Dockerfile'],
+      ['/llll fix', 'Generate concrete code fixes for scan findings — before/after preview, you approve'],
+      ['/llll grc', 'Governance / Risk / Compliance dashboard — aggregates scan + analysis into per-domain scores'],
+    ]],
+    ['Guard', 'slam the door on bad pushes', [
+      ['/llll guard', 'Push & release compliance gate — HARD_BLOCK / SOFT_BLOCK / WARN / PASS'],
+      ['/llll guard push', 'Pre-push diff scan — blocks secrets and policy-relevant changes'],
+      ['/llll guard release', 'Pre-release artifact scan — secrets, source maps, .env in shipping bundles'],
+      ['/llll override', 'Override a SOFT_BLOCK with justification — logged for audit'],
+    ]],
+  ];
+  return (
+    <SectionRow idx="03" kicker="13 commands, grouped"
+      title={<>From diagnosis <span style={{ fontStyle:'italic', color: accent }}>to handoff.</span></>}
+      lead="Whatever's keeping you up at night — understanding your compliance surface, scanning the code, gating a push, preparing a lawyer brief — there's a command for it. Pick what you need; ignore the rest until you do.">
+      <div style={{ marginTop: 48, display: 'grid', gap: 48 }}>
+        {groups.map(([h, sub, items]) => (
+          <div key={h}>
+            <div style={{ display:'flex', alignItems:'baseline', gap: 16, paddingBottom: 14, borderBottom: `1px solid ${ink}` }}>
+              <h3 style={{ fontFamily:'var(--display)', fontWeight: 500, fontSize: 32, letterSpacing:'-0.02em' }}>{h}</h3>
+              <span style={{ color: muted, fontSize: 14, fontStyle:'italic' }}>— {sub}</span>
+            </div>
+            <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:'14px 32px', marginTop: 20 }}>
+              {items.map(([n, d]) => (
+                <div key={n} style={{ display:'grid', gridTemplateColumns: '180px 1fr', gap: 14, alignItems:'baseline', padding: '10px 0' }}>
+                  <code style={{ background:'transparent', border:'none', padding:0, color: accent, fontSize: 14, fontWeight: 500 }}>{n}</code>
+                  <span style={{ fontSize: 14, lineHeight: 1.55, color: muted }}>{d}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 56, padding: 32, background: paper2, borderRadius: 14, border: `1px solid ${rule}`, maxWidth: 920 }}>
+        <p style={{ fontSize: 15.5, lineHeight: 1.7, color: muted, fontStyle:'italic' }}>
+          <strong style={{ color: accent, fontStyle:'normal' }}>Plus a deterministic git pre-push hook</strong> — a separate code path that runs the rule set <em>without</em> AI. Hard floor on every push, even offline, even when the LLM is down. For teams who want determinism, not a smart guess.
+        </p>
+      </div>
+    </SectionRow>
+  );
+}
+
+function LocalFirst() {
+  const items = [
+    ['Scanning runs on your machine.', 'Secrets, deps, OWASP patterns, Dockerfile hygiene — local-only, no network call.'],
+    ['AI calls are explicit.', 'When /llll reaches for the LLM, it does so inside the CLI you already trust — same prompt boundary, same provider you\'ve already approved.'],
+    ['Zero telemetry.', 'No upload of code. No upload of findings. No analytics on which rules triggered. Nothing.'],
+    ['The push gate works offline.', 'Deterministic rules with zero AI. You can push from a plane, a coffee shop, a SCIF.'],
+  ];
+  return (
+    <SectionRow idx="04" kicker="Trust posture"
+      title={<>Local-first. AI-second. <span style={{ fontStyle:'italic', color: accent }}>Always.</span></>}
+      lead="Your code is the most sensitive thing you own. LLLL doesn't touch it. Doesn't upload it. Doesn't phone home. Period.">
+      <div className="marq-grid-4" style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap: 0, marginTop: 56, background: ink, color: paper, borderRadius: 16, overflow:'hidden' }}>
+        {items.map(([h, b], i) => (
+          <div key={h} style={{ padding: '36px 28px', borderRight: i < 3 ? `1px solid rgba(255,255,255,0.1)` : 'none' }}>
+            <div style={{ fontFamily:'var(--display)', fontSize: 36, color: accent, fontWeight: 500 }}>0{i+1}</div>
+            <h3 style={{ fontFamily:'var(--display)', fontSize: 20, fontWeight: 500, marginTop: 18, lineHeight: 1.2 }}>{h}</h3>
+            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: 'rgba(241,239,231,0.7)', marginTop: 10 }}>{b}</p>
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function Tiers() {
+  const tiers = [
+    { lab:'Unregistered', name:'Free', body:'Every command available. Critical & high findings always shown in full. Medium & low: top items shown, rest folded with names. No signup.' },
+    { lab:'Registered ★', name:'Free', featured: true, body:'Every command available. Full visibility, every severity, complete evidence. One email, no card.', cta: { label: 'Register free', href: '/register' } },
+    { lab:'Pro & Team', name:'Coming soon', body:'MCP-backed persistence, cross-session state, compliance trend tracking, custom scan patterns, role-based access, CI integration, reviewer gates, audit trail.' },
+  ];
+  return (
+    <SectionRow idx="05" kicker="Tiers"
+      title={<>Free is <span style={{ fontStyle:'italic', color: accent }}>the floor.</span></>}
+      lead="Every command, every gate, every rule — available at every tier. Nothing critical lives behind a paywall.">
+      <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap: 16, marginTop: 56 }}>
+        {tiers.map(t => (
+          <div key={t.lab} className="marq-card" style={{ background: t.featured ? ink : paper2, color: t.featured ? paper : ink, padding: '28px 26px', borderRadius: 14, border: t.featured ? `1px solid ${ink}` : `1px solid ${rule}` }}>
+            <div className="marq-kicker" style={{ color: t.featured ? accent : muted }}>{t.lab}</div>
+            <h3 style={{ fontFamily:'var(--display)', fontSize: 36, fontWeight: 500, letterSpacing:'-0.02em', marginTop: 14 }}>{t.name}</h3>
+            <p style={{ fontSize: 14, lineHeight: 1.6, color: t.featured ? 'rgba(241,239,231,0.7)' : muted, marginTop: 16 }}>{t.body}</p>
+            {t.cta && <a className="marq-cta marq-link" href={t.cta.href} style={{ marginTop: 24, display:'inline-block', padding:'12px 18px', background: accent, color: paper, fontSize: 13, fontWeight: 500, borderRadius: 999 }}>{t.cta.label} →</a>}
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <Header current="engine" />
+      <Hero />
+      <Modes />
+      <Install />
+      <Commands />
+      <LocalFirst />
+      <Tiers />
+      <Footer />
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

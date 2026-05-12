@@ -11,8 +11,7 @@ llll-guard/dist/
 # LLLL local persistence root (Guard logs + opt-in observation snapshots)
 .llll/
 
-# Landing page (deployed via Cloudflare Pages, not GitHub)
-site/
+# Landing page archives (deployed via Cloudflare Pages, not GitHub)
 site_archive/
 
 # Internal docs (not for end users)

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Expert Review · Layrix</title>
+<meta name="description" content="Human review for the things LLLL can't sign off on. Named senior practitioners — privacy law, AI governance, security engineering. Project-based, quoted per request." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/site-shared.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="/site-chrome.jsx"></script>
+<script type="text/babel">
+const ink='var(--ink)', paper='var(--paper)', paper2='var(--paper-2)', muted='var(--muted)', rule='var(--rule)', rust='var(--rust)';
+
+function Hero() {
+  return (
+    <section style={{ padding: '88px clamp(20px, 5vw, 56px) 0', textAlign:'center' }}>
+      <div className="marq-tag" style={{ borderColor: rust, color: rust }}>Layrix Expert Review</div>
+      <h1 style={{ fontFamily:'var(--display)', fontWeight:500, fontSize:'clamp(44px, 6.4vw, 92px)', lineHeight:1.04, letterSpacing:'-0.04em', margin:'36px auto 0', maxWidth: 1200 }}>
+        AI surfaces signals. A human owns the call.<br/><span style={{ fontStyle:'italic', color: rust }}>Named practitioners — accountable, on the record, on the line.</span>
+      </h1>
+      <p style={{ fontSize:19, lineHeight:1.6, color:muted, maxWidth: 760, margin:'40px auto 0' }}>
+        When the stakes are high — a regulated launch, a board audit, a contract clause that an automated tool cannot reason about — a Layrix specialist reviews your brief, weighs the obligations, and writes the compliance opinion the project rests on.
+      </p>
+      <a className="marq-cta marq-link" href="mailto:review@layrix.ai?subject=Expert%20Review%20Request" style={{ display:'inline-block', marginTop: 40, padding:'16px 28px', background:ink, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Request a quote →</a>
+    </section>
+  );
+}
+
+function Steps() {
+  const steps = [
+    ['Step 01', 'Submit', 'Based on your findings, use /llll brief to generate the handoff document — project summary, observed signals, missing evidence, open legal questions. Send it to us.'],
+    ['Step 02', 'Quote', 'We return a quote with a defined scope, a deliverable, and a project-specific timeline. Only after you accept do we ask for your full brief and supporting evidence — DPIA drafts, contracts, governance documents, prior assessments.'],
+    ['Step 03', 'Deliver', 'Our specialists review your brief and supporting materials, then write a structured compliance opinion. You receive a PDF signed by the named senior practitioner. A walkthrough call is available as an optional add-on, quoted separately.'],
+  ];
+  return (
+    <SectionRow idx="01" kicker="How it works" tone={rust}
+      title={<>Three steps. <span style={{ fontStyle:'italic', color: rust }}>No surprises.</span></>}>
+      <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap: 0, marginTop: 56, border: `1px solid ${ink}`, borderRadius: 16, overflow:'hidden' }}>
+        {steps.map(([n, h, b], i) => (
+          <div key={n} style={{ padding: '36px 32px', background: paper2, borderLeft: i ? `1px solid ${rule}` : 'none' }}>
+            <div className="marq-kicker" style={{ color: rust }}>{n}</div>
+            <h3 style={{ fontFamily:'var(--display)', fontSize: 32, fontWeight: 500, marginTop: 14, letterSpacing:'-0.025em' }}>{h}</h3>
+            <p style={{ fontSize: 14.5, lineHeight: 1.65, color: muted, marginTop: 14 }}>{b}</p>
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function WhatGet() {
+  const items = [
+    ['Written compliance opinion', 'Issues, severity, citations to specific obligations (GDPR articles, EU AI Act provisions, NIST AI RMF functions, sector regulations), and recommended remediation mapped to the findings in your brief.'],
+    ['Expert-signed PDF', 'The opinion is delivered as a PDF signed by the named senior practitioner who wrote it, tagged with your engagement ID for your audit trail. Yours to keep.'],
+  ];
+  const addons = [
+    ['Walkthrough call with the named specialist', 'A live session in which the practitioner walks you through the opinion and answers your team\'s questions.'],
+    ['Re-review of an updated brief', 'After you have implemented the recommended remediation, the same specialist reviews the updated brief and issues a follow-on opinion.'],
+    ['Additional Q&A or revision rounds', 'Further written rounds beyond the initial opinion — clarifications, scope extensions, or revisited findings.'],
+  ];
+  return (
+    <SectionRow idx="02" kicker="What you get" tone={rust}
+      title={<>The opinion is included. <span style={{ fontStyle:'italic', color: rust }}>Everything else, quoted.</span></>}>
+      <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap: '14px 32px', marginTop: 48 }}>
+        {items.map(([h, b]) => (
+          <div key={h} style={{ padding: '24px 0', borderTop: `1px solid ${rule}` }}>
+            <h4 style={{ fontFamily:'var(--display)', fontSize: 24, fontWeight: 500, marginBottom: 8, letterSpacing:'-0.02em' }}>{h}</h4>
+            <p style={{ fontSize: 14.5, color: muted, lineHeight: 1.6 }}>{b}</p>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 48, padding: '28px 32px', background: paper2, border: `1px solid ${rule}`, borderRadius: 14 }}>
+        <div className="marq-kicker" style={{ color: rust, marginBottom: 16 }}>Optional add-ons · quoted separately</div>
+        <div style={{ display: 'grid', gap: 20 }}>
+          {addons.map(([h, b]) => (
+            <div key={h}>
+              <h4 style={{ fontFamily:'var(--display)', fontSize: 20, fontWeight: 500, letterSpacing:'-0.02em' }}>{h}</h4>
+              <p style={{ fontSize: 14, color: muted, lineHeight: 1.6, marginTop: 4 }}>{b}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </SectionRow>
+  );
+}
+
+function Reviewers() {
+  return (
+    <SectionRow idx="03" kicker="Senior expertise" tone={rust}
+      title={<>Named senior specialists. <span style={{ fontStyle:'italic', color: rust }}>Not a QA pool.</span></>}>
+      <div style={{ marginTop: 48, background: ink, color: paper, borderRadius: 16, padding: 'clamp(32px, 4vw, 48px)' }}>
+        <p style={{ fontFamily:'var(--display)', fontSize: 'clamp(22px, 2.4vw, 30px)', fontWeight: 400, lineHeight: 1.4, letterSpacing:'-0.015em', maxWidth: 920 }}>
+          Senior practitioners with backgrounds in <em style={{ color: 'var(--rust)' }}>privacy law</em>, <em style={{ color: 'var(--rust)' }}>AI governance</em>, and <em style={{ color: 'var(--rust)' }}>regulated industry compliance</em>. Each engagement is led by a designated lead practitioner; their credentials and background are disclosed once the engagement is contracted.
+        </p>
+        <p style={{ fontSize: 15, color: 'rgba(241,239,231,0.7)', marginTop: 28, lineHeight: 1.65, maxWidth: 920 }}>
+          We deliver regulatory and policy judgment — not technical audit. Our opinions cite specific obligations (GDPR articles, EU AI Act provisions, NIST AI RMF functions, sector regulations) and map them to the findings, decisions, and supporting evidence you provided in your brief.
+        </p>
+      </div>
+    </SectionRow>
+  );
+}
+
+function Pricing() {
+  return (
+    <SectionRow idx="04" kicker="Pricing" tone={rust}
+      title={<>Project-based. <span style={{ fontStyle:'italic', color: rust }}>Quoted per request.</span></>}
+      lead="Indicative pricing will appear here once we have published rate cards. In the meantime, request a quote — we will respond with scope and a project-specific timeline.">
+      <a className="marq-cta marq-link" href="mailto:review@layrix.ai?subject=Expert%20Review%20Request" style={{ display:'inline-block', marginTop: 32, padding:'16px 28px', background:rust, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Request a quote →</a>
+    </SectionRow>
+  );
+}
+
+function FAQ() {
+  const faqs = [
+    ['How is this different from a code audit or security review?', 'We deliver a compliance opinion — a regulatory judgment by a named senior practitioner on whether your project meets its obligations. We do not audit source code or assess code quality. Our opinion cites specific obligations (GDPR articles, EU AI Act provisions, NIST AI RMF functions, sector regulations) and maps them to the findings, decisions, and supporting evidence in your brief. A code audit tells you whether the code is well written. An Expert Review tells you whether the project is allowed to ship.'],
+    ['Do I need to be a Layrix LLLL user?', 'No. An LLLL brief (generated by /llll brief) makes our job faster and is the format we prefer. But you can also send a manually prepared brief — project summary, jurisdictions in scope, observed risks, supporting evidence, and the questions you want answered.'],
+    ['What\'s the turnaround?', 'Turnaround depends entirely on scope — jurisdiction count, number of questions, depth of supporting evidence, novelty of the obligations involved. Each quote includes a firm timeline specific to that engagement; we do not commit to a generic window upfront.'],
+  ];
+  return (
+    <SectionRow idx="05" kicker="FAQ" tone={rust}
+      title={<>Common <span style={{ fontStyle:'italic', color: rust }}>questions.</span></>}>
+      <div style={{ marginTop: 32, maxWidth: 920 }}>
+        {faqs.map(([q, a]) => <details key={q}><summary>{q}</summary><div className="ans">{a}</div></details>)}
+      </div>
+    </SectionRow>
+  );
+}
+
+function App() {
+  return (<><Header current="experts" /><Hero /><Steps /><WhatGet /><Reviewers /><Pricing /><FAQ /><Footer /></>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
