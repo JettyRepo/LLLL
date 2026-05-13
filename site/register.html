@@ -55,6 +55,7 @@
 </style>
 </head>
 <body>
+<script>(function(){if(location.hostname==='www.layrix.ai'){location.replace(location.protocol+'//layrix.ai'+location.pathname+location.search+location.hash);}})();</script>
 <div id="root"></div>
 <script type="text/babel" src="/site-chrome.jsx"></script>
 <script type="text/babel">
@@ -75,9 +76,33 @@ function Hero() {
 }
 
 function Form() {
+  const [status, setStatus] = React.useState({ kind: 'idle', msg: '' });
+  const submitting = status.kind === 'submitting';
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const email = e.target.email.value;
+    setStatus({ kind: 'submitting', msg: '' });
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setStatus({ kind: 'ok', msg: data.message || 'Check your email for the verification link.' });
+      } else {
+        setStatus({ kind: 'err', msg: data.error || 'Something went wrong. Try again.' });
+      }
+    } catch {
+      setStatus({ kind: 'err', msg: 'Network error. Try again.' });
+    }
+  }
+
   return (
     <section style={{ padding: '64px clamp(20px, 5vw, 56px) 0', maxWidth: 720, margin: '0 auto' }}>
-      <form action="/api/register" method="POST" style={{ display: 'grid', gap: 14 }}>
+      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 14 }}>
         <label htmlFor="email" style={{ fontFamily:'var(--mono)', fontSize:11, color:muted, letterSpacing:'0.18em', textTransform:'uppercase' }}>
           Email
         </label>
@@ -89,6 +114,7 @@ function Form() {
           autoComplete="email"
           placeholder="you@company.com"
           className="reg-input"
+          disabled={submitting}
         />
         <label htmlFor="tos" style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:10, alignItems:'start', marginTop: 8, fontSize: 13, lineHeight: 1.55, color: muted }}>
           <input id="tos" name="tos_accepted" type="checkbox" required value="1" style={{ marginTop: 4, accentColor: 'var(--accent)' }} />
@@ -97,8 +123,20 @@ function Form() {
           </span>
         </label>
         <div style={{ display:'flex', justifyContent:'flex-start', marginTop: 14 }}>
-          <button type="submit" className="reg-submit">Create account →</button>
+          <button type="submit" className="reg-submit" disabled={submitting}>
+            {submitting ? 'Sending…' : 'Create account →'}
+          </button>
         </div>
+        {status.kind === 'ok' && (
+          <div role="status" aria-live="polite" style={{ marginTop: 14, padding: '14px 18px', borderRadius: 10, border: `1px solid ${accent}`, background: paper2, color: ink, fontSize: 14, lineHeight: 1.5 }}>
+            <strong style={{ color: accent }}>✓</strong> {status.msg}
+          </div>
+        )}
+        {status.kind === 'err' && (
+          <div role="alert" aria-live="assertive" style={{ marginTop: 14, padding: '14px 18px', borderRadius: 10, border: '1px solid #a23a1b', background: paper2, color: '#a23a1b', fontSize: 14, lineHeight: 1.5 }}>
+            {status.msg}
+          </div>
+        )}
       </form>
     </section>
   );
