@@ -140,7 +140,7 @@ function Commands() {
 
 function LocalFirst() {
   const items = [
-    ['Scanning runs on your machine.', 'Secrets, deps, OWASP patterns, Dockerfile hygiene — local-only, no network call.'],
+    ['Scanning runs on your machine.', 'Secrets, deps, OWASP patterns, Dockerfile hygiene — orchestrated locally, analyzed by your LLM. Layrix never sees the results.'],
     ['AI calls are explicit.', 'When /llll reaches for the LLM, it does so inside the CLI you already trust — same prompt boundary, same provider you\'ve already approved.'],
     ['Zero telemetry — on our end.', 'We don\'t upload your code, your findings, or anything about which rules triggered. Nothing is automatically sent to Layrix.'],
     ['The push gate works offline.', 'Deterministic rules with zero AI. You can push from a plane, a coffee shop, a SCIF.'],
