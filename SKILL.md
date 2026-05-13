@@ -1117,7 +1117,7 @@ If you save LLLL analyses that reference or contain personal data — user email
 - **Data subject rights (GDPR Arts. 15–22)** — if a subject exercises access / rectification / erasure rights, you must be able to locate and honor them against `.llll/scratch/` content. If you can't remember what you saved, you can't honor those rights
 - **Security of processing (GDPR Art. 32)** — the `0700` / `0600` permissions and gitignored location are baseline; full-disk encryption and backup-tool exclusion are additional layers **you** control
 
-LLLL (the tool) is **not** a data processor or controller — it never writes, never reads the contents of scratch files, never transmits. The moment you manually save a file to `.llll/scratch/`, the responsibility is entirely yours. This is the trade-off the opt-in manual design makes: maximum user control, maximum user responsibility.
+LLLL (the tool) is **not** a data processor or controller for scratch contents — it never writes scratch files, never reads their contents, and never transmits them. The moment you manually save a file to `.llll/scratch/`, the responsibility is entirely yours. This is the trade-off the opt-in manual design makes: maximum user control, maximum user responsibility.
 
 For **regulated sectors** (health, finance, lending, insurance, education, employment, children, biometric, public sector — Domain M in the LLLL checklist), this responsibility is more consequential. Consider whether the scratch workflow is appropriate for your project at all, or whether you should wait for the Pro/Team MCP tier (which will handle retention, encryption, and data subject rights server-side).
 
@@ -1514,7 +1514,7 @@ Coming Soon:
 - 🔜 **Pro** — MCP integration, project personalization, custom scans
 - 🔜 **Team** — compliance dashboards, multi-user access, CI gates
 
-> No compliance data leaves your environment. LLLL runs locally in Claude Code. Outputs are ephemeral — LLLL does not save to disk. Auto-save is planned for Pro/Team via an MCP server.
+> Your compliance data never reaches Layrix. LLLL runs locally inside Claude Code. Outputs are ephemeral — LLLL does not save to disk. Auto-save is planned for Pro/Team via an MCP server.
 ```
 
 ---
@@ -1601,7 +1601,7 @@ Human compliance expert or legal professional review is recommended.
 ### Data handling notice
 
 **All users (v5.0):**
-> No compliance data leaves your environment. LLLL runs locally in Claude Code. **Outputs are ephemeral** — LLLL does not save anything to disk. If you want to keep an analysis for your own records, the recommended workflow is to manually place it under `.llll/scratch/` in your project root — a user-managed, gitignored, local-only directory LLLL never writes to. LLLL periodically reminds you to prune old files but never creates, modifies, or deletes files on your behalf.
+> Your compliance data never reaches Layrix. LLLL runs locally inside Claude Code — your code goes only to the LLM provider you have already configured in Claude Code, never to a Layrix server. **Outputs are ephemeral** — LLLL does not save anything to disk. If you want to keep an analysis for your own records, the recommended workflow is to manually place it under `.llll/scratch/` in your project root — a user-managed, gitignored, local-only directory LLLL never writes to. LLLL periodically reminds you to prune old files but never creates, modifies, or deletes files on your behalf.
 
 Pro/Team features (coming soon) will add automatic observation persistence via an MCP server — with server-side redaction, encryption at rest, retention policies, and cross-session state. v5.0 stays stateless by design.
 

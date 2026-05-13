@@ -200,7 +200,7 @@ LLLL is powered by AI and is part of the Layrix Compliance OS. All outputs are g
 - **Prompt injection risk.** LLLL reads project files as input context. Malicious content in scanned files could attempt to manipulate compliance outputs.
 - **Model dependency.** LLLL runs on Claude (Claude Code), GPT (Codex CLI), or the model configured in opencode, and inherits that model's capabilities and limitations.
 - **No state persistence.** LLLL does not retain analysis history between sessions. (Pro: cross-session state persistence via encrypted cloud storage is planned.)
-- **Data handling.** No compliance data leaves your local environment. LLLL runs locally in Claude Code.
+- **Data handling.** Your compliance data never reaches Layrix. LLLL runs locally inside Claude Code — your code goes only to the LLM provider you have already configured in Claude Code, never to a Layrix server.
 
 ## Registration
 
