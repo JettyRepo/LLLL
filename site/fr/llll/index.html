@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LLLL — Layrix Logic Layer Loop</title>
+<meta name="description" content="Tapez /llll sur une fonctionnalité, un PRD, un dépôt ou toute question de conformité — obtenez les domaines déclenchés, les écarts fichier:ligne, les actions assignées, et le mémoire prêt pour le juriste. Local d’abord. Gratuit." />
+<link rel="alternate" hreflang="en" href="https://layrix.ai/llll/" />
+<link rel="alternate" hreflang="fr-CA" href="https://layrix.ai/fr/llll/" />
+<link rel="alternate" hreflang="x-default" href="https://layrix.ai/llll/" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/site-shared.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="/site-chrome.jsx"></script>
+<script type="text/babel">
+const ink='var(--ink)', paper='var(--paper)', paper2='var(--paper-2)', muted='var(--muted)', rule='var(--rule)', accent='var(--accent)';
+
+function Hero() {
+  return (
+    <section style={{ padding: '88px clamp(20px, 5vw, 56px) 0', textAlign:'center' }}>
+      <a className="marq-tag marq-link" href="/fr/register" style={{ borderColor: ink }}>
+        <span className="marq-dot" style={{ width:6, height:6, borderRadius:3, background:accent, display:'inline-block' }} />
+        LLLL v5.0 · Garde active · Inscription gratuite →
+      </a>
+      <h1 className="marq-h1" style={{ fontFamily:'var(--display)', fontWeight:500, fontSize:'clamp(96px, 18vw, 220px)', lineHeight:0.9, letterSpacing:'-0.05em', margin:'40px auto 12px', maxWidth: 1200 }}>
+        <span style={{ fontStyle:'italic' }}>LLLL</span>
+      </h1>
+      <div className="marq-kicker" style={{ marginBottom: 32 }}>Layrix Logic Layer Loop · La conformité, vivante à chaque étape</div>
+      <p style={{ fontSize:19, lineHeight:1.6, color:muted, maxWidth: 780, margin:'24px auto 0' }}>
+        Tapez <code style={{ color: accent, fontWeight: 600 }}>/llll</code> sur une fonctionnalité, un PRD, un dépôt ou toute question de conformité — obtenez les domaines déclenchés, les écarts fichier:ligne, les actions assignées, et le mémoire que vous remettriez à un juriste en conformité. <strong style={{ color: ink }}>Détecte ce qui vous fait poursuivre, sanctionner, ou retirer de l’App Store</strong> — avant que ça ne quitte votre machine. Fonctionne dans votre CLI. <strong style={{ color: accent }}>Gratuit.</strong>
+      </p>
+      <div style={{ display:'flex', gap:12, justifyContent:'center', marginTop: 40, flexWrap:'wrap' }}>
+        <a className="marq-cta marq-link" href="/fr/register" style={{ padding:'16px 28px', background:ink, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>S’inscrire gratuitement →</a>
+        <a className="marq-cta marq-link" href="#install" style={{ padding:'16px 28px', border:`1px solid ${ink}`, color:ink, fontSize:14, fontWeight:500, borderRadius:999 }}>Démarrage rapide ↓</a>
+      </div>
+    </section>
+  );
+}
+
+function Modes() {
+  const modes = [
+    { kw:'/llll', tag:'Au quotidien — pendant la construction', body:'Tapez /llll en esquissant, en rédigeant un PRD, en codant. Renvoie les domaines déclenchés, les signaux, les écarts liés aux ID de domaine, et un plan d’action avec responsables. Votre vérification de conformité quotidienne.' },
+    { kw:'/llll deep', tag:'Enjeu élevé — plongée approfondie', body:'Pour les revues avant lancement ou les fonctionnalités à secteur sensible. Seuil plus strict, ensemble de domaines élargi, évaluation de sensibilité, écarts de preuve avec conséquences, et marqueurs explicites pour ce qui exige un jugement humain.' },
+    { kw:'/llll brief', tag:'Prêt pour le juriste — passation', body:'Quand le travail arrive chez un juriste en conformité. Produit un résumé non technique du projet, les preuves manquantes, les décisions d’affaires bloquant la conformité, et les questions juridiques ouvertes — prêt pour examen.' },
+  ];
+  return (
+    <SectionRow idx="01" kicker="Trois modes, un moteur"
+      title={<>De l’idée <span style={{ fontStyle:'italic', color: accent }}>au lancement.</span></>}
+      lead="LLLL s’adapte au moment : guidance légère pendant la planification, analyse plus profonde quand le risque monte, passation formelle quand un avis d’expert est nécessaire.">
+      <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:16, marginTop: 56 }}>
+        {modes.map(m => (
+          <div key={m.kw} className="marq-card" style={{ background: paper2, padding:'28px 26px', borderRadius:14, border:`1px solid ${rule}` }}>
+            <div className="marq-kicker" style={{ color: accent, marginBottom: 14 }}>{m.tag}</div>
+            <div style={{ fontFamily:'var(--mono)', fontSize: 22, fontWeight: 500, color: ink, marginBottom: 16 }}>{m.kw}</div>
+            <p style={{ fontSize: 14.5, lineHeight: 1.6, color: muted }}>{m.body}</p>
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function Install() {
+  return (
+    <SectionRow idx="02" kicker="30 secondes"
+      title={<>Une commande. <span style={{ fontStyle:'italic', color: accent }}>Et vous êtes armés.</span></>}
+      lead="Cloner dans Claude Code, installer le hook pre-push sur votre projet, taper /llll. Aujourd’hui : Claude Code seulement. opencode et Codex CLI — bientôt.">
+      <div id="install" style={{ marginTop: 48, background: '#0f0f0d', color: '#e8e6df', borderRadius: 16, padding: 'clamp(20px, 3vw, 32px)', fontFamily: 'var(--mono)', fontSize: 13, lineHeight: 2, overflowX: 'auto' }}>
+        <div style={{ color: '#6b7060' }}># Étape 1 — Installer LLLL (Claude Code le découvre automatiquement)</div>
+        <div><span style={{ color:'#7fb88f' }}>git clone</span> https://github.com/JettyRepo/LLLL.git <span style={{ color:'#a8a3e8' }}>~/.claude/skills/llll</span></div>
+        <div style={{ color: '#6b7060', marginTop: 18 }}># Étape 2 — Activer le portail de conformité pre-push (par projet)</div>
+        <div><span style={{ color:'#7fb88f' }}>cd</span> <span style={{ color:'#a8a3e8' }}>/votre/projet</span> && <span style={{ color:'#a8a3e8' }}>~/.claude/skills/llll/guard</span> install-hook</div>
+        <div style={{ color: '#6b7060', marginTop: 18 }}># Redémarrer Claude Code → taper /llll</div>
+      </div>
+      <p style={{ fontSize: 14.5, lineHeight: 1.7, color: muted, marginTop: 24, maxWidth: 760 }}>
+        Chaque <code>git push</code> depuis ce projet est désormais protégé — clés API divulguées, identifiants codés en dur, clés privées, source maps : <strong style={{ color: ink }}>bloqués avant qu’ils ne quittent votre machine.</strong> Pas de compte. Pas de clé. Pas de pistage. <a className="marq-link" href="/fr/register" style={{ color: accent, fontWeight: 600 }}>Inscrivez-vous gratuitement</a> pour débloquer le bilan de conformité complet.
+      </p>
+    </SectionRow>
+  );
+}
+
+function Commands() {
+  const groups = [
+    ['Diagnostiquer', 'comprendre la surface', [
+      ['/llll', 'Diagnostic de conformité de haut niveau — domaines déclenchés, écarts, plan d’action avec responsables'],
+      ['/llll checklist', 'Intake structuré — score de complétude par domaine (vert / jaune / rouge)'],
+      ['/llll diff', 'Matrice de couverture fonctionnalités vs politique — tickets de changement classés par risque'],
+      ['/llll deep', 'Sensibilité accrue, domaines élargis, écarts de preuve avec conséquences, marqueurs de revue humaine'],
+    ]],
+    ['Mémoire', 'préparer la passation', [
+      ['/llll brief', 'Le dossier de demande de revue à remettre à un spécialiste humain de la conformité'],
+      ['/llll review', 'Escalade vers des juristes seniors en conformité — génère la demande d’engagement'],
+    ]],
+    ['Analyser', 'ce qui est réellement dans le code', [
+      ['/llll scan', 'Vérifications concrètes — hygiène git, secrets, OWASP, audit de dépendances, risque de licence, Dockerfile'],
+      ['/llll fix', 'Génère des correctifs concrets pour les constats de scan — aperçu avant/après, vous approuvez'],
+      ['/llll grc', 'Tableau de bord gouvernance / risque / conformité — agrège scan + analyse en scores par domaine'],
+    ]],
+    ['Garder', 'fermer la porte aux mauvais push', [
+      ['/llll guard', 'Portail de conformité push & release — HARD_BLOCK / SOFT_BLOCK / WARN / PASS'],
+      ['/llll guard push', 'Analyse du diff pre-push — bloque secrets et changements à incidence politique'],
+      ['/llll guard release', 'Analyse d’artefacts pre-release — secrets, source maps, .env dans les paquets livrables'],
+      ['/llll override', 'Outrepasser un SOFT_BLOCK avec justification — journalisé pour audit'],
+    ]],
+  ];
+  return (
+    <SectionRow idx="03" kicker="13 commandes, regroupées"
+      title={<>Du diagnostic <span style={{ fontStyle:'italic', color: accent }}>à la passation.</span></>}
+      lead="Quoi qu’il vous tienne éveillé la nuit — comprendre votre surface de conformité, scanner le code, garder un push, préparer un mémoire pour juriste — il y a une commande pour ça. Prenez ce qu’il vous faut ; ignorez le reste jusqu’au moment voulu.">
+      <div style={{ marginTop: 48, display: 'grid', gap: 48 }}>
+        {groups.map(([h, sub, items]) => (
+          <div key={h}>
+            <div style={{ display:'flex', alignItems:'baseline', gap: 16, paddingBottom: 14, borderBottom: `1px solid ${ink}` }}>
+              <h3 style={{ fontFamily:'var(--display)', fontWeight: 500, fontSize: 32, letterSpacing:'-0.02em' }}>{h}</h3>
+              <span style={{ color: muted, fontSize: 14, fontStyle:'italic' }}>— {sub}</span>
+            </div>
+            <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:'14px 32px', marginTop: 20 }}>
+              {items.map(([n, d]) => (
+                <div key={n} style={{ display:'grid', gridTemplateColumns: '180px 1fr', gap: 14, alignItems:'baseline', padding: '10px 0' }}>
+                  <code style={{ background:'transparent', border:'none', padding:0, color: accent, fontSize: 14, fontWeight: 500 }}>{n}</code>
+                  <span style={{ fontSize: 14, lineHeight: 1.55, color: muted }}>{d}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 56, padding: 32, background: paper2, borderRadius: 14, border: `1px solid ${rule}`, maxWidth: 920 }}>
+        <p style={{ fontSize: 15.5, lineHeight: 1.7, color: muted, fontStyle:'italic' }}>
+          <strong style={{ color: accent, fontStyle:'normal' }}>Plus un hook git pre-push déterministe</strong> — un chemin de code séparé qui exécute le jeu de règles <em>sans</em> IA. Plancher dur à chaque push, même hors-ligne, même quand le LLM est indisponible. Pour les équipes qui veulent du déterminisme, pas une supposition intelligente.
+        </p>
+      </div>
+    </SectionRow>
+  );
+}
+
+function LocalFirst() {
+  const items = [
+    ['Le scan s’exécute sur votre machine.', 'Secrets, dépendances, patrons OWASP, hygiène Dockerfile — orchestrés localement, analysés par votre LLM. Layrix ne voit jamais les résultats.'],
+    ['Les appels IA sont explicites.', 'Quand /llll fait appel au LLM, il le fait dans la CLI à laquelle vous faites déjà confiance — même périmètre de prompt, même fournisseur déjà approuvé.'],
+    ['Zéro télémétrie — de notre côté.', 'Nous ne téléversons ni votre code, ni vos constats, ni quoi que ce soit sur les règles déclenchées. Rien n’est envoyé automatiquement à Layrix.'],
+    ['Le portail de push fonctionne hors ligne.', 'Règles déterministes, zéro IA. Vous pouvez pousser depuis un avion, un café, un SCIF.'],
+  ];
+  return (
+    <SectionRow idx="04" kicker="Posture de confiance"
+      title={<>Local d’abord. IA ensuite. <span style={{ fontStyle:'italic', color: accent }}>Toujours.</span></>}
+      lead="Votre code est ce que vous possédez de plus sensible. LLLL s’exécute localement — nous n’en voyons pas une ligne. Stockez-le si vous voulez : nous ne pouvons toujours pas le lire.">
+      <div className="marq-grid-4" style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap: 0, marginTop: 56, background: ink, color: paper, borderRadius: 16, overflow:'hidden' }}>
+        {items.map(([h, b], i) => (
+          <div key={h} style={{ padding: '36px 28px', borderRight: i < 3 ? `1px solid rgba(255,255,255,0.1)` : 'none' }}>
+            <div style={{ fontFamily:'var(--display)', fontSize: 36, color: accent, fontWeight: 500 }}>0{i+1}</div>
+            <h3 style={{ fontFamily:'var(--display)', fontSize: 20, fontWeight: 500, marginTop: 18, lineHeight: 1.2 }}>{h}</h3>
+            <p style={{ fontSize: 13.5, lineHeight: 1.65, color: 'rgba(241,239,231,0.7)', marginTop: 10 }}>{b}</p>
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function Tiers() {
+  const tiers = [
+    { lab:'Non inscrit', name:'Gratuit', body:'Toutes les commandes disponibles. La moitié des constats détaillés par tableau (arrondi de N/2, par sévérité) ; le reste replié avec les noms listés. Sans inscription.' },
+    { lab:'Inscrit ★', name:'Gratuit', featured: true, body:'Toutes les commandes disponibles. Visibilité complète, toutes les sévérités, preuves complètes. Un courriel, pas de carte.', cta: { label: 'S’inscrire gratuitement', href: '/fr/register' } },
+    { lab:'Pro & Équipe', name:'Bientôt', body:'Persistance via MCP, état inter-sessions, suivi des tendances de conformité, patrons de scan personnalisés, accès par rôle, intégration CI, portails de revue, journal d’audit.' },
+  ];
+  return (
+    <SectionRow idx="05" kicker="Niveaux"
+      title={<>Le gratuit est <span style={{ fontStyle:'italic', color: accent }}>le plancher.</span></>}
+      lead="Chaque commande, chaque portail, chaque règle — disponibles à tous les niveaux. La moitié des constats détaillés sans courriel ; inscrivez-vous pour le tableau complet.">
+      <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap: 16, marginTop: 56 }}>
+        {tiers.map(t => (
+          <div key={t.lab} className="marq-card" style={{ background: t.featured ? ink : paper2, color: t.featured ? paper : ink, padding: '28px 26px', borderRadius: 14, border: t.featured ? `1px solid ${ink}` : `1px solid ${rule}` }}>
+            <div className="marq-kicker" style={{ color: t.featured ? accent : muted }}>{t.lab}</div>
+            <h3 style={{ fontFamily:'var(--display)', fontSize: 36, fontWeight: 500, letterSpacing:'-0.02em', marginTop: 14 }}>{t.name}</h3>
+            <p style={{ fontSize: 14, lineHeight: 1.6, color: t.featured ? 'rgba(241,239,231,0.7)' : muted, marginTop: 16 }}>{t.body}</p>
+            {t.cta && <a className="marq-cta marq-link" href={t.cta.href} style={{ marginTop: 24, display:'inline-block', padding:'12px 18px', background: accent, color: paper, fontSize: 13, fontWeight: 500, borderRadius: 999 }}>{t.cta.label} →</a>}
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <Header current="engine" lang="fr" langHref="/llll/" />
+      <Hero />
+      <Modes />
+      <Install />
+      <Commands />
+      <LocalFirst />
+      <Tiers />
+      <Footer lang="fr" />
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

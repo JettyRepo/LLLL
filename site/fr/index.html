@@ -1,64 +1,262 @@
 <!DOCTYPE html>
 <html lang="fr-CA">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Layrix — La couche de conformité intégrée pour l'ère de l'IA</title>
-<meta name="description" content="L'IA construit du logiciel à la vitesse de la lumière. Layrix le garde livrable — une couche de conformité intégrée pour le développement à l'ère de l'IA." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/site-shared.css" />
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Layrix — La couche de conformité intégrée pour l'ère de l'IA</title>
+  <meta name="description" content="L'IA construit du logiciel à la vitesse de la lumière. Layrix garde le tout livrable — une couche de conformité intégrée pour le développement à l'ère de l'IA. Moteur LLLL, évaluation par des experts et habilitation AIGP sur une seule plateforme." />
+  <link rel="alternate" hreflang="en" href="https://layrix.ai/" />
+  <link rel="alternate" hreflang="fr-CA" href="https://layrix.ai/fr/" />
+  <link rel="alternate" hreflang="x-default" href="https://layrix.ai/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <style>
+    :root {
+      --paper: #f1efe7;
+      --paper-2: #fffefa;
+      --ink: #161614;
+      --muted: rgba(22,22,20,0.62);
+      --rule: rgba(22,22,20,0.12);
+      --accent: #2f6f4a;
+      --display: 'Fraunces', 'Tiempos Headline', Georgia, serif;
+      --sans: 'Inter Tight', -apple-system, system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    .marq-link { text-decoration: none; }
+    .marq-link:hover { color: var(--accent); }
+    .marq-cta { transition: transform .12s ease, background .15s ease, color .15s ease; }
+    .marq-cta:hover { transform: translateY(-1px); }
+    .marq-card { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+    .marq-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(22,22,20,0.06); border-color: rgba(22,22,20,0.22); }
+    .marq-strip { animation: stripScroll 38s linear infinite; }
+    @keyframes stripScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) {
+      .marq-strip { animation: none; }
+      .marq-dot { animation: none !important; }
+    }
+    .marq-dot { animation: marqDot 2.4s ease-in-out infinite; }
+    @keyframes marqDot { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.4; } }
+    h1, h2, h3 { letter-spacing: -0.03em; }
+    nav a { white-space: nowrap; }
+    .marq-underline { background-image: linear-gradient(to top, var(--accent) 0, var(--accent) 4px, transparent 4px); background-repeat: no-repeat; background-size: 100% 100%; background-position: 0 0.08em; padding-bottom: 0.08em; }
+    ::selection { background: var(--accent); color: var(--paper); }
+    @media (max-width: 900px) {
+      .marq-grid-3 { grid-template-columns: 1fr !important; }
+      .marq-grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+      .marq-section-row { grid-template-columns: 1fr !important; }
+      .marq-section-row > div:first-child { font-size: 80px !important; }
+      .marq-h2 { font-size: 44px !important; }
+      .marq-h1 { font-size: 60px !important; }
+    }
+  </style>
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel" src="/site-chrome.jsx"></script>
+
 <script type="text/babel">
-const ink='var(--ink)', paper='var(--paper)', paper2='var(--paper-2)', muted='var(--muted)', rule='var(--rule)', accent='var(--accent)';
+const accent = 'var(--accent)';
+const ink = 'var(--ink)';
+const paper = 'var(--paper)';
+const paper2 = 'var(--paper-2)';
+const muted = 'var(--muted)';
+const rule = 'var(--rule)';
+
+function Logo() {
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="28" viewBox="0 0 672 480" shapeRendering="crispEdges" aria-hidden="true">
+        <rect x="96" y="0" width="64" height="32" fill="#d97757"/><rect x="480" y="0" width="128" height="32" fill="#d97757"/>
+        <rect x="64" y="32" width="128" height="32" fill="#d97757"/><rect x="448" y="32" width="192" height="32" fill="#d97757"/>
+        <rect x="32" y="64" width="192" height="32" fill="#d97757"/><rect x="416" y="64" width="224" height="32" fill="#d97757"/>
+        <rect x="0" y="96" width="256" height="32" fill="#d97757"/><rect x="384" y="96" width="256" height="32" fill="#d97757"/>
+        <rect x="0" y="128" width="640" height="32" fill="#d97757"/>
+        <rect x="0" y="160" width="640" height="32" fill="#d97757"/>
+        <rect x="0" y="192" width="96" height="32" fill="#d97757"/><rect x="96" y="192" width="64" height="32" fill="#0a0a0a"/><rect x="160" y="192" width="64" height="32" fill="#d97757"/><rect x="224" y="192" width="64" height="32" fill="#0a0a0a"/><rect x="288" y="192" width="64" height="32" fill="#d97757"/><rect x="352" y="192" width="64" height="32" fill="#0a0a0a"/><rect x="416" y="192" width="64" height="32" fill="#d97757"/><rect x="480" y="192" width="64" height="32" fill="#0a0a0a"/><rect x="544" y="192" width="128" height="32" fill="#d97757"/>
+        <rect x="0" y="224" width="96" height="32" fill="#d97757"/><rect x="96" y="224" width="64" height="32" fill="#0a0a0a"/><rect x="160" y="224" width="64" height="32" fill="#d97757"/><rect x="224" y="224" width="64" height="32" fill="#0a0a0a"/><rect x="288" y="224" width="64" height="32" fill="#d97757"/><rect x="352" y="224" width="64" height="32" fill="#0a0a0a"/><rect x="416" y="224" width="64" height="32" fill="#d97757"/><rect x="480" y="224" width="64" height="32" fill="#0a0a0a"/><rect x="544" y="224" width="128" height="32" fill="#d97757"/>
+        <rect x="0" y="256" width="96" height="32" fill="#d97757"/><rect x="96" y="256" width="64" height="32" fill="#0a0a0a"/><rect x="160" y="256" width="64" height="32" fill="#d97757"/><rect x="224" y="256" width="64" height="32" fill="#0a0a0a"/><rect x="288" y="256" width="64" height="32" fill="#d97757"/><rect x="352" y="256" width="64" height="32" fill="#0a0a0a"/><rect x="416" y="256" width="64" height="32" fill="#d97757"/><rect x="480" y="256" width="64" height="32" fill="#0a0a0a"/><rect x="544" y="256" width="128" height="32" fill="#d97757"/>
+        <rect x="0" y="288" width="96" height="32" fill="#d97757"/><rect x="96" y="288" width="96" height="32" fill="#0a0a0a"/><rect x="192" y="288" width="32" height="32" fill="#d97757"/><rect x="224" y="288" width="96" height="32" fill="#0a0a0a"/><rect x="320" y="288" width="32" height="32" fill="#d97757"/><rect x="352" y="288" width="96" height="32" fill="#0a0a0a"/><rect x="448" y="288" width="32" height="32" fill="#d97757"/><rect x="480" y="288" width="96" height="32" fill="#0a0a0a"/><rect x="576" y="288" width="96" height="32" fill="#d97757"/>
+        <rect x="0" y="320" width="640" height="32" fill="#d97757"/>
+        <rect x="32" y="352" width="608" height="32" fill="#d97757"/>
+        <rect x="32" y="384" width="576" height="32" fill="#d97757"/>
+        <rect x="64" y="416" width="128" height="32" fill="#d97757"/><rect x="448" y="416" width="128" height="32" fill="#d97757"/>
+        <rect x="64" y="448" width="128" height="32" fill="#d97757"/><rect x="448" y="448" width="128" height="32" fill="#d97757"/>
+      </svg>
+      <span style={{ fontWeight: 700, letterSpacing: '-0.01em', fontSize: 19 }}>Layrix</span>
+    </span>
+  );
+}
+
+function Header() {
+  return (
+    <header style={{ padding: '22px clamp(20px, 5vw, 56px)', display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', borderBottom: `1px solid ${ink}`, position: 'sticky', top: 0, background: 'rgba(241,239,231,0.86)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', zIndex: 50 }}>
+      <Logo />
+      <nav style={{ display: 'flex', gap: 28, fontSize: 14 }}>
+        <a className="marq-link" href="/fr/llll/">Moteur</a>
+        <a className="marq-link" href="/fr/experts/">Experts</a>
+        <a className="marq-link" href="/fr/academy/">Académie</a>
+        <a className="marq-link" href="https://github.com/JettyRepo/LLLL">GitHub</a>
+      </nav>
+      <div style={{ justifySelf: 'end', display: 'flex', gap: 14, alignItems: 'center' }}>
+        <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: muted, letterSpacing: '0.14em' }}>FR · <a className="marq-link" href="/" style={{ opacity: 0.6 }}>EN</a></span>
+        <a className="marq-cta marq-link" href="/fr/register" style={{ padding: '10px 18px', background: ink, color: paper, fontSize: 13, fontWeight: 500, borderRadius: 999 }}>Commencer →</a>
+      </div>
+    </header>
+  );
+}
 
 function Hero() {
+  const stripItems = ['domaines déclenchés', 'écarts fichier:ligne', 'mémoire prêt pour le juriste', 'local d’abord', 'une seule commande', 'AIGP BoK 2.1.0'];
   return (
-    <section style={{ padding: '88px clamp(20px, 5vw, 56px) 0', textAlign:'center' }}>
-      <div className="marq-tag">
-        <span className="marq-dot" style={{ width:6, height:6, borderRadius:3, background:accent, display:'inline-block' }} />
-        Layrix · Plateforme de conformité IA · 2026
-      </div>
-      <h1 style={{ fontFamily:'var(--display)', fontWeight:500, fontSize:'clamp(56px, 9vw, 144px)', lineHeight:0.92, letterSpacing:'-0.05em', margin:'40px auto 0', maxWidth: 1200 }}>
-        L'IA construit vite.<br/>
-        <span style={{ fontStyle:'italic', color: accent }}>Layrix garde le tout livrable.</span>
+    <section style={{ padding: '96px clamp(20px, 5vw, 56px) 0', textAlign: 'center' }}>
+      <h1 className="marq-h1" style={{ fontFamily: 'var(--display)', fontWeight: 500, fontSize: 'clamp(56px, 8.4vw, 124px)', lineHeight: 1.02, letterSpacing: '-0.045em', margin: '0 auto', maxWidth: 1200 }}>
+        Construisez à la <span style={{ fontStyle: 'italic', fontWeight: 400, color: accent }}>vitesse de l’IA.</span><br />
+        Restez <span className="marq-underline">conformes</span> dès la conception.
       </h1>
-      <p style={{ fontSize:19, lineHeight:1.6, color:muted, maxWidth: 760, margin:'40px auto 0' }}>
-        Une couche de conformité intégrée pour le développement à l'ère de l'IA. Le moteur <strong style={{ color: ink }}>LLLL</strong>, l'<strong style={{ color: ink }}>évaluation par des experts</strong>, et la <strong style={{ color: ink }}>préparation AIGP</strong> — dans une même plateforme.
+      <p style={{ fontSize: 19, lineHeight: 1.55, color: muted, maxWidth: 640, margin: '56px auto 0' }}>
+        L’IA livre du logiciel plus vite que la conformité ne peut suivre. Layrix est la couche qui détecte les risques de confidentialité, de sécurité et de gouvernance IA pendant que vous construisez — pas après le lancement.
       </p>
-      <div style={{ display:'flex', gap:12, justifyContent:'center', marginTop: 40, flexWrap:'wrap' }}>
-        <a className="marq-cta marq-link" href="/llll/" style={{ padding:'16px 28px', background:ink, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Découvrir LLLL →</a>
-        <a className="marq-cta marq-link" href="/academy/" style={{ padding:'16px 28px', border:`1px solid ${ink}`, color:ink, fontSize:14, fontWeight:500, borderRadius:999 }}>Préparation AIGP</a>
+      <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 44, flexWrap: 'wrap' }}>
+        <a className="marq-cta marq-link" href="/fr/register" style={{ padding: '16px 28px', background: ink, color: paper, fontSize: 14, fontWeight: 500, borderRadius: 999 }}>Inscrivez-vous à LLLL — gratuit →</a>
+        <a className="marq-cta marq-link" href="/fr/academy/buy/" style={{ padding: '16px 28px', border: `1px solid ${ink}`, color: ink, fontSize: 14, fontWeight: 500, borderRadius: 999 }}>S’inscrire à l’Académie →</a>
+      </div>
+      <div style={{ marginTop: 84, borderTop: `1px solid ${ink}`, borderBottom: `1px solid ${ink}`, overflow: 'hidden', padding: '20px 0' }}>
+        <div className="marq-strip" style={{ display: 'flex', whiteSpace: 'nowrap', willChange: 'transform' }}>
+          {[...stripItems, ...stripItems, ...stripItems, ...stripItems].map((s, i) => (
+            <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 24, padding: '0 22px', fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase', color: muted, fontFamily: 'var(--mono)' }}>
+              {s}<span style={{ color: accent }}>✦</span>
+            </span>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-function Products() {
+function SectionRow({ idx, kicker, title, lead, children }) {
+  return (
+    <section style={{ padding: '120px clamp(20px, 5vw, 56px) 0', maxWidth: 1400, margin: '0 auto' }}>
+      <div className="marq-section-row" style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: 40, alignItems: 'start' }}>
+        <div style={{ fontFamily: 'var(--display)', fontSize: 140, lineHeight: 0.85, fontWeight: 400, color: accent, fontStyle: 'italic' }}>{idx}</div>
+        <div>
+          <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: muted, letterSpacing: '0.2em', textTransform: 'uppercase' }}>{kicker}</div>
+          <h2 className="marq-h2" style={{ fontFamily: 'var(--display)', fontWeight: 500, fontSize: 'clamp(40px, 5vw, 72px)', lineHeight: 0.96, marginTop: 14, maxWidth: 1000 }}>{title}</h2>
+          {lead && <p style={{ fontSize: 17, lineHeight: 1.6, color: muted, maxWidth: 760, marginTop: 28 }}>{lead}</p>}
+        </div>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function LLLLDemo() {
+  return (
+    <SectionRow idx="00" kicker="Découvrez /llll en action"
+      title={<>Voyez le moteur <span style={{ fontStyle: 'italic', color: accent }}>à l’œuvre.</span></>}
+      lead={<>Une courte démonstration de <code style={{ fontFamily: 'var(--mono)', fontSize: '0.9em', background: paper2, padding: '2px 6px', borderRadius: 4, border: `1px solid ${rule}` }}>/llll</code>, le « skill » Claude Code au cœur de Layrix — validation d’idée, garde des dépendances, et le mémoire que vous remettez au service juridique.</>}>
+      <div style={{ marginTop: 56, border: `1px solid ${rule}`, borderRadius: 14, overflow: 'hidden', background: '#0e0d0b', boxShadow: '0 24px 64px rgba(22,22,20,0.12)' }}>
+        <iframe src="/llll/demo.html" loading="lazy" title="/llll Claude Code skill — démo"
+          style={{ width: '100%', height: 'clamp(620px, 80vh, 880px)', border: 'none', display: 'block' }} />
+      </div>
+    </SectionRow>
+  );
+}
+
+function Gap() {
   const items = [
-    ['Moteur', 'LLLL', 'Tapez /llll sur une fonctionnalité, un PRD, un dépôt — recevez les domaines déclenchés, les écarts fichier:ligne, les actions assignées, et le mémo prêt pour le juriste.', '/llll/', 'Voir le moteur →'],
-    ['Service humain', 'Évaluation par des experts', "Quand l'enjeu est élevé — un lancement réglementé, un audit de conseil — un spécialiste de Layrix lit votre dossier, pèse les obligations et rédige l'avis de conformité sur lequel le projet repose.", '/experts/', 'Demander un devis →'],
-    ['Habilitation', 'Préparation AIGP', "Un système de préparation d'examen complet : 500+ points de connaissance dans six modes d'apprentissage interconnectés. 200 $ une seule fois.", '/academy/', "Voir le contenu →"],
+    ['Le coût de construction s’effondre', 'Les outils d’IA transforment des semaines d’ingénierie en jours. Un seul développeur livre du logiciel de production avec la puissance d’une équipe.'],
+    ['Le risque arrive plus tôt', 'Les écarts de confidentialité, de sécurité et de gouvernance IA atterrissent dans le code dès le premier jour — bien avant que le juridique, l’audit ou la conformité y jettent un œil.'],
+    ['La revue arrive toujours à la fin', 'Évaluations manuelles. Engagements de 5 000 $ à 500 000 $. Délais lents. Conçus pour une époque où livrer du logiciel était difficile.'],
   ];
   return (
-    <SectionRow idx="01" kicker="La plateforme · trois piliers"
-      title={<>Une stratégie. <span style={{ fontStyle:'italic', color: accent }}>Trois pratiques.</span></>}
-      lead="Le moteur trouve. Les humains tranchent. La formation prépare l'équipe à les utiliser tous les deux.">
-      <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:16, marginTop: 56 }}>
-        {items.map(([tag, h, b, href, cta]) => (
-          <a key={h} className="marq-card marq-link" href={href} style={{ display:'block', background: paper2, padding:'32px 28px', borderRadius:14, border:`1px solid ${rule}` }}>
-            <div className="marq-kicker">{tag}</div>
-            <h3 style={{ fontFamily:'var(--display)', fontSize: 32, fontWeight: 500, marginTop: 14, letterSpacing:'-0.025em', lineHeight: 1.1 }}>{h}</h3>
-            <p style={{ fontSize: 14.5, lineHeight: 1.6, color: muted, marginTop: 14 }}>{b}</p>
-            <div style={{ marginTop: 24, fontSize: 13, color: accent, fontWeight: 500 }}>{cta}</div>
-          </a>
+    <SectionRow idx="01" kicker="L’écart"
+      title={<>La production de logiciel a changé. <span style={{ color: muted }}>La conformité, non.</span></>}
+      lead="Un développeur, une petite équipe, ou même un agent IA peuvent livrer plus vite que jamais. La plupart des équipes traitent encore la conformité comme un problème de fin de cycle — qui ne refait surface qu’au moment de la due diligence, des demandes clients ou des objections réglementaires. À ce stade, ce n’est plus de la guidance. C’est de la reprise.">
+      <div className="marq-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 56 }}>
+        {items.map(([h, b], i) => (
+          <div key={h} className="marq-card" style={{ background: paper2, padding: '32px 26px', borderRadius: 14, border: `1px solid ${rule}` }}>
+            <div style={{ fontFamily: 'var(--display)', fontSize: 56, lineHeight: 1, color: accent, fontWeight: 500 }}>{String(i + 1).padStart(2, '0')}</div>
+            <h3 style={{ fontFamily: 'var(--display)', fontSize: 26, fontWeight: 500, marginTop: 24, lineHeight: 1.15 }}>{h}</h3>
+            <p style={{ fontSize: 14.5, lineHeight: 1.6, color: muted, marginTop: 12 }}>{b}</p>
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function Engines() {
+  const engines = [
+    {
+      tag: 'Moteur · Freemium', name: 'LLLL', sub: 'Moteur de conformité',
+      body: 'De l’esquisse de fonctionnalité au mémoire prêt pour le juriste. Domaines déclenchés, écarts fichier:ligne, actions assignées — tout depuis votre CLI.',
+      bullets: ['Vérification quotidienne + revue approfondie', 'Garde-fous au push et à la mise en production qui bloquent les fuites', 'Aujourd’hui sur Claude Code · opencode et Codex CLI bientôt', 'Local d’abord — votre code reste sur votre machine ; nous ne le voyons jamais'],
+      cta: 'Explorer LLLL', href: '/fr/llll/', tone: '#2f6f4a',
+    },
+    {
+      tag: 'Réseau · À l’engagement', name: 'Experts', sub: 'Évaluation par des experts Layrix',
+      body: 'Pour les décisions qu’une machine ne peut pas prendre. Un spécialiste senior nommé examine votre dossier et rédige un avis de conformité structuré et cité.',
+      bullets: ['Spécialistes seniors en confidentialité et gouvernance IA', 'Citations rattachées aux obligations et normes précises', 'Engagements ciblés — lancements réglementés, audits du conseil, contrats', 'Confidentiel par défaut · NDA disponible sur demande'],
+      cta: 'Demander un devis', href: '/fr/experts/', tone: '#a23a1b',
+    },
+    {
+      tag: 'Habilitation · Programmes', name: 'Académie',
+      body: 'Transformez l’AIGP d’un concept de spécialistes en capacité interne — pour les dirigeants et les équipes transversales qui doivent concevoir, déployer et gérer l’IA de manière responsable.',
+      program: {
+        kicker: 'Parcours AIGP',
+        title: 'JC AIGP Quick Pass 2026',
+        bullets: ['Calibré sur le BoK 2.1.0', '200 $US une seule fois · remboursement 30 jours'],
+      },
+      cta: 'S’inscrire à l’Académie', href: '/fr/academy/buy/', tone: '#3a4a6b',
+    },
+  ];
+  return (
+    <SectionRow idx="02" kicker="La couche"
+      title={<>Une couche. <span style={{ fontStyle: 'italic', color: accent }}>Trois moteurs.</span></>}
+      lead="Pas un tableau de bord que vous visitez — une couche qui voyage avec votre code. Choisissez le moteur qui correspond à cette étape de votre travail, ou utilisez les trois ensemble.">
+      <div className="marq-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 56 }}>
+        {engines.map((e) => (
+          <div key={e.name} className="marq-card" style={{ background: paper2, borderRadius: 14, padding: '28px 24px 24px', border: `1px solid ${rule}`, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+            <div aria-hidden="true" style={{ position: 'absolute', top: -40, right: -40, width: 140, height: 140, borderRadius: 70, background: e.tone, opacity: 0.08 }} />
+            <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: e.tone, letterSpacing: '0.18em', textTransform: 'uppercase' }}>{e.tag}</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
+              <h3 style={{ fontFamily: 'var(--display)', fontSize: 44, fontWeight: 500, letterSpacing: '-0.025em', lineHeight: 1 }}>{e.name}</h3>
+              {e.sub && <span style={{ fontSize: 14, color: muted }}>{e.sub}</span>}
+            </div>
+            <p style={{ fontSize: 14.5, lineHeight: 1.6, color: muted, marginTop: 16 }}>{e.body}</p>
+            {e.bullets && (
+              <ul style={{ listStyle: 'none', padding: 0, margin: '18px 0 22px', display: 'grid', gap: 8 }}>
+                {e.bullets.map((b) => (
+                  <li key={b} style={{ display: 'grid', gridTemplateColumns: '20px 1fr', gap: 8, fontSize: 13, lineHeight: 1.5 }}>
+                    <span style={{ color: e.tone, fontWeight: 700 }}>✓</span><span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {e.program && (
+              <div style={{ marginTop: 18, marginBottom: 22, padding: '16px 16px 18px', background: paper, borderRadius: 10, border: `1px solid ${rule}` }}>
+                <div style={{ fontFamily: 'var(--mono)', fontSize: 10, color: e.tone, letterSpacing: '0.2em', textTransform: 'uppercase' }}>{e.program.kicker}</div>
+                <div style={{ fontFamily: 'var(--display)', fontSize: 20, fontWeight: 500, letterSpacing: '-0.02em', marginTop: 4, lineHeight: 1.2 }}>{e.program.title}</div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '12px 0 0', display: 'grid', gap: 7 }}>
+                  {e.program.bullets.map((b) => (
+                    <li key={b} style={{ display: 'grid', gridTemplateColumns: '20px 1fr', gap: 8, fontSize: 12.5, lineHeight: 1.5 }}>
+                      <span style={{ color: e.tone, fontWeight: 700 }}>✓</span><span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <a className="marq-cta marq-link" href={e.href} style={{ marginTop: 'auto', padding: '12px 18px', background: ink, color: paper, fontSize: 13, fontWeight: 500, borderRadius: 999, display: 'inline-flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>{e.cta}</span><span>→</span>
+            </a>
+          </div>
         ))}
       </div>
     </SectionRow>
@@ -66,30 +264,82 @@ function Products() {
 }
 
 function Why() {
+  const items = [
+    ['Avancez plus vite, avec confiance', 'Les signaux de conformité arrivent pendant que la conception est encore peu coûteuse à modifier — pas au lancement, pas à la due diligence.'],
+    ['Réduisez la reprise coûteuse', 'Chaque écart détecté à la conception est un écart qui ne deviendra ni incident, ni constat d’audit, ni note au conseil.'],
+    ['Gagnez la confiance des acheteurs et des investisseurs', 'Des preuves citables de votre gestion de la confidentialité, du risque IA et de la sécurité — sur demande.'],
+    ['Bâtissez des équipes qui passent à l’échelle', 'L’habilitation AIGP transforme des engagements ponctuels en maturité interne de conformité qui se capitalise.'],
+  ];
   return (
-    <SectionRow idx="02" kicker="Pourquoi maintenant"
-      title={<>Le code arrive plus vite que <span style={{ fontStyle:'italic', color: accent }}>les régulateurs.</span></>}
-      lead="Les outils d'IA générative produisent un volume de logiciel sans précédent. Les obligations — RGPD, Loi sur l'IA de l'UE, NIST AI RMF, lois sectorielles — ne suivent pas la cadence. Layrix comble cet écart : un contrôle continu, là où le code est écrit.">
-      <div style={{ marginTop: 48, background: ink, color: paper, padding: 'clamp(36px, 5vw, 64px)', borderRadius: 16 }}>
-        <p style={{ fontFamily:'var(--display)', fontSize: 'clamp(24px, 3vw, 40px)', fontWeight: 400, lineHeight: 1.35, letterSpacing:'-0.02em', maxWidth: 980 }}>
-          « Ce qui vous fait <em style={{ color: accent }}>poursuivre, sanctionner ou retirer du App Store</em> — détecté avant que le code ne quitte votre machine. »
-        </p>
+    <SectionRow idx="03" kicker="Pourquoi cela compte"
+      title={<>Avancez à la vitesse de l’IA <span style={{ fontStyle: 'italic', color: accent }}>sans le payer plus tard.</span></>}>
+      <div className="marq-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, marginTop: 56, background: ink, color: paper, borderRadius: 16, overflow: 'hidden' }}>
+        {items.map(([h, b], i) => (
+          <div key={h} style={{ padding: '36px 26px', borderRight: `1px solid rgba(255,255,255,0.1)` }}>
+            <div style={{ fontFamily: 'var(--display)', fontSize: 36, color: accent, fontWeight: 500 }}>0{i + 1}</div>
+            <h3 style={{ fontFamily: 'var(--display)', fontSize: 22, fontWeight: 500, marginTop: 18, lineHeight: 1.2 }}>{h}</h3>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, color: 'rgba(241,239,231,0.7)', marginTop: 10 }}>{b}</p>
+          </div>
+        ))}
       </div>
     </SectionRow>
+  );
+}
+
+function ClosingCTA() {
+  return (
+    <section style={{ padding: '120px clamp(20px, 5vw, 56px) 96px', maxWidth: 1400, margin: '0 auto' }}>
+      <div style={{ textAlign: 'center', padding: 'clamp(56px, 8vw, 96px) 32px', borderRadius: 20, background: paper2, border: `1px solid ${rule}` }}>
+        <h2 style={{ fontFamily: 'var(--display)', fontWeight: 500, fontSize: 'clamp(44px, 6vw, 84px)', lineHeight: 0.95, letterSpacing: '-0.035em', maxWidth: 900, margin: '0 auto' }}>
+          Une nouvelle couche pour une <span style={{ fontStyle: 'italic', color: accent }}>nouvelle ère de construction.</span>
+        </h2>
+        <p style={{ fontSize: 18, lineHeight: 1.6, color: muted, maxWidth: 580, margin: '24px auto 0' }}>
+          L’IA a permis à chaque équipe de construire plus vite. Layrix permet de construire de manière responsable.
+        </p>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 40, flexWrap: 'wrap' }}>
+          <a className="marq-cta marq-link" href="/fr/register" style={{ padding: '16px 28px', background: ink, color: paper, fontSize: 14, fontWeight: 500, borderRadius: 999 }}>Inscrivez-vous à LLLL — gratuit →</a>
+          <a className="marq-cta marq-link" href="/fr/academy/buy/" style={{ padding: '16px 28px', border: `1px solid ${ink}`, color: ink, fontSize: 14, fontWeight: 500, borderRadius: 999 }}>S’inscrire à l’Académie →</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer style={{ padding: '48px clamp(20px, 5vw, 56px) 56px', borderTop: `1px solid ${ink}` }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 32, fontSize: 13.5, color: muted }}>
+        <div>
+          <Logo />
+          <div style={{ marginTop: 14 }}>1045 rue Howe, Vancouver (C.-B.) V6Z 2A9, Canada</div>
+          <div style={{ marginTop: 6 }}><a className="marq-link" href="mailto:info@layrix.ai">info@layrix.ai</a></div>
+        </div>
+        <div><div style={{ color: ink, fontWeight: 600 }}>Produits</div><div style={{ marginTop: 10 }}><a className="marq-link" href="/fr/llll/">LLLL</a></div><div><a className="marq-link" href="/fr/experts/">Évaluation par des experts</a></div><div><a className="marq-link" href="/fr/academy/">Académie</a></div></div>
+        <div><div style={{ color: ink, fontWeight: 600 }}>Juridique</div><div style={{ marginTop: 10 }}><a className="marq-link" href="/fr/terms">Conditions d’utilisation</a></div><div><a className="marq-link" href="/fr/privacy">Politique de confidentialité</a></div><div><a className="marq-link" href="/fr/acceptable-use">Politique d’utilisation acceptable</a></div></div>
+        <div><div style={{ color: ink, fontWeight: 600 }}>Source</div><div style={{ marginTop: 10 }}><a className="marq-link" href="https://github.com/JettyRepo/LLLL" rel="noopener noreferrer">github.com/JettyRepo/LLLL</a></div></div>
+      </div>
+      <div style={{ marginTop: 32, paddingTop: 18, borderTop: `1px solid ${rule}`, fontSize: 12, color: muted, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <span>© 2026 Caerus Enterprises Inc. Tous droits réservés.</span>
+      </div>
+    </footer>
   );
 }
 
 function App() {
   return (
     <>
-      <Header current="home" langHref="../index.html" langActive="FR" langOther="EN" />
+      <Header />
       <Hero />
-      <Products />
+      <LLLLDemo />
+      <Gap />
+      <Engines />
       <Why />
-      <Footer extra={<p style={{ marginTop: 16, fontSize: 11, color: muted, lineHeight: 1.6 }}>Caerus Enterprises Inc. · 1045 Howe St, Vancouver, BC V6Z 2A9, Canada</p>} />
+      <ClosingCTA />
+      <Footer />
     </>
   );
 }
+
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
 </body>

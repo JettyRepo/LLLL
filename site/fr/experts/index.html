@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Évaluation par des experts · Layrix</title>
+<meta name="description" content="Revue humaine pour ce que LLLL ne peut pas signer. Des spécialistes seniors nommés — droit de la vie privée, gouvernance IA, ingénierie de la sécurité. Au projet, sur devis." />
+<link rel="alternate" hreflang="en" href="https://layrix.ai/experts/" />
+<link rel="alternate" hreflang="fr-CA" href="https://layrix.ai/fr/experts/" />
+<link rel="alternate" hreflang="x-default" href="https://layrix.ai/experts/" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/site-shared.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="/site-chrome.jsx"></script>
+<script type="text/babel">
+const ink='var(--ink)', paper='var(--paper)', paper2='var(--paper-2)', muted='var(--muted)', rule='var(--rule)', rust='var(--rust)';
+
+function Hero() {
+  return (
+    <section style={{ padding: '88px clamp(20px, 5vw, 56px) 0', textAlign:'center' }}>
+      <div className="marq-tag" style={{ borderColor: rust, color: rust }}>Évaluation par des experts Layrix</div>
+      <h1 style={{ fontFamily:'var(--display)', fontWeight:500, fontSize:'clamp(44px, 6.4vw, 92px)', lineHeight:1.04, letterSpacing:'-0.04em', margin:'36px auto 0', maxWidth: 1200 }}>
+        L’IA repère les signaux. Un humain prend la décision.<br/><span style={{ fontStyle:'italic', color: rust }}>Des spécialistes nommés — responsables, identifiés, engagés.</span>
+      </h1>
+      <p style={{ fontSize:19, lineHeight:1.6, color:muted, maxWidth: 760, margin:'40px auto 0' }}>
+        Quand l’enjeu est élevé — un lancement réglementé, un audit du conseil, une clause de contrat qu’un outil automatisé ne peut pas raisonner — un spécialiste Layrix examine votre dossier, pèse les obligations, et rédige l’avis de conformité sur lequel le projet repose.
+      </p>
+      <a className="marq-cta marq-link" href="mailto:review@layrix.ai?subject=Demande%20d%27%C3%A9valuation%20par%20expert" style={{ display:'inline-block', marginTop: 40, padding:'16px 28px', background:ink, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Demander un devis →</a>
+    </section>
+  );
+}
+
+function Steps() {
+  const steps = [
+    ['Étape 01', 'Soumettre', 'À partir de vos constats, utilisez /llll brief pour générer le document de passation — résumé du projet, signaux observés, preuves manquantes, questions juridiques ouvertes. Envoyez-le-nous.'],
+    ['Étape 02', 'Devis', 'Nous renvoyons un devis avec un périmètre défini, un livrable et un échéancier propre au projet. Ce n’est qu’après acceptation que nous vous demandons votre dossier complet et les preuves à l’appui — DPIA en cours, contrats, documents de gouvernance, évaluations antérieures.'],
+    ['Étape 03', 'Livrer', 'Nos spécialistes examinent votre dossier et les pièces à l’appui, puis rédigent un avis de conformité structuré. Vous recevez un PDF signé par le spécialiste senior nommé. Une séance de revue verbale est offerte en option, sur devis séparé.'],
+  ];
+  return (
+    <SectionRow idx="01" kicker="Comment ça fonctionne" tone={rust}
+      title={<>Trois étapes. <span style={{ fontStyle:'italic', color: rust }}>Aucune surprise.</span></>}>
+      <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap: 0, marginTop: 56, border: `1px solid ${ink}`, borderRadius: 16, overflow:'hidden' }}>
+        {steps.map(([n, h, b], i) => (
+          <div key={n} style={{ padding: '36px 32px', background: paper2, borderLeft: i ? `1px solid ${rule}` : 'none' }}>
+            <div className="marq-kicker" style={{ color: rust }}>{n}</div>
+            <h3 style={{ fontFamily:'var(--display)', fontSize: 32, fontWeight: 500, marginTop: 14, letterSpacing:'-0.025em' }}>{h}</h3>
+            <p style={{ fontSize: 14.5, lineHeight: 1.65, color: muted, marginTop: 14 }}>{b}</p>
+          </div>
+        ))}
+      </div>
+    </SectionRow>
+  );
+}
+
+function WhatGet() {
+  const items = [
+    ['Avis de conformité écrit', 'Enjeux, sévérité, citations d’obligations précises (articles du RGPD, dispositions de la Loi sur l’IA de l’UE, fonctions du NIST AI RMF, règlements sectoriels) et remédiations recommandées rattachées aux constats de votre dossier.'],
+    ['PDF signé par l’expert', 'L’avis est livré sous forme de PDF signé par le spécialiste senior nommé qui l’a rédigé, étiqueté avec l’identifiant de votre engagement pour votre piste d’audit. À conserver.'],
+  ];
+  const addons = [
+    ['Séance de revue verbale avec le spécialiste nommé', 'Une rencontre en direct où le praticien parcourt l’avis avec votre équipe et répond à ses questions.'],
+    ['Nouvelle revue d’un dossier mis à jour', 'Après mise en œuvre des remédiations recommandées, le même spécialiste examine le dossier mis à jour et émet un avis de suivi.'],
+    ['Tours additionnels de Q&R ou de révision', 'Tours écrits additionnels au-delà de l’avis initial — clarifications, extensions de périmètre ou constats revisités.'],
+  ];
+  return (
+    <SectionRow idx="02" kicker="Ce que vous recevez" tone={rust}
+      title={<>L’avis est inclus. <span style={{ fontStyle:'italic', color: rust }}>Le reste, sur devis.</span></>}>
+      <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap: '14px 32px', marginTop: 48 }}>
+        {items.map(([h, b]) => (
+          <div key={h} style={{ padding: '24px 0', borderTop: `1px solid ${rule}` }}>
+            <h4 style={{ fontFamily:'var(--display)', fontSize: 24, fontWeight: 500, marginBottom: 8, letterSpacing:'-0.02em' }}>{h}</h4>
+            <p style={{ fontSize: 14.5, color: muted, lineHeight: 1.6 }}>{b}</p>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 48, padding: '28px 32px', background: paper2, border: `1px solid ${rule}`, borderRadius: 14 }}>
+        <div className="marq-kicker" style={{ color: rust, marginBottom: 16 }}>Options · sur devis séparé</div>
+        <div style={{ display: 'grid', gap: 20 }}>
+          {addons.map(([h, b]) => (
+            <div key={h}>
+              <h4 style={{ fontFamily:'var(--display)', fontSize: 20, fontWeight: 500, letterSpacing:'-0.02em' }}>{h}</h4>
+              <p style={{ fontSize: 14, color: muted, lineHeight: 1.6, marginTop: 4 }}>{b}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </SectionRow>
+  );
+}
+
+function Reviewers() {
+  return (
+    <SectionRow idx="03" kicker="Expertise senior" tone={rust}
+      title={<>Des spécialistes seniors nommés. <span style={{ fontStyle:'italic', color: rust }}>Pas une équipe de QA.</span></>}>
+      <div style={{ marginTop: 48, background: ink, color: paper, borderRadius: 16, padding: 'clamp(32px, 4vw, 48px)' }}>
+        <p style={{ fontFamily:'var(--display)', fontSize: 'clamp(22px, 2.4vw, 30px)', fontWeight: 400, lineHeight: 1.4, letterSpacing:'-0.015em', maxWidth: 920 }}>
+          Des praticiens seniors avec un parcours en <em style={{ color: 'var(--rust)' }}>droit de la vie privée</em>, <em style={{ color: 'var(--rust)' }}>gouvernance IA</em> et <em style={{ color: 'var(--rust)' }}>conformité d’industrie réglementée</em>. Chaque engagement est dirigé par un praticien désigné ; ses qualifications et son parcours sont divulgués une fois l’engagement signé.
+        </p>
+        <p style={{ fontSize: 15, color: 'rgba(241,239,231,0.7)', marginTop: 28, lineHeight: 1.65, maxWidth: 920 }}>
+          Nous livrons un jugement réglementaire et politique — pas un audit technique. Nos avis citent des obligations précises (articles du RGPD, dispositions de la Loi sur l’IA de l’UE, fonctions du NIST AI RMF, règlements sectoriels) et les rattachent aux constats, décisions et preuves que vous avez fournis dans votre dossier.
+        </p>
+      </div>
+    </SectionRow>
+  );
+}
+
+function Pricing() {
+  return (
+    <SectionRow idx="04" kicker="Tarification" tone={rust}
+      title={<>Au projet. <span style={{ fontStyle:'italic', color: rust }}>Sur devis.</span></>}
+      lead="Une tarification indicative paraîtra ici une fois publiées nos grilles de tarifs. D’ici là, demandez un devis — nous répondrons avec un périmètre et un échéancier propres au projet.">
+      <a className="marq-cta marq-link" href="mailto:review@layrix.ai?subject=Demande%20d%27%C3%A9valuation%20par%20expert" style={{ display:'inline-block', marginTop: 32, padding:'16px 28px', background:rust, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Demander un devis →</a>
+    </SectionRow>
+  );
+}
+
+function FAQ() {
+  const faqs = [
+    ['En quoi est-ce différent d’un audit de code ou d’une revue de sécurité ?', 'Nous livrons un avis de conformité — un jugement réglementaire par un praticien senior nommé sur la conformité de votre projet à ses obligations. Nous n’auditons pas le code source et n’évaluons pas la qualité du code. Notre avis cite des obligations précises (articles du RGPD, dispositions de la Loi sur l’IA de l’UE, fonctions du NIST AI RMF, règlements sectoriels) et les rattache aux constats, décisions et preuves de votre dossier. Un audit de code vous dit si le code est bien écrit. Une évaluation par expert vous dit si le projet a le droit d’être livré.'],
+    ['Dois-je être utilisateur de LLLL ?', 'Non. Un dossier LLLL (généré par /llll brief) accélère notre travail et c’est le format que nous préférons. Mais vous pouvez aussi nous envoyer un dossier préparé manuellement — résumé du projet, juridictions visées, risques observés, preuves à l’appui, et les questions auxquelles vous voulez des réponses.'],
+    ['Quel est le délai de traitement ?', 'Le délai dépend entièrement du périmètre — nombre de juridictions, nombre de questions, profondeur des preuves à l’appui, nouveauté des obligations en cause. Chaque devis comporte un échéancier ferme propre à l’engagement ; nous ne nous engageons pas à un délai générique d’avance.'],
+  ];
+  return (
+    <SectionRow idx="05" kicker="FAQ" tone={rust}
+      title={<>Questions <span style={{ fontStyle:'italic', color: rust }}>courantes.</span></>}>
+      <div style={{ marginTop: 32, maxWidth: 920 }}>
+        {faqs.map(([q, a]) => <details key={q}><summary>{q}</summary><div className="ans">{a}</div></details>)}
+      </div>
+    </SectionRow>
+  );
+}
+
+function App() {
+  return (<><Header current="experts" lang="fr" langHref="/experts/" /><Hero /><Steps /><WhatGet /><Reviewers /><Pricing /><FAQ /><Footer lang="fr" /></>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

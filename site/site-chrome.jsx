@@ -31,24 +31,30 @@ function Logo() {
   );
 }
 
-function Header({ current, langHref = '/fr/', langActive = 'EN', langOther = 'FR' }) {
+function Header({ current, lang = 'en', langHref }) {
+  const isFr = lang === 'fr';
+  const prefix = isFr ? '/fr' : '';
+  const T = isFr
+    ? { engine: 'Moteur', experts: 'Experts', academy: 'Académie', getStarted: 'Commencer →', langActive: 'FR', langOther: 'EN' }
+    : { engine: 'Engine', experts: 'Experts', academy: 'Academy', getStarted: 'Get started →', langActive: 'EN', langOther: 'FR' };
+  const _langHref = langHref || (isFr ? '/' : '/fr/');
   const links = [
-    { href: '/llll/', label: 'Engine', key: 'engine' },
-    { href: '/experts/', label: 'Experts', key: 'experts' },
-    { href: '/academy/', label: 'Academy', key: 'aigp' },
+    { href: `${prefix}/llll/`, label: T.engine, key: 'engine' },
+    { href: `${prefix}/experts/`, label: T.experts, key: 'experts' },
+    { href: `${prefix}/academy/`, label: T.academy, key: 'aigp' },
     { href: 'https://github.com/JettyRepo/LLLL', label: 'GitHub', key: 'docs' },
   ];
   return (
     <header style={{ padding: '22px clamp(20px, 5vw, 56px)', display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', borderBottom: `1px solid ${_ink}`, position: 'sticky', top: 0, background: 'rgba(241,239,231,0.86)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', zIndex: 50 }}>
-      <a className="marq-link" href="/"><Logo /></a>
+      <a className="marq-link" href={isFr ? '/fr/' : '/'}><Logo /></a>
       <nav style={{ display: 'flex', gap: 28, fontSize: 14 }}>
         {links.map(l => (
           <a key={l.key} className="marq-link" href={l.href} style={current === l.key ? { color: _accent, fontWeight: 600 } : null}>{l.label}</a>
         ))}
       </nav>
       <div style={{ justifySelf: 'end', display: 'flex', gap: 14, alignItems: 'center' }}>
-        <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: _muted, letterSpacing: '0.14em' }}>{langActive} · <a className="marq-link" href={langHref} style={{ opacity: 0.6 }}>{langOther}</a></span>
-        <a className="marq-cta marq-link" href="/register" style={{ padding: '10px 18px', background: _ink, color: _paper, fontSize: 13, fontWeight: 500, borderRadius: 999 }}>Get started →</a>
+        <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: _muted, letterSpacing: '0.14em' }}>{T.langActive} · <a className="marq-link" href={_langHref} style={{ opacity: 0.6 }}>{T.langOther}</a></span>
+        <a className="marq-cta marq-link" href={`${prefix}/register`} style={{ padding: '10px 18px', background: _ink, color: _paper, fontSize: 13, fontWeight: 500, borderRadius: 999 }}>{T.getStarted}</a>
       </div>
     </header>
   );
@@ -93,22 +99,27 @@ function PageHero({ tag, title, lead, ctas, microcopy, kicker }) {
   );
 }
 
-function Footer({ extra }) {
+function Footer({ extra, lang = 'en' }) {
+  const isFr = lang === 'fr';
+  const prefix = isFr ? '/fr' : '';
+  const T = isFr
+    ? { products: 'Produits', llllLabel: 'Moteur LLLL', experts: 'Évaluation par des experts', academy: 'Académie', legal: 'Juridique', terms: 'Conditions d’utilisation', privacy: 'Politique de confidentialité', aup: 'Politique d’utilisation acceptable', source: 'Source', address: '1045 rue Howe, Vancouver (C.-B.) V6Z 2A9, Canada', rights: 'Tous droits réservés.' }
+    : { products: 'Products', llllLabel: 'LLLL Engine', experts: 'Expert Review', academy: 'Academy', legal: 'Legal', terms: 'Terms of Service', privacy: 'Privacy Policy', aup: 'Acceptable Use Policy', source: 'Source', address: '1045 Howe St, Vancouver, BC V6Z 2A9, Canada', rights: 'All rights reserved.' };
   return (
     <footer style={{ padding: '96px clamp(20px, 5vw, 56px) 56px', borderTop: `1px solid ${_ink}`, marginTop: 120 }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 32, fontSize: 13.5, color: _muted }}>
         <div>
           <Logo />
-          <div style={{ marginTop: 14 }}>1045 Howe St, Vancouver, BC V6Z 2A9, Canada</div>
+          <div style={{ marginTop: 14 }}>{T.address}</div>
           <div style={{ marginTop: 6 }}><a className="marq-link" href="mailto:info@layrix.ai">info@layrix.ai</a></div>
         </div>
-        <div><div style={{ color: _ink, fontWeight: 600 }}>Products</div><div style={{ marginTop: 10 }}><a className="marq-link" href="/llll/">LLLL Engine</a></div><div><a className="marq-link" href="/experts/">Expert Review</a></div><div><a className="marq-link" href="/academy/">Academy</a></div></div>
-        <div><div style={{ color: _ink, fontWeight: 600 }}>Legal</div><div style={{ marginTop: 10 }}><a className="marq-link" href="/terms">Terms of Service</a></div><div><a className="marq-link" href="/privacy">Privacy Policy</a></div><div><a className="marq-link" href="/acceptable-use">Acceptable Use Policy</a></div></div>
-        <div><div style={{ color: _ink, fontWeight: 600 }}>Source</div><div style={{ marginTop: 10 }}><a className="marq-link" href="https://github.com/JettyRepo/LLLL" rel="noopener noreferrer">github.com/JettyRepo/LLLL</a></div></div>
+        <div><div style={{ color: _ink, fontWeight: 600 }}>{T.products}</div><div style={{ marginTop: 10 }}><a className="marq-link" href={`${prefix}/llll/`}>{T.llllLabel}</a></div><div><a className="marq-link" href={`${prefix}/experts/`}>{T.experts}</a></div><div><a className="marq-link" href={`${prefix}/academy/`}>{T.academy}</a></div></div>
+        <div><div style={{ color: _ink, fontWeight: 600 }}>{T.legal}</div><div style={{ marginTop: 10 }}><a className="marq-link" href={`${prefix}/terms`}>{T.terms}</a></div><div><a className="marq-link" href={`${prefix}/privacy`}>{T.privacy}</a></div><div><a className="marq-link" href={`${prefix}/acceptable-use`}>{T.aup}</a></div></div>
+        <div><div style={{ color: _ink, fontWeight: 600 }}>{T.source}</div><div style={{ marginTop: 10 }}><a className="marq-link" href="https://github.com/JettyRepo/LLLL" rel="noopener noreferrer">github.com/JettyRepo/LLLL</a></div></div>
       </div>
       {extra}
       <div style={{ marginTop: 32, paddingTop: 18, borderTop: `1px solid ${_rule}`, fontSize: 12, color: _muted, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-        <span>© 2026 Caerus Enterprises Inc. All rights reserved.</span>
+        <span>© 2026 Caerus Enterprises Inc. {T.rights}</span>
       </div>
     </footer>
   );
