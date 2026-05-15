@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Privacy Policy · Layrix</title>
+<link rel="alternate" hreflang="en" href="https://layrix.ai/privacy" />
+<link rel="alternate" hreflang="fr-CA" href="https://layrix.ai/fr/privacy" />
+<link rel="alternate" hreflang="x-default" href="https://layrix.ai/privacy" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -31,7 +34,7 @@ const sections = [
   { h: 'Contact', body: <p>Questions about this Privacy Policy? <a className="marq-link" href="mailto:info@layrix.ai" style={{ color: 'var(--accent)' }}>info@layrix.ai</a> · Caerus Enterprises Inc.</p> },
 ];
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <LegalPage title={<>Privacy <span style={{ fontStyle:'italic', color:'var(--accent)' }}>Policy.</span></>} date="April 1, 2026" sections={sections} />
+  <LegalPage title={<>Privacy <span style={{ fontStyle:'italic', color:'var(--accent)' }}>Policy.</span></>} date="April 1, 2026" langHref="/fr/privacy" sections={sections} />
 );
 </script>
 </body>

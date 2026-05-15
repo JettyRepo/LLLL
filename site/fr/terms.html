@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Conditions d’utilisation · Layrix</title>
+<link rel="alternate" hreflang="en" href="https://layrix.ai/terms" />
+<link rel="alternate" hreflang="fr-CA" href="https://layrix.ai/fr/terms" />
+<link rel="alternate" hreflang="x-default" href="https://layrix.ai/terms" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/site-shared.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="/site-chrome.jsx"></script>
+<script type="text/babel" src="/legal-shared.jsx"></script>
+<script type="text/babel">
+const sections = [
+  { h: 'Acceptation des conditions', body: <p>En accédant au Service ou en l’utilisant, vous acceptez d’être lié par les présentes Conditions. Si vous n’acceptez pas, vous ne devez pas accéder au Service ni l’utiliser. Si vous utilisez le Service au nom d’une organisation, vous déclarez avoir le pouvoir de lier cette organisation aux présentes Conditions.</p> },
+  { h: 'Description du service', body: <><p>LLLL est un outil d’analyse de conformité qui fonctionne comme une compétence intégrée à Claude Code. Il effectue des diagnostics de conformité automatisés sur les projets logiciels — analyse de sécurité, analyse de licence, cartographie des flux de données, alignement réglementaire.</p><p>LLLL Guard est un outil en ligne de commande local qui exécute une analyse de conformité aux événements de push git et de release. Guard fonctionne entièrement sur la machine locale de l’utilisateur.</p><p><strong>Important :</strong> LLLL et Guard fournissent des diagnostics de conformité générés par IA. Ils ne fournissent pas d’avis juridique et leurs sorties ne constituent pas des avis juridiques. Le Service est destiné à assister — non à remplacer — les professionnels qualifiés du droit et de la conformité.</p></> },
+  { h: 'Inscription du compte', body: <><p>Certaines fonctionnalités du Service exigent une inscription. L’inscription est gratuite et ne requiert qu’une adresse courriel valide. Vous êtes responsable du maintien de la confidentialité de vos identifiants de compte et de toute activité qui se produit sous votre compte.</p><p>L’inscription est requise pour la visibilité complète des constats de conformité. Les utilisateurs non inscrits reçoivent un résumé limité des résultats.</p></> },
+  { h: 'Utilisation acceptable', body: <p>Votre utilisation du Service est assujettie à la <a className="marq-link" href="/fr/acceptable-use" style={{ color: 'var(--accent)', fontWeight: 500 }}>Politique d’utilisation acceptable</a>, intégrée par renvoi aux présentes Conditions.</p> },
+  { h: 'Licence et propriété intellectuelle', body: <><h3>Votre code.</h3><p>Vous conservez tous les droits de propriété sur votre code source, vos configurations et autres documents que LLLL analyse. Layrix ne revendique aucun droit sur votre code ou vos fichiers de projet.</p><h3>Sorties de LLLL.</h3><p>Les rapports et diagnostics de conformité générés par LLLL sont des analyses générées par IA. Ce ne sont pas des avis juridiques et ils ne s’accompagnent d’aucune garantie d’exactitude.</p><h3>Licence du logiciel.</h3><p>La compétence LLLL, l’outil CLI Guard, les listes de vérification de conformité, les méthodologies de notation, les patrons de scan, les patrons de garde et la documentation associée dans le dépôt LLLL sont sous <a className="marq-link" href="https://github.com/JettyRepo/LLLL/blob/main/LICENSE" style={{ color: 'var(--accent)', fontWeight: 500 }}>licence MIT</a>. Vous êtes libre d’utiliser, copier, modifier, fusionner, publier, distribuer, sous-licencier et vendre des copies du logiciel, y compris à des fins commerciales, sous réserve des conditions de la licence MIT (notamment la préservation de l’avis de droit d’auteur et du texte de licence).</p><h3>Marques.</h3><p>« Layrix », « LLLL », le logo Layrix et « Layrix Academy » sont des marques de Caerus Enterprises Inc. La licence MIT confère des droits sur le code du logiciel ; elle ne confère pas de droits d’utilisation de ces noms ou marques. Les forks et œuvres dérivées ne doivent pas être présentés comme des produits officiels Layrix, ni impliquer un endossement, une certification ou une affiliation avec Caerus Enterprises Inc., sans autorisation écrite préalable.</p><h3>Service hébergé et contenu de l’Académie.</h3><p>La licence MIT couvre le logiciel dans le dépôt LLLL. Elle ne couvre pas les services hébergés par Layrix accessibles via layrix.ai (inscription, livraison des évaluations par des experts, contenu et évaluations de cours de l’Académie), qui sont fournis selon les présentes Conditions.</p></> },
+  { h: 'Exclusion de garantie', body: <><p>LE SERVICE EST FOURNI « TEL QUEL » ET « SELON DISPONIBILITÉ », SANS GARANTIE D’AUCUNE SORTE. LAYRIX REJETTE TOUTES LES GARANTIES, Y COMPRIS LES GARANTIES IMPLICITES DE QUALITÉ MARCHANDE, D’ADÉQUATION À UN USAGE PARTICULIER ET DE NON-CONTREFAÇON.</p><p>Les sorties de LLLL ne remplacent pas un avis juridique professionnel, un audit de conformité ou une évaluation de sécurité par des professionnels qualifiés. Vous êtes seul responsable d’évaluer l’adéquation et l’exactitude de toute analyse de conformité pour vos circonstances particulières.</p></> },
+  { h: 'Limitation de responsabilité', body: <><p>DANS LA MESURE MAXIMALE PERMISE PAR LE DROIT APPLICABLE, LAYRIX ET SES ADMINISTRATEURS, DIRIGEANTS, EMPLOYÉS ET AGENTS NE SERONT PAS RESPONSABLES DES DOMMAGES INDIRECTS, ACCESSOIRES, SPÉCIAUX, CONSÉCUTIFS OU PUNITIFS.</p><p>EN AUCUN CAS LA RESPONSABILITÉ TOTALE DE LAYRIX POUR TOUTES LES RÉCLAMATIONS LIÉES AU SERVICE NE DÉPASSERA LE MONTANT QUE VOUS AVEZ PAYÉ À LAYRIX AU COURS DES DOUZE (12) MOIS PRÉCÉDANT LA RÉCLAMATION, OU CENT DOLLARS CANADIENS (100 $ CA), SELON LE MONTANT LE PLUS ÉLEVÉ.</p></> },
+  { h: 'Service d’évaluation par des experts', body: <p>Layrix offre un service d’évaluation par des experts humains sur la base d’engagements ponctuels. Chaque engagement est régi par des conditions d’engagement distinctes fournies au moment de la demande de revue.</p> },
+  { h: 'Académie Layrix', body: <p>L’Académie Layrix fournit du matériel de formation, des tutoriels et du contenu éducatif liés à la conformité logicielle et à la gouvernance de l’IA. Les programmes spécifiques de l’Académie sont offerts comme produits payants distincts et régis par leurs propres conditions d’achat énoncées ci-dessous.</p> },
+  { h: 'AIGP QUICK PASS — Conditions d’achat', body: <>
+    <h3>Produit.</h3>
+    <p>JC AIGP QUICK PASS est un programme numérique d’auto-apprentissage préparé par Caerus Enterprises Inc. pour l’examen AIGP (Artificial Intelligence Governance Professional), vendu sous l’Académie Layrix. Le programme se compose de six systèmes d’apprentissage — conférences, guide d’étude, volume des essentiels, items d’entraînement, fiches mémoire et antisèche — couvrant quatre domaines d’examen, avec une base de connaissance optionnelle pour un tuteur IA hébergé localement.</p>
+    <h3>Prix.</h3>
+    <p>Le prix est de deux cents dollars des États-Unis (200 $US), payable une seule fois à la caisse. Il s’agit d’un achat unique. Il n’y a aucun abonnement, aucun frais récurrent et aucun renouvellement automatique de paiement.</p>
+    <h3>Accès initial — « Aperçu ».</h3>
+    <p>Dès le paiement réussi, vous recevez un accès immédiat au Domaine I (l’« Aperçu »), composé des six systèmes d’apprentissage pour le Domaine I.</p>
+    <h3>Fenêtre de décision de 30 jours.</h3>
+    <p>Vous disposez de trente (30) jours civils à compter de la date de paiement pour exercer l’une des deux options suivantes :</p>
+    <ul>
+      <li><strong>Demander un remboursement.</strong> Écrivez à <a className="marq-link" href="mailto:order@layrix.ai" style={{ color: 'var(--accent)' }}>order@layrix.ai</a> dans la fenêtre de 30 jours. Un remboursement complet sera traité vers le mode de paiement d’origine ; aucune raison n’est requise. Lors du remboursement, votre accès est révoqué.</li>
+      <li><strong>Passer à l’édition complète.</strong> Suivez le flux de mise à niveau dans votre compte. La mise à niveau débloque les Domaines II, III et IV sans frais supplémentaires. <strong>Une fois la mise à niveau effectuée, l’option de remboursement n’est plus disponible.</strong></li>
+    </ul>
+    <h3>Mise à niveau automatique après le Jour 30.</h3>
+    <p>Si, à la fin du Jour 30, vous n’avez ni demandé de remboursement ni effectué manuellement la mise à niveau, votre compte passera automatiquement à l’édition complète au Jour 31. Cette mise à niveau automatique débloque les Domaines II, III et IV sans frais supplémentaires — aucun mode de paiement n’est facturé et aucune nouvelle facture n’est émise. Après la mise à niveau automatique, la politique de remboursement décrite ci-dessus ne s’applique plus.</p>
+    <p>En complétant votre achat, vous reconnaissez et consentez à l’avance à cette mise à niveau automatique. Nous enverrons un rappel de courtoisie à l’adresse courriel associée à votre compte avant le Jour 30, mais l’absence de réception de ce rappel ne prolonge pas la fenêtre de 30 jours et ne modifie aucun droit ou obligation décrit dans la présente section.</p>
+    <h3>Licence du matériel.</h3>
+    <p>Votre achat confère une licence personnelle, non transférable et non exclusive pour accéder au matériel JC AIGP QUICK PASS et l’utiliser pour votre propre préparation à l’examen AIGP. Le matériel est filigrané avec les métadonnées d’achat. Vous ne pouvez ni redistribuer, ni revendre, ni sous-licencier, ni publier publiquement le matériel, en tout ou en partie.</p>
+    <h3>Limites d’appareils et de téléchargements.</h3>
+    <p>Une licence s’active sur deux (2) appareils au plus et permet jusqu’à quatre (4) téléchargements à vie pour s’adapter aux changements d’appareil. Les deux limites sont appliquées côté serveur à l’activation.</p>
+    <h3>Mises à jour de contenu.</h3>
+    <p>Pendant un (1) an à compter de la date de paiement, vous recevrez les corrections, les items d’entraînement supplémentaires et les mises à jour d’alignement au Corpus de connaissances au fur et à mesure de leur publication. Une fois cette année écoulée, le matériel précédemment livré demeure accessible et fonctionnel, mais aucune autre mise à jour ne sera émise.</p>
+    <h3>Indépendance par rapport à l’IAPP.</h3>
+    <p>JC AIGP QUICK PASS est produit indépendamment par Caerus Enterprises Inc. Nous ne sommes ni approuvés, ni partenaires, ni certifiés, ni affiliés autrement à l’International Association of Privacy Professionals (« IAPP »). « AIGP » et « IAPP » sont des marques de leur titulaire respectif, employées ici uniquement à des fins nominatives pour identifier l’examen pour lequel notre matériel vous prépare. Votre achat ne garantit pas la réussite d’aucun examen.</p>
+    <h3>Droits légaux.</h3>
+    <p>Rien dans la présente section ne limite ni ne renonce à un quelconque droit non susceptible de renonciation que vous pourriez avoir en vertu du droit applicable de la consommation, y compris la <em>Business Practices and Consumer Protection Act</em> de la Colombie-Britannique. Si une disposition des présentes Conditions d’achat est jugée inapplicable en vertu d’un tel droit, le reste des Conditions d’achat demeure en vigueur.</p>
+  </> },
+  { h: 'Modifications aux conditions', body: <p>Layrix se réserve le droit de modifier les présentes Conditions à tout moment. Les modifications importantes seront communiquées par courriel aux utilisateurs inscrits ou par un avis sur le site Web. Votre utilisation continue après ces modifications vaut acceptation des Conditions modifiées.</p> },
+  { h: 'Droit applicable', body: <p>Les présentes Conditions sont régies par les lois de la province de la Colombie-Britannique, Canada. Tout différend sera soumis à la compétence exclusive des tribunaux de la Colombie-Britannique, Canada.</p> },
+  { h: 'Coordonnées', body: <p>Des questions ? <a className="marq-link" href="mailto:info@layrix.ai" style={{ color: 'var(--accent)' }}>info@layrix.ai</a> · Caerus Enterprises Inc.</p> },
+];
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <LegalPage title={<>Conditions <span style={{ fontStyle:'italic', color:'var(--accent)' }}>d’utilisation.</span></>} date="13 mai 2026"
+    lang="fr" langHref="/terms"
+    prevailsNotice={<p><strong>Avis :</strong> La présente traduction française est fournie à titre indicatif uniquement. En cas de divergence entre la version française et la version anglaise, la version anglaise prévaut. Consultez la version anglaise officielle à <a className="marq-link" href="/terms" style={{ color: 'var(--accent)', fontWeight: 500 }}>layrix.ai/terms</a>.</p>}
+    intro={<p>Les présentes Conditions d’utilisation régissent votre accès à la plateforme Layrix — la compétence d’analyse de conformité LLLL, l’outil CLI LLLL Guard, le service d’évaluation par des experts humains, l’Académie Layrix et le site Web à layrix.ai (collectivement, le « Service ») — exploitée par Caerus Enterprises Inc.</p>}
+    sections={sections} />
+);
+</script>
+</body>
+</html>

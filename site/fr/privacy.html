@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Politique de confidentialité · Layrix</title>
+<link rel="alternate" hreflang="en" href="https://layrix.ai/privacy" />
+<link rel="alternate" hreflang="fr-CA" href="https://layrix.ai/fr/privacy" />
+<link rel="alternate" hreflang="x-default" href="https://layrix.ai/privacy" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/site-shared.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="/site-chrome.jsx"></script>
+<script type="text/babel" src="/legal-shared.jsx"></script>
+<script type="text/babel">
+const sections = [
+  { h: 'Introduction', body: <><p>Caerus Enterprises Inc. (« Layrix ») s’engage à protéger votre vie privée. La présente Politique de confidentialité explique comment nous recueillons, utilisons, conservons et divulguons des renseignements lorsque vous utilisez la plateforme Layrix.</p><p>Nous opérons sous la <em>Loi sur la protection des renseignements personnels et les documents électroniques</em> (LPRPDE / PIPEDA) et la <em>Personal Information Protection Act</em> de la Colombie-Britannique (BC PIPA).</p></> },
+  { h: 'Renseignements que nous recueillons', body: <><h3>Renseignements d’inscription</h3><p>Lorsque vous créez un compte Layrix, nous recueillons votre adresse courriel. C’est le seul renseignement personnel exigé à l’inscription. Nous ne recueillons ni nom, ni numéro de téléphone, ni adresse postale lors de l’inscription.</p><h3>Données de conformité locales</h3><p>LLLL s’exécute localement dans votre environnement Claude Code. <strong>Aucune donnée de conformité, aucun code source, aucun résultat d’analyse, aucun fichier de projet n’est transmis aux serveurs Layrix.</strong> LLLL Guard s’exécute également localement.</p><h3>Stockage local du navigateur</h3><p>Le site Layrix stocke une préférence de thème dans le localStorage de votre navigateur. Ces données sont conservées localement et ne sont pas transmises à nos serveurs.</p><h3>Service d’évaluation par des experts</h3><p>Si vous soumettez une demande d’évaluation par expert, le contenu de votre demande est transmis à l’équipe de revue Layrix et y est accessible. Nous traitons tout matériel de demande de revue comme confidentiel.</p></> },
+  { h: 'Comment nous utilisons les renseignements', body: <><p>Nous utilisons les renseignements recueillis aux fins suivantes :</p><ul><li><strong>Gestion du compte.</strong> Créer et maintenir votre compte, authentifier l’accès et gérer votre inscription.</li><li><strong>Prestation du service.</strong> Fournir les fonctionnalités que vous avez demandées, y compris la visibilité complète des constats pour les utilisateurs inscrits et les services d’évaluation par des experts.</li><li><strong>Communication.</strong> Envoyer des avis liés au service, répondre aux demandes de soutien et fournir des mises à jour sur les changements importants.</li><li><strong>Amélioration.</strong> Analyser des modèles d’usage agrégés et anonymisés afin d’améliorer le service. Nous n’utilisons pas de données d’analyse de conformité individuelles à cette fin, parce que ces données ne nous parviennent jamais — elles restent sur votre machine et n’atteignent que le LLM que vous avez déjà choisi.</li></ul><p>Nous ne vendons, ne louons, ni n’échangeons vos renseignements personnels à des tiers. Nous n’utilisons pas vos renseignements à des fins publicitaires.</p></> },
+  { h: 'Conservation des données', body: <><p>Les données d’inscription sont stockées dans Cloudflare D1, une base SQL sans serveur. Les données sont chiffrées au repos et en transit.</p><p>Les données d’analyse de conformité générées par LLLL et Guard sont traitées sur votre machine locale et (quand une analyse par IA est demandée) vont uniquement au fournisseur de LLM que vous avez configuré. Layrix ne stocke pas, ne traite pas et n’a pas accès à vos résultats de scan de conformité, à votre code source ou à vos fichiers de projet.</p></> },
+  { h: 'Services tiers', body: <ul><li><strong>Cloudflare.</strong> Hébergement Web, DNS, CDN et services de base de données (Cloudflare D1).</li><li><strong>Resend.</strong> Livraison de courriels transactionnels pour les communications liées au compte.</li><li><strong>Stripe.</strong> Traitement des paiements. Layrix ne stocke ni numéros de carte de crédit ni identifiants de paiement.</li></ul> },
+  { h: 'Vos droits en vertu de la LPRPDE et de la BC PIPA', body: <><p>En vertu de la législation fédérale canadienne et provinciale britanno-colombienne sur la protection de la vie privée, vous avez les droits suivants :</p><ul><li><strong>Accès.</strong> Demander l’accès aux renseignements personnels que nous détenons à votre sujet. Nous répondons dans les 30 jours.</li><li><strong>Correction.</strong> Demander la correction de tout renseignement personnel inexact ou incomplet.</li><li><strong>Suppression.</strong> Demander la suppression de vos renseignements personnels.</li><li><strong>Retrait du consentement.</strong> Retirer votre consentement en tout temps, sous réserve de restrictions légales ou contractuelles.</li><li><strong>Plainte.</strong> Déposer une plainte auprès du Commissariat à la protection de la vie privée du Canada ou du Office of the Information and Privacy Commissioner de la Colombie-Britannique.</li></ul><p>Pour exercer ces droits, communiquez avec nous à <a className="marq-link" href="mailto:info@layrix.ai" style={{ color: 'var(--accent)' }}>info@layrix.ai</a>.</p></> },
+  { h: 'Vie privée des enfants', body: <p>Le Service ne s’adresse pas aux personnes âgées de moins de 13 ans. Nous ne recueillons pas sciemment de renseignements personnels auprès d’enfants de moins de 13 ans.</p> },
+  { h: 'Période de conservation', body: <><p>Nous conservons les données de compte tant que votre compte demeure actif. Si vous demandez la suppression de votre compte, nous supprimerons vos renseignements personnels dans les 30 jours, sauf si la loi exige leur conservation.</p><p>Les pièces d’engagement d’évaluation par des experts sont conservées pendant la durée de l’engagement plus 12 mois aux fins d’assurance de la qualité et de règlement des différends, après quoi elles sont supprimées de manière sécurisée.</p></> },
+  { h: 'Sécurité', body: <ul><li>Chiffrement en transit par TLS pour toutes les communications.</li><li>Chiffrement au repos pour les données stockées dans Cloudflare D1.</li><li>Contrôles d’accès limitant l’accès au personnel autorisé.</li><li>Examen régulier des pratiques de sécurité et de la posture des fournisseurs.</li></ul> },
+  { h: 'Modifications à la présente politique', body: <p>Nous pouvons mettre à jour la présente Politique de confidentialité de temps à autre. Les changements importants seront communiqués par courriel aux utilisateurs inscrits ou par un avis bien visible sur le site Web.</p> },
+  { h: 'Coordonnées', body: <p>Des questions sur la présente Politique de confidentialité ? <a className="marq-link" href="mailto:info@layrix.ai" style={{ color: 'var(--accent)' }}>info@layrix.ai</a> · Caerus Enterprises Inc.</p> },
+];
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <LegalPage title={<>Politique de <span style={{ fontStyle:'italic', color:'var(--accent)' }}>confidentialité.</span></>} date="1er avril 2026"
+    lang="fr" langHref="/privacy"
+    prevailsNotice={<p><strong>Avis :</strong> La présente traduction française est fournie à titre indicatif uniquement. En cas de divergence entre la version française et la version anglaise, la version anglaise prévaut. Consultez la version anglaise officielle à <a className="marq-link" href="/privacy" style={{ color: 'var(--accent)', fontWeight: 500 }}>layrix.ai/privacy</a>.</p>}
+    sections={sections} />
+);
+</script>
+</body>
+</html>

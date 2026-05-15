@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr-CA">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Register · Layrix</title>
-<meta name="description" content="Register for LLLL — free. One email, no card, no tracking pixels. Unlock the full compliance read-out and your Academy track." />
+<title>S’inscrire · Layrix</title>
+<meta name="description" content="Inscrivez-vous à LLLL — gratuit. Un courriel, pas de carte, aucun pixel de pistage. Débloquez le bilan de conformité complet et votre parcours Académie." />
 <link rel="alternate" hreflang="en" href="https://layrix.ai/register" />
 <link rel="alternate" hreflang="fr-CA" href="https://layrix.ai/fr/register" />
 <link rel="alternate" hreflang="x-default" href="https://layrix.ai/register" />
@@ -17,44 +17,12 @@
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
-  .reg-input {
-    width: 100%;
-    padding: 16px 18px;
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--ink);
-    background: var(--paper-2);
-    border: 1px solid var(--ink);
-    border-radius: 12px;
-    outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-  .reg-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(47, 111, 74, 0.18);
-  }
+  .reg-input { width: 100%; padding: 16px 18px; font-family: var(--mono); font-size: 14px; color: var(--ink); background: var(--paper-2); border: 1px solid var(--ink); border-radius: 12px; outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+  .reg-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(47, 111, 74, 0.18); }
   .reg-input::placeholder { color: var(--muted); }
-  .reg-submit {
-    padding: 16px 28px;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: var(--sans);
-    font-size: 14px;
-    font-weight: 500;
-    border: 1px solid var(--ink);
-    border-radius: 999px;
-    cursor: pointer;
-    transition: transform 0.12s ease, background 0.15s ease;
-  }
+  .reg-submit { padding: 16px 28px; background: var(--ink); color: var(--paper); font-family: var(--sans); font-size: 14px; font-weight: 500; border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; transition: transform 0.12s ease, background 0.15s ease; }
   .reg-submit:hover { transform: translateY(-1px); background: var(--accent); border-color: var(--accent); }
-  .reg-check {
-    display: grid;
-    grid-template-columns: 20px 1fr;
-    gap: 10px;
-    font-size: 14px;
-    line-height: 1.55;
-    color: var(--muted);
-  }
+  .reg-check { display: grid; grid-template-columns: 20px 1fr; gap: 10px; font-size: 14px; line-height: 1.55; color: var(--muted); }
   .reg-check strong { color: var(--ink); font-weight: 600; }
 </style>
 </head>
@@ -68,12 +36,12 @@ const ink='var(--ink)', paper='var(--paper)', paper2='var(--paper-2)', muted='va
 function Hero() {
   return (
     <section style={{ padding: '88px clamp(20px, 5vw, 56px) 0', textAlign:'center' }}>
-      <div className="marq-tag" style={{ borderColor: accent, color: accent }}>LAYRIX · LLLL · FREE TIER</div>
+      <div className="marq-tag" style={{ borderColor: accent, color: accent }}>LAYRIX · LLLL · NIVEAU GRATUIT</div>
       <h1 style={{ fontFamily:'var(--display)', fontWeight:500, fontSize:'clamp(52px, 7.4vw, 112px)', lineHeight:1, letterSpacing:'-0.045em', margin:'36px auto 0', maxWidth: 1100 }}>
-        Register for LLLL.<br/><span style={{ fontStyle:'italic', color: accent }}>Free.</span>
+        Inscrivez-vous à LLLL.<br/><span style={{ fontStyle:'italic', color: accent }}>Gratuit.</span>
       </h1>
       <p style={{ fontSize:19, lineHeight:1.6, color:muted, maxWidth: 680, margin:'40px auto 0' }}>
-        One email. No card. No tracking. Unlock the full compliance read-out, deep-dive review, and your Academy track.
+        Un courriel. Pas de carte. Aucun pistage. Débloquez le bilan de conformité complet, la revue approfondie et votre parcours Académie.
       </p>
     </section>
   );
@@ -106,14 +74,14 @@ function Form() {
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        setStatus({ kind: 'ok', msg: data.message || 'Check your email for the verification link.' });
+        setStatus({ kind: 'ok', msg: data.message || 'Vérifiez votre courriel pour le lien de confirmation.' });
       } else if (res.status === 429) {
-        setStatus({ kind: 'err', msg: 'Too many attempts. Try again in a few minutes.' });
+        setStatus({ kind: 'err', msg: 'Trop de tentatives. Réessayez dans quelques minutes.' });
       } else {
-        setStatus({ kind: 'err', msg: data.error || 'Something went wrong. Try again.' });
+        setStatus({ kind: 'err', msg: data.error || 'Une erreur est survenue. Réessayez.' });
       }
     } catch {
-      setStatus({ kind: 'err', msg: 'Network error. Try again.' });
+      setStatus({ kind: 'err', msg: 'Erreur réseau. Réessayez.' });
     }
   }
 
@@ -121,7 +89,7 @@ function Form() {
     <section style={{ padding: '64px clamp(20px, 5vw, 56px) 0', maxWidth: 720, margin: '0 auto' }}>
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 14 }}>
         <label htmlFor="email" style={{ fontFamily:'var(--mono)', fontSize:11, color:muted, letterSpacing:'0.18em', textTransform:'uppercase' }}>
-          Email
+          Courriel
         </label>
         <input
           id="email"
@@ -129,21 +97,21 @@ function Form() {
           type="email"
           required
           autoComplete="email"
-          placeholder="you@company.com"
+          placeholder="vous@entreprise.com"
           className="reg-input"
           disabled={submitting}
         />
         <label htmlFor="tos" style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:10, alignItems:'start', marginTop: 8, fontSize: 13, lineHeight: 1.55, color: muted }}>
           <input id="tos" name="tos_accepted" type="checkbox" required value="1" style={{ marginTop: 4, accentColor: 'var(--accent)' }} />
           <span>
-            I agree to the <a className="marq-link" href="/terms" style={{ color: ink, fontWeight: 500 }}>Terms of Service</a>, <a className="marq-link" href="/privacy" style={{ color: ink, fontWeight: 500 }}>Privacy Policy</a>, and <a className="marq-link" href="/acceptable-use" style={{ color: ink, fontWeight: 500 }}>Acceptable Use Policy</a>.
+            J’accepte les <a className="marq-link" href="/fr/terms" style={{ color: ink, fontWeight: 500 }}>Conditions d’utilisation</a>, la <a className="marq-link" href="/fr/privacy" style={{ color: ink, fontWeight: 500 }}>Politique de confidentialité</a> et la <a className="marq-link" href="/fr/acceptable-use" style={{ color: ink, fontWeight: 500 }}>Politique d’utilisation acceptable</a>.
           </span>
         </label>
-        <div className="cf-turnstile" data-sitekey="0x4AAAAAADOeHZiw3r0le8cf" data-callback="onTurnstileSuccess" style={{ marginTop: 12 }}></div>
+        <div className="cf-turnstile" data-sitekey="0x4AAAAAADOeHZiw3r0le8cf" data-callback="onTurnstileSuccess" data-language="fr" style={{ marginTop: 12 }}></div>
         <input type="text" name="_hp" tabIndex="-1" autoComplete="off" aria-hidden="true" style={{ position:'absolute', left:'-10000px', width:1, height:1, opacity:0 }} />
         <div style={{ display:'flex', justifyContent:'flex-start', marginTop: 14 }}>
           <button type="submit" className="reg-submit" disabled={submitting}>
-            {submitting ? 'Sending…' : 'Create account →'}
+            {submitting ? 'Envoi en cours…' : 'Créer un compte →'}
           </button>
         </div>
         {status.kind === 'ok' && (
@@ -163,14 +131,14 @@ function Form() {
 
 function WhatYouGet() {
   const items = [
-    ['Full compliance read-out', 'Every triggered domain, every file:line gap, every owned action — no truncation, no upsell.'],
-    ['Deep-dive review', 'Beyond the daily check: pre-release review of agentic patterns, third-party flows, and data-governance gaps.'],
-    ['Push & release gates', 'LLLL Guard blocks the leak before it leaves your machine — secrets, source maps, private keys.'],
-    ['Academy access', 'Sample lessons from the AIGP Track. Enroll any time to unlock the full $200 program.'],
+    ['Bilan de conformité complet', 'Chaque domaine déclenché, chaque écart fichier:ligne, chaque action assignée — sans troncature, sans démarchage.'],
+    ['Revue approfondie', 'Au-delà de la vérification quotidienne : revue avant lancement des patrons agentiques, des flux tiers et des écarts de gouvernance des données.'],
+    ['Portails push et release', 'LLLL Guard bloque la fuite avant qu’elle ne quitte votre machine — secrets, source maps, clés privées.'],
+    ['Accès à l’Académie', 'Échantillons de leçons du parcours AIGP. Inscrivez-vous en tout temps pour débloquer le programme complet à 200 $.'],
   ];
   return (
-    <SectionRow idx="01" kicker="What you get"
-      title={<>One account. <span style={{ fontStyle:'italic', color: accent }}>Everything that's free.</span></>}>
+    <SectionRow idx="01" kicker="Ce que vous recevez"
+      title={<>Un compte. <span style={{ fontStyle:'italic', color: accent }}>Tout ce qui est gratuit.</span></>}>
       <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap: 16, marginTop: 56 }}>
         {items.map(([h, b]) => (
           <div key={h} className="marq-card" style={{ background: paper2, padding:'28px 26px', borderRadius: 14, border:`1px solid ${rule}` }}>
@@ -185,14 +153,14 @@ function WhatYouGet() {
 
 function Trust() {
   const points = [
-    [<><strong>No credit card.</strong> The free tier is free — no surprise charge after a trial.</>, '✓'],
-    [<><strong>No tracking pixels.</strong> No analytics on this page beyond a server access log.</>, '✓'],
-    [<><strong>Email only.</strong> No name, phone, or address required. <a className="marq-link" href="/privacy" style={{ color: ink, fontWeight:500 }}>See what we store</a>.</>, '✓'],
-    [<><strong>Local-first by design.</strong> LLLL itself runs in your CLI — your code stays on your machine; we never see a line of it.</>, '✓'],
+    [<><strong>Pas de carte de crédit.</strong> Le niveau gratuit est gratuit — aucun prélèvement surprise après un essai.</>, '✓'],
+    [<><strong>Aucun pixel de pistage.</strong> Aucun analytique sur cette page au-delà d’un journal d’accès au serveur.</>, '✓'],
+    [<><strong>Courriel seulement.</strong> Aucun nom, téléphone ou adresse requis. <a className="marq-link" href="/fr/privacy" style={{ color: ink, fontWeight:500 }}>Voir ce que nous stockons</a>.</>, '✓'],
+    [<><strong>Local d’abord par conception.</strong> LLLL lui-même s’exécute dans votre CLI — votre code reste sur votre machine ; nous n’en voyons pas une ligne.</>, '✓'],
   ];
   return (
-    <SectionRow idx="02" kicker="Why register"
-      title={<>What this account <span style={{ fontStyle:'italic', color: accent }}>is — and isn't.</span></>}>
+    <SectionRow idx="02" kicker="Pourquoi s’inscrire"
+      title={<>Ce qu’est ce compte <span style={{ fontStyle:'italic', color: accent }}>— et ce qu’il n’est pas.</span></>}>
       <ul style={{ listStyle:'none', padding: 0, margin: '56px 0 0', display:'grid', gap: 18, maxWidth: 760 }}>
         {points.map(([body, mark], i) => (
           <li key={i} className="reg-check">
@@ -208,12 +176,12 @@ function Trust() {
 function App() {
   return (
     <>
-      <Header langHref="/fr/register" />
+      <Header lang="fr" langHref="/register" />
       <Hero />
       <Form />
       <WhatYouGet />
       <Trust />
-      <Footer />
+      <Footer lang="fr" />
     </>
   );
 }
