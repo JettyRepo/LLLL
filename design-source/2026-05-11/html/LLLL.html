@@ -164,14 +164,14 @@ function LocalFirst() {
 
 function Tiers() {
   const tiers = [
-    { lab:'Unregistered', name:'Free', body:'Every command available. Critical & high findings always shown in full. Medium & low: top items shown, rest folded with names. No signup.' },
+    { lab:'Unregistered', name:'Free', body:'Every command available. Half the findings detailed per table (round N/2, by severity); the rest folded with names listed. No signup.' },
     { lab:'Registered ★', name:'Free', featured: true, body:'Every command available. Full visibility, every severity, complete evidence. One email, no card.', cta: { label: 'Register free', href: 'https://layrix.ai/register' } },
     { lab:'Pro & Team', name:'Coming soon', body:'MCP-backed persistence, cross-session state, compliance trend tracking, custom scan patterns, role-based access, CI integration, reviewer gates, audit trail.' },
   ];
   return (
     <SectionRow idx="05" kicker="Tiers"
       title={<>Free is <span style={{ fontStyle:'italic', color: accent }}>the floor.</span></>}
-      lead="Every command, every gate, every rule — available at every tier. Nothing critical lives behind a paywall.">
+      lead="Every command, every gate, every rule — available at every tier. Half the findings detailed without an email; register for the full picture.">
       <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap: 16, marginTop: 56 }}>
         {tiers.map(t => (
           <div key={t.lab} className="marq-card" style={{ background: t.featured ? ink : paper2, color: t.featured ? paper : ink, padding: '28px 26px', borderRadius: 14, border: t.featured ? `1px solid ${ink}` : `1px solid ${rule}` }}>

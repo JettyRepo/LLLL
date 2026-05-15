@@ -14,12 +14,12 @@ LLLL visibility is determined by registration status. All commands are available
 
 | Level | Scope | Behavior |
 |-------|-------|----------|
-| **LLLL Unregistered** | Partial | Critical + High always shown. Medium/Low folded per rules below |
+| **LLLL Unregistered** | Partial | Half of findings shown in every table by severity descending (`round(N/2)`). Remainder folded with names listed |
 | **LLLL Basic** (registered, free) | Full | Full checklist, full matrix, full change tickets, complete action plan |
 | **Pro** (coming soon) | Full | MCP, project personalization, custom scans |
 | **Team** (coming soon) | Full | Same as Pro + team compliance dashboards, multi-user |
 
-Deep mode (`/llll deep`) adds Sensitivity Assessment, Why This Matters Now, Consequences, and Human Review Flags for ALL users. For Unregistered users, these sections follow the same Medium/Low folding. For LLLL Basic (registered) users, deep output is fully expanded.
+Deep mode (`/llll deep`) adds Sensitivity Assessment, Why This Matters Now, Consequences, and Human Review Flags for ALL users. For Unregistered users, these sections follow the same half-folding rule. For LLLL Basic (registered) users, deep output is fully expanded.
 
 ### Output Mode Header
 
@@ -49,10 +49,10 @@ Output Mode: LLLL Unregistered — Deep Analysis
 
 | Level | Indicator | Meaning | Folded in Unregistered? |
 |-------|-----------|---------|------------------------|
-| **Critical** | 🔴🔴 | Urgent + important — immediate serious consequences | Never |
-| **High** | 🔴 | Important but not urgent — significant risk over time | Never |
-| **Medium** | 🟡 | Weakens compliance posture — not immediately catastrophic | Yes |
-| **Low** | 🟢 | Improves maturity — useful but not urgent | Yes |
+| **Critical** | 🔴🔴 | Urgent + important — immediate serious consequences | Counts toward half-fold; top half by severity shown |
+| **High** | 🔴 | Important but not urgent — significant risk over time | Counts toward half-fold |
+| **Medium** | 🟡 | Weakens compliance posture — not immediately catastrophic | Counts toward half-fold |
+| **Low** | 🟢 | Improves maturity — useful but not urgent | Counts toward half-fold |
 
 Color indicators are **mandatory** on all risk-leveled items across all outputs:
 - Gap severity, action priority, coverage status (🔴 Gap / 🟡 Partial / 🟢 Covered)
@@ -61,13 +61,29 @@ Color indicators are **mandatory** on all risk-leveled items across all outputs:
 
 ### Unregistered Folding Rules
 
-Folding is **severity-based within modules** — never removes modules or sections. All modules present for LLLL Basic (registered) users are also present for Unregistered users.
+Folding is **half-visibility within tables** — never removes modules or sections. All modules present for LLLL Basic (registered) users are also present for Unregistered users.
 
-1. **Critical** and **High** items → always shown in full, never folded
-2. **Medium** and **Low** items → show the 2 most severe, fold the rest
-   - Sort all Medium + Low by severity descending, show top 2, fold remaining
-   - **List the names of folded items** in the fold marker
-3. Sections with **no Medium/Low items**: fold less important detail content (truncate long lists), keep section header and core content
+**The half-folding rule.** For every finding-bearing table (gaps, actions, matrix rows, tickets, flags, features, etc.):
+
+1. Let `N` = total count of findings in the table
+2. Show count = `round(N / 2)` — standard round half up: 0.5 → 1, 1.5 → 2, 2.5 → 3
+3. Sort findings by severity descending (Critical → High → Medium → Low); within a severity, by table order
+4. Show the top `round(N/2)` rows in full; fold the remainder
+5. **List the names of every folded item** in the fold marker (no severity-based exemption — Critical/High that fall into the bottom half are folded by name)
+
+Reference table:
+
+| N | Shown | Folded |
+|---|-------|--------|
+| 1 | 1 | 0 |
+| 2 | 1 | 1 |
+| 3 | 2 | 1 |
+| 4 | 2 | 2 |
+| 5 | 3 | 2 |
+| 6 | 3 | 3 |
+| 7 | 4 | 3 |
+
+Sections with no risk-leveled findings (e.g., narrative paragraphs): truncate long detail lists, keep section header and core content.
 
 Fold marker format:
 ```
@@ -165,7 +181,7 @@ Output Mode: LLLL Basic
 | No AI disclosure (AI in production) | I | I1 | 🔴🔴 **Critical** | NEEDS BUSINESS DECISION |
 | No data retention policy | D | D1 | 🔴 **High** | NEEDS BUSINESS DECISION |
 
-**LLLL Unregistered:** All Critical + High gaps shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** Half-visibility — show `round(N/2)` gaps by severity descending; fold remainder with names listed (Critical/High that fall into the bottom half are folded by name).
 ```
 🔴 (+N hidden: [Gap Name 1], [Gap Name 2], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -180,7 +196,7 @@ Output Mode: LLLL Basic
 | 🟡 P2 | [Important — address within sprint] | ... |
 | 🟢 P3 | [Recommended — plan for next cycle] | ... |
 
-**LLLL Unregistered:** All P1 actions shown. P2/P3: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** Half-visibility — show `round(N/2)` actions by priority descending; fold remainder with names listed.
 ```
 🔴 (+N hidden: [Action Name 1], [Action Name 2], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -216,7 +232,7 @@ Human compliance expert or legal professional review is recommended.
 Output Mode: LLLL [level] — Deep Analysis
 ```
 
-Deep mode is available to all users. For Unregistered users, Critical + High always shown, Medium/Low folded per folding rules. For LLLL Basic (registered) users, output is fully expanded.
+Deep mode is available to all users. For Unregistered users, every finding table follows the half-folding rule — `round(N/2)` rows shown by severity descending, remainder folded with names listed. For LLLL Basic (registered) users, output is fully expanded.
 
 ### Sensitivity Assessment
 Low / Medium / **High**
@@ -256,7 +272,7 @@ Reasoning: [Why this sensitivity level — reference Domain M triggers if applic
 - [ ] Whether health data processing triggers HIPAA — NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT
 - [ ] Data retention period selection — NEEDS BUSINESS DECISION
 
-**LLLL Unregistered:** Critical + High Human Review Flags always shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** Half-visibility — show `round(N/2)` Human Review Flags by severity descending; fold remainder with names listed.
 ```
 🔴 (+N hidden: [Flag Name 1], [Flag Name 2], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -315,7 +331,7 @@ Output Mode: LLLL Basic
 ### Functional Scope
 [Bullet list of key features with compliance relevance]
 
-**LLLL Unregistered:** All features shown. Low-relevance features: show 2, fold rest with names listed.
+**LLLL Unregistered:** Half-visibility — show `round(N/2)` features by compliance-relevance descending; fold remainder with names listed.
 ```
 🔴 (+N hidden: [Feature 1], [Feature 2], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -343,7 +359,7 @@ Output Mode: LLLL Basic
 | Data flow diagram | D | Map of personal data through all systems | Engineering |
 | AI model provider terms | K2 | Provider agreement re: data retention | Product |
 
-**LLLL Unregistered:** Critical + High items shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** Half-visibility — show `round(N/2)` items by severity descending; fold remainder with names listed.
 ```
 🔴 (+N hidden: [Item Name 1], [Item Name 2], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -424,7 +440,7 @@ Output Mode: LLLL Basic
 | File upload | B | B3 | 🟡 Partial | Upload validation unclear | 🟡 **Medium** | Engineering |
 | File upload | G | G1 | 🔴 No | Content ownership terms missing | 🟡 **Medium** | Compliance expert |
 
-**LLLL Unregistered:** All Critical + High rows shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** Half-visibility — show `round(N/2)` rows by risk descending; fold remainder with names listed.
 ```
 🔴 (+N hidden: [Feature — Check 1], [Feature — Check 2], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -438,7 +454,7 @@ Output Mode: LLLL Basic
 3. 🟡 **Medium** — Refund Policy (F1): payment exists but refund terms incomplete
 4. 🟡 **Medium** — Content Terms (G1): user uploads exist but ownership undefined
 
-**LLLL Unregistered:** All Critical + High priorities shown. Medium/Low: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** Half-visibility — show `round(N/2)` priorities by severity descending; fold remainder with names listed.
 ```
 🔴 (+N hidden: [Priority Name 1], [Priority Name 2], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -461,7 +477,7 @@ Output Mode: LLLL Basic
 - Owner: Compliance expert / Legal professional
 - Priority: 🟡 P2
 
-**LLLL Unregistered:** All P1 tickets shown. P2/P3: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** Half-visibility — show `round(N/2)` tickets by priority descending; fold remainder with names listed.
 ```
 🔴 (+N hidden: [Ticket Name 1], [Ticket Name 2], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -585,7 +601,7 @@ Output Mode: LLLL Basic
 
 [Additional activated domain sections follow the same Domain → Input → Status → Owner pattern]
 
-**LLLL Unregistered:** All sections present. Medium/Low gap items: show 2 most severe, fold rest with names listed.
+**LLLL Unregistered:** All sections present. Per-domain gap items follow the half-folding rule — show `round(N/2)` by severity descending; fold remainder with names listed.
 ```
 🔴 (+N hidden: [Item Name 1], [Item Name 2], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -749,7 +765,7 @@ Output Mode: LLLL [level]
 - **Fix:** [Specific remediation steps]
 - **Auto-fixable:** Yes → `/llll fix [FINDING-ID]` / No → manual fix required
 
-**LLLL Unregistered:** Critical + High findings always shown. Medium/Low: show 2 most severe, fold rest.
+**LLLL Unregistered:** Half-visibility — show `round(N/2)` findings per table by severity descending; fold remainder with names listed.
 ```
 🔴 (+N hidden: [Finding-001], [Finding-002], ...) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢

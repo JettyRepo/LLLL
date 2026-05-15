@@ -73,9 +73,9 @@ All commands are available to all users.
 
 ## Access Levels
 
-Full functionality at every level. For Unregistered users, Medium/Low items are folded (Critical + High always shown).
+Full functionality at every level. For Unregistered users, every finding table shows half of its rows (`round(N/2)` by severity descending) and folds the rest with names listed.
 
-- **LLLL Unregistered** — all commands available, Medium/Low items folded. Critical + High always shown. Builds habit.
+- **LLLL Unregistered** — all commands available. Half the findings shown in full per table; remainder folded with names listed. Builds habit.
 - **LLLL Basic** (registered, free) — full content, nothing folded. Register at layrix.ai. Provides certainty.
 - **Pro** (coming soon) — MCP integration, project personalization, custom scans.
 - **Team** (coming soon) — compliance dashboards, multi-user access, CI gates.

@@ -239,7 +239,7 @@ Deep (`/llll deep`) is a command mode, not a tier. It is available to all users.
 ### LLLL Unregistered
 - Full functionality — all commands available including `/llll deep`
 - All modules/sections always present — identical structure to LLLL Basic
-- Severity-based folding within modules (see rules below)
+- Half-visibility within every finding table (see rules below) — `round(N/2)` rows shown by severity descending, remainder folded with names listed
 - Builds habit and compliance awareness
 - Registration hint shown at top of output
 
@@ -267,16 +267,16 @@ Deep (`/llll deep`) is a command mode, not a tier. It is available to all users.
 
 ### Content Folding (Unregistered users only)
 
-Unregistered folding is **severity-based within modules** — it never removes modules or sections. All modules present in LLLL Basic are also present for Unregistered users. Folding happens **inside** modules.
+Unregistered folding is **half-visibility within tables** — it never removes modules or sections. All modules present in LLLL Basic are also present for Unregistered users. Folding happens **inside** tables.
 
 #### Risk levels
 
 | Level | Indicator | Meaning | Folded in Unregistered? |
 |-------|-----------|---------|------------------------|
-| **Critical** | 🔴🔴 | Urgent + important — immediate serious consequences | Never |
-| **High** | 🔴 | Important but not urgent — significant risk if left unresolved | Never |
-| **Medium** | 🟡 | Weakens compliance posture — not immediately catastrophic | Yes |
-| **Low** | 🟢 | Improves maturity — useful but not urgent | Yes |
+| **Critical** | 🔴🔴 | Urgent + important — immediate serious consequences | Counts toward half-fold; top half by severity shown |
+| **High** | 🔴 | Important but not urgent — significant risk if left unresolved | Counts toward half-fold |
+| **Medium** | 🟡 | Weakens compliance posture — not immediately catastrophic | Counts toward half-fold |
+| **Low** | 🟢 | Improves maturity — useful but not urgent | Counts toward half-fold |
 
 #### Color indicator rules
 
@@ -303,15 +303,26 @@ Format in tables:
 
 #### Folding algorithm
 
-For each output section that has risk-leveled items (gaps, actions, matrix rows, tickets):
+For each output table that has risk-leveled items (gaps, actions, matrix rows, tickets, flags, features):
 
-1. **Critical** and **High** items → always shown in full, never folded
-2. **Medium** and **Low** items → show the 2 most severe, fold the rest
-   - Sort all Medium + Low items by severity descending
-   - Show the top 2
-   - Fold the remaining items
-   - **List the names of folded items** in the fold marker
-3. If a section has **no Medium/Low items** to fold: fold less important detail content within the section (e.g., truncate long lists, show summary instead of full detail), but always keep the section header and core content
+1. Let `N` = total count of findings in the table
+2. Compute `shown = round(N / 2)` — standard round half up: 0.5 → 1, 1.5 → 2, 2.5 → 3
+3. Sort findings by severity descending (Critical → High → Medium → Low); within the same severity, by original table order
+4. Show the top `shown` rows in full; fold the remaining `N - shown` rows
+5. **List the names of every folded item** in the fold marker — Critical/High that fall into the bottom half are folded by name, with no exemption
+6. Reference table:
+
+   | N | Shown | Folded |
+   |---|-------|--------|
+   | 1 | 1 | 0 |
+   | 2 | 1 | 1 |
+   | 3 | 2 | 1 |
+   | 4 | 2 | 2 |
+   | 5 | 3 | 2 |
+   | 6 | 3 | 3 |
+   | 7 | 4 | 3 |
+
+7. Sections without risk-leveled tables (narrative paragraphs): truncate long detail lists, keep section header and core content
 
 #### Fold marker format
 
@@ -328,14 +339,14 @@ LLLL Basic (registered) shows all content without folding or registration prompt
 
 | Gap Risk | Action Priority | Folded in Unregistered? |
 |----------|----------------|------------------------|
-| Critical | P1 | Never |
-| High | P1 | Never |
-| Medium | P2 | Yes (show 2, fold rest) |
-| Low | P3 | Yes (show 2, fold rest) |
+| Critical | P1 | Counts toward half-fold (top half by priority shown) |
+| High | P1 | Counts toward half-fold |
+| Medium | P2 | Counts toward half-fold |
+| Low | P3 | Counts toward half-fold |
 
 #### Deep mode for Unregistered users
 
-Deep mode (`/llll deep`) adds extra sections (Sensitivity Assessment, Why This Matters Now, Consequences, Human Review Flags, Evidence Gaps with Consequences) for ALL users. For Unregistered users, all sections are present. Human Review Flags show Critical + High flags in full; Medium/Low flags follow the folding rules. For LLLL Basic (registered) users, deep mode output is fully expanded.
+Deep mode (`/llll deep`) adds extra sections (Sensitivity Assessment, Why This Matters Now, Consequences, Human Review Flags, Evidence Gaps with Consequences) for ALL users. For Unregistered users, all sections are present. Human Review Flags and Evidence Gaps tables follow the same half-folding rule — `round(N/2)` rows shown by severity descending, remainder folded with names listed. For LLLL Basic (registered) users, deep mode output is fully expanded.
 
 #### Output Mode header
 
@@ -711,7 +722,7 @@ Output:
 
 When a scan command is not available (e.g., `npm audit` when npm is not installed), report as NEEDS TECHNICAL CONFIRMATION and suggest installation.
 
-Folding rules: Same as all other modes. Unregistered users see Medium/Low findings folded (show 2, fold rest with names). LLLL Basic (registered) users see all.
+Folding rules: Same as all other modes. Unregistered users see `round(N/2)` findings per table by severity descending, with the remainder folded and names listed. LLLL Basic (registered) users see all.
 
 ---
 
@@ -1498,13 +1509,12 @@ When an unregistered user selects the registration CTA, display the comparison t
 | Feature | Unregistered | Basic (Registered) |
 |---------|-------------|-------------------|
 | All compliance modes | ✓ | ✓ |
-| Critical + High findings | Always shown | Always shown |
-| Medium + Low findings | Folded (2 shown) | **All shown** |
-| Hidden item names | Listed in fold marker | **Full detail** |
+| Findings per table | `round(N/2)` shown by severity | **All shown** |
+| Folded items | Names listed in fold marker | **Full detail** |
 | Compliance Stack | ✓ | ✓ |
-| Change Tickets | P1 shown | **All shown** |
-| Full action plans (P2/P3) | Folded | **All shown** |
-| Complete evidence detail | Folded | **All shown** |
+| Change Tickets | `round(N/2)` shown | **All shown** |
+| Action plans | `round(N/2)` shown | **All shown** |
+| Complete evidence detail | Folded by half | **All shown** |
 | Human expert review | — | /llll review |
 | LLLL Guard | ✓ | ✓ |
 

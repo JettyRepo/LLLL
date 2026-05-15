@@ -58,16 +58,20 @@ SaaS document processing platform. Users upload documents, receive AI-generated 
 
 ### Gaps / Risk Areas
 
+Half-visibility: N=5 findings → show round(5/2)=3 by severity descending; fold remainder with names listed.
+
 | Gap | Domain | Check | Risk | Label |
 |-----|--------|-------|------|-------|
 | No privacy policy (users active) | D | D2 | **Critical** | NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT |
 | No AI disclosure (AI in production) | I | I1 | **Critical** | NEEDS BUSINESS DECISION |
 | No data retention policy | D | D1 | High | NEEDS BUSINESS DECISION |
-| No refund terms | F | F1 | Medium | NEEDS BUSINESS DECISION |
 
-(+1 Medium/Low gap hidden)
+🔴 (+2 hidden: No refund terms, No SBOM) 🔴
+🟢 Register free at layrix.ai to see all findings → 🟢
 
 ### Action Plan
+
+Half-visibility: N=5 actions → show round(5/2)=3 by priority descending; fold remainder with names listed.
 
 | Priority | Action | Owner |
 |----------|--------|-------|
@@ -75,7 +79,8 @@ SaaS document processing platform. Users upload documents, receive AI-generated 
 | P1 | Add AI disclosure — AI in production without it | Product |
 | P1 | Define data retention policy | Product |
 
-(+2 P2/P3 actions hidden)
+🔴 (+2 hidden: Define refund terms, Generate SBOM and review dependencies) 🔴
+🟢 Register free at layrix.ai to see all findings → 🟢
 
 ### Education Insight
 - Compliance: SaaS products processing user documents with AI create overlapping obligations under privacy law and emerging AI transparency requirements.
@@ -453,13 +458,15 @@ What is missing:
 - AI-generated content disclaimer
 - Content ownership terms for shared reports
 
-What to do next:
+What to do next (half-visibility: N=3 → show round(3/2)=2; fold remainder with names listed):
 
 | Action | Owner |
 |--------|-------|
 | Define what financial data is redacted before public sharing | Product |
 | Add "AI-generated, not financial advice" disclaimer | Product + Engineering |
-| Draft content ownership terms for shared reports | Compliance expert |
+
+🔴 (+1 hidden: Draft content ownership terms for shared reports) 🔴
+🟢 Register free at layrix.ai to see all findings → 🟢
 
 Preventive design suggestions:
 - Strip or redact personal identifiers before allowing public sharing
@@ -489,7 +496,7 @@ Human compliance expert or legal professional review is recommended.
 
 This example shows how the **same analysis** appears at different registration levels.
 
-**Context:** SaaS app with user auth, AI summaries, and Stripe billing. 5 compliance gaps detected (2 Critical, 1 High, 2 Medium).
+**Context:** SaaS app with user auth, AI summaries, and Stripe billing. 5 compliance gaps detected (2 Critical, 1 High, 2 Medium). Unregistered shows half (round(5/2)=3) per table; registered shows all.
 
 ### LLLL Unregistered
 
@@ -499,7 +506,7 @@ Output Mode: LLLL Unregistered
 
 #### Gaps / Risk Areas
 
-All Critical + High shown. Medium total = 2 → total M+L ≤ 2 → fold ALL Medium/Low (Unregistered folding):
+Half-visibility: N=5 gaps → show round(5/2)=3 by severity descending; fold remainder with names listed.
 
 | Gap | Domain | Check | Risk | Label |
 |-----|--------|-------|------|-------|
@@ -507,11 +514,12 @@ All Critical + High shown. Medium total = 2 → total M+L ≤ 2 → fold ALL Med
 | No AI disclosure (AI in production) | I | I1 | **Critical** | NEEDS BUSINESS DECISION |
 | No data retention policy | D | D1 | High | NEEDS BUSINESS DECISION |
 
-(+2 Medium/Low gaps hidden)
+🔴 (+2 hidden: No refund terms, No SBOM) 🔴
+🟢 Register free at layrix.ai to see all findings → 🟢
 
 #### Action Plan
 
-All P1 shown (from Critical + High). P2 + P3 total = 2 → fold ALL (Unregistered folding):
+Half-visibility: N=5 actions → show round(5/2)=3 by priority descending; fold remainder with names listed.
 
 | Priority | Action | Owner |
 |----------|--------|-------|
@@ -519,7 +527,8 @@ All P1 shown (from Critical + High). P2 + P3 total = 2 → fold ALL (Unregistere
 | P1 | Add AI disclosure — AI in production without it | Product |
 | P1 | Define data retention policy | Product |
 
-(+2 P2/P3 actions hidden)
+🔴 (+2 hidden: Define refund terms, Generate SBOM and review dependencies) 🔴
+🟢 Register free at layrix.ai to see all findings → 🟢
 
 ---
 
@@ -557,7 +566,7 @@ Output Mode: LLLL Basic
 
 Deep mode adds Sensitivity Assessment, Why This Matters Now, Consequences, and Human Review Flags at **all** subscription levels:
 
-**LLLL Unregistered — Deep Analysis** — Critical + High always shown, Medium/Low folded (total M+L = 2 → fold ALL):
+**LLLL Unregistered — Deep Analysis** — half-visibility: N=5 gaps → show round(5/2)=3 by severity descending; fold remainder with names listed:
 
 | Gap | Domain | Check | Risk | Consequence if Ignored |
 |-----|--------|-------|------|----------------------|
@@ -565,7 +574,8 @@ Deep mode adds Sensitivity Assessment, Why This Matters Now, Consequences, and H
 | No AI disclosure (AI in production) | I | I1 | **Critical** | EU AI Act non-compliance — active violation |
 | No data retention policy | D | D1 | High | Indefinite data retention = maximum liability surface |
 
-(+2 Medium/Low gaps hidden)
+🔴 (+2 hidden: No refund terms, No SBOM) 🔴
+🟢 Register free at layrix.ai to see all findings → 🟢
 
 **LLLL Basic (registered) — Deep Analysis** — deep mode fully expanded:
 
@@ -614,13 +624,15 @@ New potential issues:
 - Automated alerts that trigger user actions may constitute automated decision-making (J1)
 - False positive alerts could cause user harm — need guardrails (I2)
 
-What to do next:
+What to do next (half-visibility: N=3 → show round(3/2)=2; fold remainder with names listed):
 
 | Action | Owner |
 |--------|-------|
 | Define AI disclosure for anomaly detection | Product |
 | Assess whether alerts constitute automated decisions | Compliance expert |
-| Design guardrails for false positive alerts | Engineering |
+
+🔴 (+1 hidden: Design guardrails for false positive alerts) 🔴
+🟢 Register free at layrix.ai to see all findings → 🟢
 
 **Recommended:** Run `/llll diff` to see full coverage impact of this feature change.
 
@@ -995,14 +1007,15 @@ What is missing:
 - Rollback procedure (before deploying payment features)
 - Refund and cancellation terms (F1)
 
-What to do next:
+What to do next (half-visibility: N=4 → show round(4/2)=2; fold remainder with names listed):
 
 | Action | Owner |
 |--------|-------|
 | Set up environment variables and secrets manager BEFORE adding Stripe keys | Engineering |
 | Add basic test framework and write first payment logic tests | Engineering |
-| Define refund and cancellation policy | Product |
-| Review Stripe integration for PCI scope | Engineering |
+
+🔴 (+2 hidden: Define refund and cancellation policy, Review Stripe integration for PCI scope) 🔴
+🟢 Register free at layrix.ai to see all findings → 🟢
 
 Preventive design suggestions:
 - Use Stripe Checkout (hosted) to minimize PCI scope — never handle raw card data
