@@ -43,7 +43,7 @@ echo "=== Inter-page Links Are Deploy-Path Style ==="
 # No filename-style hrefs (Layrix Homepage.html, LLLL.html, AIGP.html, etc.) should remain
 BAD=$(grep -rEho 'href="[^"]*\.html"' site/ --include="*.html" --include="*.jsx" | grep -vE '^href="https?:' | grep -vE '^href="#' | sort -u || true)
 if [ -n "$BAD" ]; then
-  echo "FAIL: filename-style hrefs found (should be /llll/, /aigp/, /terms etc.):"
+  echo "FAIL: filename-style hrefs found (should be /llll/, /academy/, /terms etc.):"
   echo "$BAD"
   FAIL=1
 else

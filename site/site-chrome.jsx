@@ -35,7 +35,7 @@ function Header({ current, langHref = '/fr/', langActive = 'EN', langOther = 'FR
   const links = [
     { href: '/llll/', label: 'Engine', key: 'engine' },
     { href: '/experts/', label: 'Experts', key: 'experts' },
-    { href: '/aigp/', label: 'Academy', key: 'aigp' },
+    { href: '/academy/', label: 'Academy', key: 'aigp' },
     { href: 'https://github.com/JettyRepo/LLLL', label: 'GitHub', key: 'docs' },
   ];
   return (
@@ -102,7 +102,7 @@ function Footer({ extra }) {
           <div style={{ marginTop: 14 }}>1045 Howe St, Vancouver, BC V6Z 2A9, Canada</div>
           <div style={{ marginTop: 6 }}><a className="marq-link" href="mailto:info@layrix.ai">info@layrix.ai</a></div>
         </div>
-        <div><div style={{ color: _ink, fontWeight: 600 }}>Products</div><div style={{ marginTop: 10 }}><a className="marq-link" href="/llll/">LLLL Engine</a></div><div><a className="marq-link" href="/experts/">Expert Review</a></div><div><a className="marq-link" href="/aigp/">Academy</a></div></div>
+        <div><div style={{ color: _ink, fontWeight: 600 }}>Products</div><div style={{ marginTop: 10 }}><a className="marq-link" href="/llll/">LLLL Engine</a></div><div><a className="marq-link" href="/experts/">Expert Review</a></div><div><a className="marq-link" href="/academy/">Academy</a></div></div>
         <div><div style={{ color: _ink, fontWeight: 600 }}>Legal</div><div style={{ marginTop: 10 }}><a className="marq-link" href="/terms">Terms of Service</a></div><div><a className="marq-link" href="/privacy">Privacy Policy</a></div><div><a className="marq-link" href="/acceptable-use">Acceptable Use Policy</a></div></div>
         <div><div style={{ color: _ink, fontWeight: 600 }}>Source</div><div style={{ marginTop: 10 }}><a className="marq-link" href="https://github.com/JettyRepo/LLLL" rel="noopener noreferrer">github.com/JettyRepo/LLLL</a></div></div>
       </div>
