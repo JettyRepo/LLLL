@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Buy — JC AIGP Quick Pass 2026 · Layrix</title>
-<meta name="description" content="US$200 one-time. 30-day decision window. End-to-end IAPP AIGP exam prep, six learning systems, optional self-configured AI tutor." />
+<meta name="description" content="US$200 + applicable tax, one-time. 30-day decision window. End-to-end IAPP AIGP exam prep, six learning systems, optional self-configured AI tutor." />
 <link rel="alternate" hreflang="en" href="https://layrix.ai/academy/buy/" />
 <link rel="alternate" hreflang="fr-CA" href="https://layrix.ai/fr/academy/buy/" />
 <link rel="alternate" hreflang="x-default" href="https://layrix.ai/academy/buy/" />
@@ -41,11 +41,14 @@ function Hero() {
           <div style={{ display:'flex', alignItems:'baseline', gap: 10, marginTop: 14 }}>
             <span style={{ fontFamily:'var(--display)', fontSize: 88, fontWeight: 500, letterSpacing: '-0.045em', lineHeight: 1 }}>US$200</span>
           </div>
-          <div style={{ fontSize: 12, color: 'rgba(241,239,231,0.6)', letterSpacing: '0.16em', textTransform: 'uppercase', fontFamily: 'var(--mono)', marginTop: 8 }}>30-day decision window</div>
+          <div style={{ fontSize: 12, color: 'rgba(241,239,231,0.6)', letterSpacing: '0.16em', textTransform: 'uppercase', fontFamily: 'var(--mono)', marginTop: 8 }}>+ applicable tax · 30-day decision window</div>
           <a className="marq-cta marq-link" href={BUY} rel="noopener noreferrer" style={{ display: 'block', marginTop: 28, padding: '18px 24px', background: accent, color: paper, fontSize: 14, fontWeight: 500, borderRadius: 10, textAlign:'center', letterSpacing:'0.04em' }}>Buy — US$200 →</a>
           <a className="marq-link" href="/academy/" style={{ display: 'block', marginTop: 12, padding: '14px 24px', border: `1px solid rgba(241,239,231,0.25)`, color: paper, fontSize: 13, borderRadius: 10, textAlign:'center' }}>See what's inside</a>
           <p style={{ fontSize: 12, color: 'rgba(241,239,231,0.55)', marginTop: 18, lineHeight: 1.6 }}>
             30 days to decide · Full refund or free upgrade to all four domains · Watermarked, never DRM-locked
+          </p>
+          <p style={{ fontSize: 11, color: 'rgba(241,239,231,0.38)', marginTop: 10, lineHeight: 1.5 }}>
+            Not available in OFAC-sanctioned or restricted regions.
           </p>
         </aside>
       </div>
@@ -55,10 +58,10 @@ function Hero() {
 
 function Features() {
   const f = [
-    ['System 1', 'Interactive Lectures', 'Multimedia slides with AI-narrated voice, synced subtitle highlighting, and real-time KP cross-referencing. Not a screen recording — an interactive lecture system.'],
+    ['System 1', 'Narrated Audio Quick-Tour', 'Thirteen narrated slide decks (~80 minutes total) with synced subtitle highlighting and real-time KP cross-referencing. Designed as a fast pre-study orientation and on-the-go review, not a full video course.'],
     ['System 2', 'Study Guide', '~500 pages across the four domains. Every KP: concept definition, regulatory background, practical meaning, common confusion points.'],
     ['System 3', 'Exam Essentials', 'Four volumes, one per domain. Exam-must-know conclusions distilled — 200+ core entries total. Ideal for second- and third-pass review.'],
-    ['System 4', 'Practice + Mock Exams', '1,100+ practice items by KP, domain, and difficulty. Filters, wrong-answer retry, inline explanations. Five mock forms (A–E), 100 items each.'],
+    ['System 4', 'Practice + Mock Exams', '1,100+ practice items by KP, domain, and difficulty. Filters, wrong-answer retry, inline explanations. Five mock forms (A–E), 100 items each. The current question bank emphasizes conceptual accuracy; full-length scenario stems will be added in a future update.'],
     ['System 5', 'Flashcards', '~300 cards covering core concepts, definitions, critical distinctions. KP-tagged and linked to the practice bank.'],
     ['System 6', 'Cram Sheet', 'Exam-eve only. One sheet per domain. Definitions, frameworks, memory hooks, confusion comparisons — the skeleton you scan in the final two hours.'],
     ['Optional · Self-Configured', 'Personal AI Tutor', 'Pre-trained Chroma vector knowledge base over the 500+ KP corpus. Import into a local LLM. Skip if you don\'t want it — the six core systems are complete on their own.'],
@@ -107,7 +110,7 @@ function HowItWorks() {
 
 function FAQ() {
   const faqs = [
-    ['What exactly do I pay, and what do I get on Day 0?', 'US$200 once. From the moment your payment clears you have access to Domain I (Preview): the lectures, study guide section, essentials volume, practice items, flashcards, and cram sheet for Domain I. Start studying immediately while you decide whether to upgrade or refund.'],
+    ['What exactly do I pay, and what do I get on Day 0?', 'US$200 once, plus applicable tax based on your billing country (shown at Stripe checkout). From the moment your payment clears you have access to Domain I (Preview): the narrated audio quick-tour, study guide section, essentials volume, practice items, flashcards, and cram sheet for Domain I. Start studying immediately while you decide whether to upgrade or refund.'],
     ['How does the 30-day window actually work?', 'You have 30 days from purchase to choose one of two paths: (a) request a refund — email order@layrix.ai to receive a full refund, no reason required; or (b) upgrade to Full — unlock all four domains, after which the refund option will no longer be available. After Day 30, your account will automatically upgrade to Full, and the refund policy will no longer apply.'],
     ['What is the AI Tutor and is it required?', 'Optional and self-configured. We ship a pre-built Chroma vector knowledge base over the 500+ KP corpus. Import it into a local LLM (Gemma 4 or compatible) for a private AIGP Q&A tool that cites the source KP for every answer. If you have no interest in setting up a local model, the six core learning systems are complete on their own.'],
     ['Does it work offline?', 'The lectures, study guide, essentials, practice items, flashcards, and cram sheet are designed to work offline once downloaded. If you run the AI Tutor against a local LLM, your questions and answers never leave your device. If you connect a cloud LLM instead, your prompts go to that provider — never to Layrix.'],
