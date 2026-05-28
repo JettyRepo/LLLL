@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Académie Layrix · Layrix</title>
-<meta name="description" content="L’Académie Layrix transforme l’AIGP d’un concept de spécialistes en capacité interne — bâtie autour du cadre Artificial Intelligence Governance Professional de l’IAPP, pour que dirigeants et équipes transversales puissent concevoir, déployer et gérer l’IA de manière responsable, fiable, auditable et efficace." />
+<meta name="description" content="L'Académie Layrix aide les membres clés des équipes à obtenir la certification AIGP de l'IAPP — transformant la gouvernance de l'IA d'une connaissance de spécialiste en capacité organisationnelle. Un examen, quatre domaines, conçu pour ceux qui prennent réellement les décisions en matière d'IA." />
 <link rel="alternate" hreflang="en" href="https://layrix.ai/academy/" />
 <link rel="alternate" hreflang="fr-CA" href="https://layrix.ai/fr/academy/" />
 <link rel="alternate" hreflang="x-default" href="https://layrix.ai/academy/" />
@@ -26,21 +26,17 @@ function Hero() {
   return (
     <section style={{ padding: '88px clamp(20px, 5vw, 56px) 0', textAlign:'center' }}>
       <h1 className="marq-h1" style={{ fontFamily:'var(--display)', fontWeight:500, fontSize:'clamp(48px, 6.4vw, 92px)', lineHeight:1.04, letterSpacing:'-0.04em', margin:'0 auto', maxWidth: 1200 }}>
-        Académie Layrix :<br/><span style={{ fontStyle:'italic', color: indigo }}>Du savoir AIGP à la capacité d’équipe.</span>
+        Académie Layrix :<br/><span style={{ fontStyle:'italic', color: indigo }}>Du savoir AIGP à la capacité d'équipe.</span>
       </h1>
       <p style={{ fontSize:19, lineHeight:1.6, color:muted, maxWidth: 760, margin:'40px auto 0' }}>
-        L’Académie Layrix transforme l’AIGP d’un concept de spécialistes en capacité interne — afin que les membres clés de l’équipe puissent guider l’adoption de l’IA avec plus de clarté, de cohérence et de responsabilité.
+        L'Académie Layrix transforme l'AIGP d'un concept de spécialistes en capacité interne — afin que les membres clés de l'équipe puissent guider l'adoption de l'IA avec plus de clarté, de cohérence et de responsabilité.
       </p>
       <p style={{ fontSize:17, lineHeight:1.65, color:muted, maxWidth: 760, margin:'20px auto 0' }}>
-        Bâtie autour du cadre <strong style={{ color: ink }}>Artificial Intelligence Governance Professional</strong> de l’IAPP, elle aide les dirigeants et les équipes transversales à développer une compréhension systématique de la gouvernance, du risque, de la conformité, des contrôles organisationnels et de la supervision du cycle de vie de l’IA — afin de concevoir, déployer et gérer l’IA de manière responsable, fiable, auditable et opérationnellement efficace.
-      </p>
-      <div className="marq-tag" style={{ borderColor: indigo, color: indigo, marginTop: 36 }}>ACADÉMIE LAYRIX · PARCOURS AIGP · BoK 2.1.0</div>
-      <p style={{ fontSize:17, lineHeight:1.65, color:muted, maxWidth: 760, margin:'24px auto 0' }}>
-        Un système complet de préparation à l’examen : <strong style={{ color: ink }}>500+ points de connaissance</strong>, six modes d’apprentissage interconnectés, tuteur IA autoconfiguré en option. Un engagement unique de 200 $US, une fenêtre de décision de 30 jours.
+        Bâtie autour du cadre <strong style={{ color: ink }}>Artificial Intelligence Governance Professional</strong> de l'IAPP, elle aide les dirigeants et les équipes transversales à développer une compréhension systématique de la gouvernance, du risque, de la conformité, des contrôles organisationnels et de la supervision du cycle de vie de l'IA.
       </p>
       <div style={{ display:'flex', gap:12, justifyContent:'center', marginTop: 40, flexWrap:'wrap' }}>
-        <a className="marq-cta marq-link" href="/fr/academy/buy/" style={{ padding:'16px 28px', background:ink, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>S’inscrire — 200 $US, remboursement 30 jours →</a>
-        <a className="marq-cta marq-link" href="#systems" style={{ padding:'16px 28px', border:`1px solid ${ink}`, color:ink, fontSize:14, fontWeight:500, borderRadius:999 }}>Explorer le programme →</a>
+        <a className="marq-cta marq-link" href="/fr/academy/buy/" style={{ padding:'16px 28px', background:ink, color:paper, fontSize:14, fontWeight:500, borderRadius:999 }}>Commencer — 20 $US →</a>
+        <a className="marq-cta marq-link" href="#programs" style={{ padding:'16px 28px', border:`1px solid ${ink}`, color:ink, fontSize:14, fontWeight:500, borderRadius:999 }}>Voir tous les programmes →</a>
       </div>
     </section>
   );
@@ -49,15 +45,15 @@ function Hero() {
 function Exam() {
   const stats = [['100','Questions'],['180','Minutes'],['4','Domaines'],['~30 %','Scénarios']];
   const rows = [
-    ['I', 'Fondements de la gouvernance de l’IA', '16–20'],
+    ['I', "Fondements de la gouvernance de l'IA", '16–20'],
     ['II', 'Lois, normes et cadres de conformité', '19–23'],
-    ['III', 'Gouverner le processus de développement de l’IA', '21–25'],
-    ['IV', 'Gouverner le déploiement et l’usage de l’IA', '21–25'],
+    ['III', "Gouverner le processus de développement de l'IA", '21–25'],
+    ['IV', "Gouverner le déploiement et l'usage de l'IA", '21–25'],
   ];
   return (
-    <SectionRow idx="01" kicker="L’examen" tone={indigo}
-      title={<>Ce que vous <span style={{ fontStyle:'italic', color: indigo }}>passez réellement.</span></>}
-      lead="La certification Artificial Intelligence Governance Professional de l’IAPP est un examen linéaire de 100 items en 180 minutes, sur quatre domaines. Environ 30 % de questions de mise en situation. Le BoK v2.1.0 est entré en vigueur le 2 février 2026 — il met l’accent sur les architectures agentiques, le risque tiers et le renforcement de la gouvernance des données.">
+    <SectionRow idx="01" kicker="La certification AIGP" tone={indigo}
+      title={<>Un examen. <span style={{ fontStyle:'italic', color: indigo }}>Quatre domaines de gouvernance.</span></>}
+      lead="La certification Artificial Intelligence Governance Professional de l'IAPP est un examen linéaire de 100 items en 180 minutes, sur quatre domaines. Environ 30 % de questions de mise en situation. Le BoK v2.1.0 est entré en vigueur le 2 février 2026 — il met l'accent sur les architectures agentiques, le risque tiers et le renforcement de la gouvernance des données.">
       <div className="marq-grid-4" style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap: 14, marginTop: 56 }}>
         {stats.map(([n,l]) => (
           <div key={l} className="marq-card" style={{ background: paper2, padding:'28px 22px', borderRadius:14, border:`1px solid ${rule}`, textAlign:'center' }}>
@@ -82,165 +78,58 @@ function Exam() {
   );
 }
 
-function Systems() {
-  const sys = [
-    ['01','Conférences interactives','Diapositives multimédias natives avec voix IA narrée, surlignage de sous-titres synchronisé et renvois croisés aux KP en temps réel sur chaque diapositive. Pas un enregistrement d’écran — un système de cours interactif bâti pour la structure de connaissance AIGP.'],
-    ['02','Guide d’étude','~500 pages sur les quatre domaines. Chaque KP reçoit le traitement complet : définition du concept, contexte réglementaire, sens pratique et points de confusion courants. À lire du début à la fin, puis à garder comme manuel de consultation.'],
-    ['03','Essentiels d’examen','Quatre volumes, un par domaine. Pour chaque KP, nous distillons les conclusions à connaître pour l’examen — serrées, complètes, idéales pour la deuxième et la troisième relecture. Plus de 200 entrées centrales sur les quatre domaines.'],
-    ['04','Banque + examens blancs','Plus de 1 100 items d’entraînement organisés par KP, domaine et difficulté — avec filtres, reprise des mauvaises réponses, explications en ligne et carnet d’erreurs intégré. Plus cinq examens blancs complets (A–E), 100 items chacun, calibrés sur les ratios du BoK 2.1.0.'],
-    ['05','Fiches mémoire','~300 fiches couvrant chaque concept central, définition ou distinction critique. Étiquetées par KP et reliées à la banque d’entraînement — manquez une question, sautez directement à la fiche.'],
-    ['06','Antisèche','La veille de l’examen seulement. Une feuille par domaine. Définitions clés, cadres réglementaires, accroches mnémotechniques et comparaisons des points de confusion à haute fréquence — le squelette que vous parcourez dans les deux dernières heures.'],
-  ];
+function WhyOrg() {
   return (
-    <SectionRow idx="02" kicker="Six systèmes d’apprentissage · une base de connaissance" tone={indigo}
-      title={<>Six entrées, <span style={{ fontStyle:'italic', color: indigo }}>même destination.</span></>}
-      lead="500+ points de connaissance officiels, transformés en un seul système d’étude multimodal. Chaque KP accessible via six modes interconnectés — changez de surface selon le temps et le style d’apprentissage.">
-      <div id="systems" className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap: 16, marginTop: 56 }}>
-        {sys.map(([n, h, b]) => (
-          <div key={n} className="marq-card" style={{ background: paper2, padding:'28px 26px', borderRadius:14, border:`1px solid ${rule}` }}>
-            <div style={{ fontFamily:'var(--display)', fontSize: 48, color: indigo, fontWeight: 500, lineHeight: 1, letterSpacing:'-0.02em' }}>{n}</div>
-            <h3 style={{ fontFamily:'var(--display)', fontSize: 26, fontWeight: 500, marginTop: 22, lineHeight: 1.15 }}>{h}</h3>
-            <p style={{ fontSize: 14, lineHeight: 1.6, color: muted, marginTop: 12 }}>{b}</p>
-          </div>
-        ))}
-      </div>
-    </SectionRow>
-  );
-}
-
-function OneKP() {
-  const ways = [
-    ['Guide d’étude','l’explication complète du concept'],
-    ['Conférence','parcours du concept central avec diapositives dynamiques'],
-    ['Essentiels','les points à connaître pour l’examen'],
-    ['Entraînement','items reliés avec explication en ligne'],
-    ['Fiche mémoire','activation rapide du concept'],
-    ['Antisèche','confirmation finale avant l’examen'],
-  ];
-  return (
-    <SectionRow idx="03" kicker="Un KP. Six entrées." tone={indigo}
-      title={<>Choisissez celle qui correspond à votre <span style={{ fontStyle:'italic', color: indigo }}>temps et votre style.</span></>}>
-      <div style={{ marginTop: 48, background: ink, color: paper, borderRadius: 16, padding: 'clamp(28px, 4vw, 48px)' }}>
-        <div className="marq-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap: '24px 32px' }}>
-          {ways.map(([h, b]) => (
-            <div key={h} style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 18 }}>
-              <h4 style={{ fontFamily:'var(--display)', fontSize: 22, fontWeight: 500, marginBottom: 6 }}>{h}</h4>
-              <p style={{ fontSize: 14, color: 'rgba(241,239,231,0.7)', lineHeight: 1.55 }}>{b}</p>
-            </div>
-          ))}
-        </div>
-        <p style={{ fontSize: 14, color: 'rgba(241,239,231,0.6)', marginTop: 32, fontStyle:'italic' }}>
-          Apprenant visuel, auditif ou guidé par les questions — un KP, six entrées, et au moins une vous le fera retenir.
+    <SectionRow idx="02" kicker="Pourquoi votre équipe en a besoin" tone={indigo}
+      title={<>La gouvernance de l'IA <span style={{ fontStyle:'italic', color: indigo }}>{"n'est pas qu'une question informatique."}</span></>}>
+      <div style={{ maxWidth: 840, marginTop: 48 }}>
+        <p style={{ fontSize: 17, lineHeight: 1.75, color: muted }}>
+          L'IA est adoptée dans les services juridiques, conformité, produit, opérations et approvisionnement — pas seulement en ingénierie. Chacune de ces fonctions porte une exposition au risque réelle : approuver un modèle sans comprendre sa traçabilité des données, déployer un outil sans connaître les obligations réglementaires applicables, ou auditer le système d'IA d'un fournisseur sans cadre d'évaluation commun. La certification AIGP donne aux personnes qui prennent ces décisions un ancrage systématique dans ce dont elles sont réellement responsables.
+        </p>
+        <p style={{ fontSize: 17, lineHeight: 1.75, color: muted, marginTop: 28 }}>
+          La certification crée un vocabulaire commun entre les équipes. Quand un chef de produit, un conseiller en vie privée et un responsable de la conformité comprennent tous les quatre mêmes domaines — fondements de la gouvernance IA, lois et normes, gouvernance du développement et supervision du déploiement — les initiatives IA avancent plus vite et atterrissent mieux. Les décisions qui nécessitaient autrefois une escalade sont prises au bon niveau, avec le bon contexte, par des personnes qui partagent la même carte.
+        </p>
+        <p style={{ fontSize: 17, lineHeight: 1.75, color: muted, marginTop: 28 }}>
+          Une certification, quatre domaines, un référentiel — mis à jour pour l'ère de l'IA agentique (BoK v2.1.0, en vigueur depuis février 2026). Pour les organisations qui bâtissent une capacité de gouvernance IA, l'AIGP est le chemin le plus direct de la prise de conscience à la compétence vérifiée et certifiée par examen.
         </p>
       </div>
     </SectionRow>
   );
 }
 
-function Tutor() {
+function Programs() {
   return (
-    <SectionRow idx="07" kicker="Gratuit · Sous licence MIT · Optionnel" tone={indigo}
-      title={<>Un tuteur IA personnel, <span style={{ fontStyle:'italic', color: indigo }}>si vous le souhaitez.</span></>}
-      lead={<>Nous publions l’ensemble de la <strong style={{ color: ink }}>base de connaissance des 500+ KP</strong> sous forme de jeu de vecteurs Chroma pré-entraîné — <strong style={{ color: ink }}>gratuit, sous licence MIT.</strong> Importez-le dans n’importe quel LLM local (Gemma 4 ou compatible) et bâtissez votre propre tuteur Q&amp;R AIGP privé. Aucun achat requis, aucune clé API, aucune télémétrie vers Layrix.</>}>
-      <div style={{ display:'flex', gap: 10, marginTop: 32, flexWrap:'wrap' }}>
-        <span className="marq-tag" style={{ borderColor: indigo, color: indigo, fontFamily:'var(--mono)' }}>LICENCE MIT</span>
-        <span className="marq-tag" style={{ borderColor: indigo, color: indigo, fontFamily:'var(--mono)' }}>TÉLÉCHARGEMENT GRATUIT</span>
-        <span className="marq-tag" style={{ borderColor: indigo, color: indigo, fontFamily:'var(--mono)' }}>LOCAL · HORS LIGNE</span>
-      </div>
-      <div style={{ marginTop: 32, padding: 32, background: paper2, border: `1px solid ${rule}`, borderRadius: 14, maxWidth: 920 }}>
-        <div className="marq-kicker" style={{ color: indigo, marginBottom: 14 }}>Exemple de requête</div>
-        <p style={{ fontFamily:'var(--display)', fontSize: 22, fontStyle:'italic', color: ink, lineHeight: 1.4 }}>
-          « Quelles obligations s’appliquent aux systèmes à haut risque selon le chapitre III de la Loi sur l’IA de l’UE ? »
-        </p>
-        <p style={{ fontSize: 14.5, color: muted, marginTop: 16, lineHeight: 1.65 }}>
-          Le modèle répond à partir de la base de connaissance des 500+ KP, en citant l’ID du KP source pour chaque affirmation.
-        </p>
-      </div>
-      <p style={{ fontSize: 14.5, color: muted, marginTop: 24, maxWidth: 760, lineHeight: 1.65 }}>
-        Conçu pour les apprenants à l’aise avec la technique. Si vous n’avez aucun intérêt à configurer un LLM local, les six systèmes d’apprentissage de base sont complets à eux seuls — aucun outillage IA requis.
-      </p>
-    </SectionRow>
-  );
-}
-
-function Sample() {
-  return (
-    <SectionRow idx="04" kicker="Une question de la banque" tone={indigo}
-      title={<>Un item, <span style={{ fontStyle:'italic', color: indigo }}>présenté en entier.</span></>}>
-      <div style={{ marginTop: 48, background: paper2, border: `1px solid ${rule}`, borderRadius: 14, padding: 'clamp(28px, 4vw, 40px)' }}>
-        <div className="marq-kicker" style={{ color: indigo, marginBottom: 16 }}>Domaine II · Lois, normes et cadres · aligné BoK v2.1</div>
-        <div style={{ fontSize: 15.5, lineHeight: 1.75, color: muted, paddingBottom: 24, borderBottom: `1px solid ${rule}` }}>
-          Un fournisseur SaaS multinational établi à Toronto lance un agent conversationnel de soutien client destiné à des utilisateurs finaux résidant dans l’UE. L’équipe produit veut utiliser un modèle fondationnel tiers accessible par API et l’affiner sur six mois de tickets de soutien historiques. Le service juridique a signalé que l’agent pourrait être qualifié de système d’IA à haut risque au sens de la Loi sur l’IA de l’UE en raison de son traitement des plaintes, tandis que le conseiller en vie privée demande quelles obligations s’attachent aux données de fine-tuning.
-        </div>
-        <p style={{ fontFamily:'var(--display)', fontSize: 22, fontWeight: 500, color: ink, marginTop: 24, lineHeight: 1.35 }}>
-          Quelle combinaison d’obligations est la plus susceptible de s’appliquer avant la mise sur le marché de l’agent dans l’UE ?
-        </p>
-        <ol style={{ listStyle:'none', padding: 0, marginTop: 22, display:'grid', gap: 10 }}>
-          {[
-            ['A', 'Registres de traitement de l’article 30 sur les tickets de soutien, évaluation de conformité au titre de la Loi sur l’IA de l’UE, et une DPIA couvrant le fine-tuning.', true],
-            ['B', "Une évaluation de conformité au titre de la Loi sur l’IA de l’UE, la diligence du fournisseur du modèle fondationnel couvrant les obligations GDPR du responsable en aval pour le compte du déployeur.", false],
-            ['C', "Procédures de notification de brèche RGPD et une évaluation d’impact algorithmique au titre de la LIAD canadienne, appliquée parce que le fournisseur a son siège à Toronto.", false],
-            ['D', "Une évaluation d’impact relative à la protection des données, puisque les agents de traitement des plaintes échappent par défaut à la classification haut risque de la Loi sur l’IA de l’UE.", false],
-          ].map(([k, t, c]) => (
-            <li key={k} style={{ display:'grid', gridTemplateColumns:'40px 1fr', gap: 16, padding: '14px 20px', background: c ? 'rgba(47,111,74,0.06)' : paper, border: `1px solid ${c ? accent : rule}`, borderRadius: 10, alignItems:'baseline' }}>
-              <span style={{ fontFamily:'var(--display)', fontSize: 22, fontWeight: 500, color: c ? accent : muted }}>{k}</span>
-              <span style={{ fontSize: 14.5, lineHeight: 1.6, color: ink }}>{t}</span>
-            </li>
-          ))}
-        </ol>
-        <details style={{ marginTop: 28, borderTop: `1px solid ${rule}` }}>
-          <summary>Afficher l’explication</summary>
-          <div className="ans">
-            <p style={{ marginBottom: 14 }}>La bonne réponse combine trois obligations indépendantes qui s’attachent toutes à ce scénario. Les responsables et sous-traitants de l’UE doivent tenir des registres de traitement au titre de l’article 30 dès qu’ils traitent des données personnelles, et les tickets de soutien historiques en font partie. L’exigence d’évaluation de conformité de la Loi sur l’IA de l’UE est déclenchée avant la mise sur le marché d’un système d’IA à haut risque dans l’UE — et un agent conversationnel utilisé pour évaluer ou aiguiller les plaintes dans un service réglementé est candidat à une qualification haut risque selon les faits. Le fine-tuning d’un modèle fondationnel sur des données personnelles atteint le seuil RGPD d’une DPIA.</p>
-            <p>Les autres choix échouent chacun sur un fait. La diligence d’un fournisseur de modèle fondationnel ne libère pas un déployeur de ses obligations RGPD de responsable. La LIAD canadienne n’était pas encore en vigueur dans la fenêtre temporelle du BoK v2.1. Et les agents conversationnels ne sont pas catégoriquement exclus de la classification haut risque.</p>
-          </div>
-        </details>
-        <p style={{ fontSize: 12, color: muted, fontStyle:'italic', marginTop: 18 }}>Item original représentatif de notre banque de 1 100+ questions.</p>
-      </div>
-    </SectionRow>
-  );
-}
-
-function Pricing() {
-  const steps = [
-    ['Jour 0', 'Payez 200 $US. Recevez le Domaine I (Aperçu) immédiatement. Commencez l’étude.'],
-    ['D’ici le Jour 30', 'Décidez : demandez un remboursement (courriel à order@layrix.ai, aucune raison requise), ou passez à la version complète (les quatre domaines, 0 $ de plus) — une fois la mise à niveau effectuée, l’option de remboursement se ferme.'],
-    ['Après le Jour 30', 'Mise à niveau automatique vers la version complète. Votre compte déverrouille automatiquement les quatre domaines, sans frais supplémentaires, jamais.'],
-  ];
-  return (
-    <SectionRow idx="05" kicker="Tarification et garantie" tone={indigo}
-      title={<>Essayez d’abord. <span style={{ fontStyle:'italic', color: indigo }}>Décidez ensuite.</span></>}>
-      <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'1.2fr 1fr', gap: 16, marginTop: 56 }}>
-        <div className="marq-card" style={{ background: ink, color: paper, padding: 'clamp(28px, 3vw, 40px)', borderRadius: 14 }}>
-          <div className="marq-kicker" style={{ color: accent }}>Achat unique</div>
-          <h3 style={{ fontFamily:'var(--display)', fontSize: 36, fontWeight: 500, marginTop: 14, letterSpacing:'-0.025em' }}>JC AIGP QUICK PASS 2026</h3>
-          <div style={{ marginTop: 22, display:'flex', alignItems:'baseline', gap: 12 }}>
-            <span style={{ fontFamily:'var(--display)', fontSize: 88, fontWeight: 500, color: paper, letterSpacing:'-0.04em', lineHeight: 1 }}>200 $US</span>
-            <span style={{ fontSize: 13, color: 'rgba(241,239,231,0.6)' }}>· par personne</span>
-          </div>
-          <ul style={{ listStyle:'none', padding: 0, marginTop: 28, display:'grid', gap: 10 }}>
-            {['Les six systèmes d’apprentissage', 'Un an de mises à jour du contenu alignées sur le BoK 2.1.0', 'Fenêtre de décision de 30 jours — remboursement complet ou mise à niveau vers les quatre domaines'].map(b => (
-              <li key={b} style={{ display:'grid', gridTemplateColumns:'20px 1fr', gap: 10, fontSize: 14, color: 'rgba(241,239,231,0.85)' }}>
+    <SectionRow idx="03" kicker="Programmes" tone={indigo}
+      title={<>Une certification à la fois, <span style={{ fontStyle:'italic', color: indigo }}>conçue pour durer.</span></>}>
+      <div id="programs" className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap: 16, marginTop: 56 }}>
+        <div className="marq-card" style={{ background: ink, color: paper, padding: 'clamp(28px, 3vw, 40px)', borderRadius: 14, display:'flex', flexDirection:'column' }}>
+          <div className="marq-kicker" style={{ color: accent }}>PARCOURS AIGP · BoK 2.1.0</div>
+          <h3 style={{ fontFamily:'var(--display)', fontSize: 32, fontWeight: 500, marginTop: 16, lineHeight: 1.1, letterSpacing:'-0.02em' }}>JC AIGP Quick Pass Guide</h3>
+          <p style={{ fontSize: 15, lineHeight: 1.65, color: 'rgba(241,239,231,0.75)', marginTop: 16 }}>
+            Un système d'apprentissage multimodal pour la certification AIGP de l'IAPP — 500+ points de connaissance sur six systèmes d'apprentissage interconnectés. Conférences narrées, guide d'étude, essentiels d'examen, banque de questions, fiches mémoire et antisèche. Plus un tuteur IA autoconfiguré en option (licence MIT).
+          </p>
+          <ul style={{ listStyle:'none', padding: 0, marginTop: 24, display:'grid', gap: 8 }}>
+            {["Six systèmes d'apprentissage · 500+ KP", "Tuteur IA personnel (optionnel, gratuit)", "Un an de mises à jour du contenu"].map(b => (
+              <li key={b} style={{ display:'grid', gridTemplateColumns:'18px 1fr', gap: 10, fontSize: 14, color: 'rgba(241,239,231,0.85)' }}>
                 <span style={{ color: accent, fontWeight: 700 }}>✓</span><span>{b}</span>
               </li>
             ))}
           </ul>
-          <a className="marq-cta marq-link" href="/fr/academy/buy/" style={{ marginTop: 32, display:'inline-block', padding:'16px 28px', background: accent, color: paper, fontSize: 14, fontWeight: 500, borderRadius: 999 }}>S’inscrire — 200 $US →</a>
-        </div>
-        <div className="marq-card" style={{ background: paper2, padding: 'clamp(28px, 3vw, 40px)', borderRadius: 14, border: `1px solid ${rule}` }}>
-          <div className="marq-kicker">Comment ça fonctionne</div>
-          <h3 style={{ fontFamily:'var(--display)', fontSize: 28, fontWeight: 500, marginTop: 14, letterSpacing:'-0.02em' }}>Un achat. Une fenêtre de 30 jours.</h3>
-          <div style={{ marginTop: 24, display:'grid', gap: 18 }}>
-            {steps.map(([k, v]) => (
-              <div key={k}>
-                <div className="marq-kicker" style={{ color: indigo }}>{k}</div>
-                <div style={{ fontSize: 15, color: ink, marginTop: 4, lineHeight: 1.55 }}>{v}</div>
-              </div>
-            ))}
+          <div style={{ marginTop: 28, fontSize: 13, color: 'rgba(241,239,231,0.6)', fontFamily:'var(--mono)', letterSpacing:'0.06em' }}>
+            200 $US / personne · Commencez avec 20 $US
           </div>
-          <p style={{ fontSize: 13.5, color: muted, marginTop: 24, fontStyle:'italic', lineHeight: 1.6 }}>
-            Nous l’avons conçu ainsi parce que la meilleure façon de gagner la confiance, c’est de vous laisser essayer, puis décider. Le risque est de notre côté pendant les 30 premiers jours.
+          <a className="marq-cta marq-link" href="/fr/academy/buy/" style={{ marginTop: 20, display:'inline-block', padding:'16px 28px', background: accent, color: paper, fontSize: 14, fontWeight: 500, borderRadius: 999, textAlign:'center' }}>{"S'inscrire — 20 $US →"}</a>
+        </div>
+        <div className="marq-card" style={{ background: paper2, padding: 'clamp(28px, 3vw, 40px)', borderRadius: 14, border: `1px solid ${rule}`, display:'flex', flexDirection:'column', opacity: 0.75 }}>
+          <div className="marq-kicker" style={{ color: muted }}>PARCOURS CIPP · À venir 2026</div>
+          <h3 style={{ fontFamily:'var(--display)', fontSize: 32, fontWeight: 500, marginTop: 16, lineHeight: 1.1, letterSpacing:'-0.02em', color: muted }}>JC CIPP Quick Pass Guide</h3>
+          <p style={{ fontSize: 15, lineHeight: 1.65, color: muted, marginTop: 16 }}>
+            Préparation complète pour la certification Certified Information Privacy Professional de l'IAPP. Même format — guide d'étude, banque de questions, essentiels, antisèche — conçu pour le droit de la vie privée et le référentiel CIPP.
           </p>
+          <p style={{ fontSize: 13, color: muted, marginTop: 'auto', paddingTop: 40, fontStyle:'italic' }}>
+            {"Lancement en 2026. Inscrivez votre intérêt et nous vous informerons à l'ouverture des inscriptions."}
+          </p>
+          <span style={{ marginTop: 16, display:'inline-block', padding:'14px 24px', background: rule, color: muted, fontSize: 14, fontWeight: 500, borderRadius: 999, textAlign:'center', cursor:'default' }}>Bientôt disponible</span>
         </div>
       </div>
     </SectionRow>
@@ -249,14 +138,14 @@ function Pricing() {
 
 function Fit() {
   const fit = [
-    ['Vous prévoyez passer l’AIGP dans les 12 mois.', 'Pas en survol du domaine, mais effectivement programmé(e) à l’examen.'],
-    ['Vous avez déjà une base en IA, en vie privée ou en conformité.', 'Et vous voulez une préparation systématique ciblée examen, pas une introduction.'],
-    ['Vous étudiez par fragments.', 'Trajets, soirées, fins de semaine — vous avez besoin d’une trousse multimodale qui se branche au créneau dont vous disposez.'],
-    ['Vous voulez un seul ensemble de bout en bout.', 'Couvrant la lecture de fondement, l’entraînement et le sprint final — pas un empilement d’outils déconnectés.'],
+    ["Juristes, responsables conformité et conseillers vie privée qui donnent des avis sur l'IA.", "Pas seulement les techniciens. Ceux qui signent les autorisations d'outils IA, examinent les contrats fournisseurs et répondent aux questions réglementaires."],
+    ["Chefs de produit et responsables de programme supervisant des systèmes IA.", "Ceux qui définissent les exigences, approuvent les déploiements et sont responsables des décisions produit qui façonnent l'utilisation de l'IA."],
+    ["Ingénieurs seniors et architectes qui intègrent l'IA aux produits.", "Les contributeurs techniques qui doivent comprendre les contraintes de gouvernance en même temps que l'implémentation — et pas seulement les préoccupations techniques."],
+    ["Dirigeants bâtissant des cadres internes de gouvernance IA.", "Cadres supérieurs qui doivent poser les bonnes questions, répartir les risques et créer des structures de responsabilité autour de l'IA."],
   ];
   return (
-    <SectionRow idx="06" kicker="Est-ce pour vous ?" tone={indigo}
-      title={<>Soyez honnête à savoir si <span style={{ fontStyle:'italic', color: indigo }}>cela vous convient.</span></>}>
+    <SectionRow idx="04" kicker="Qui devrait se certifier ?" tone={indigo}
+      title={<>Les bonnes personnes, <span style={{ fontStyle:'italic', color: indigo }}>pas seulement les plus évidentes.</span></>}>
       <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap: '14px 32px', marginTop: 48 }}>
         {fit.map(([h, b]) => (
           <div key={h} style={{ padding: '24px 0', borderTop: `1px solid ${rule}` }}>
@@ -269,41 +158,16 @@ function Fit() {
   );
 }
 
-function FAQ() {
-  const faqs = [
-    ['Est-ce affilié à l’IAPP ?', 'Non. JC AIGP QUICK PASS est indépendant. Nous vous préparons à l’examen AIGP de l’IAPP, mais nous ne sommes pas approuvés, partenaires, ni sous licence de l’International Association of Privacy Professionals. AIGP® et IAPP® sont leurs marques.'],
-    ['D’où vient le contenu ?', 'Chaque conférence, section de guide d’étude, entrée d’essentiels, item d’entraînement, fiche mémoire et ligne d’antisèche est rédigée à partir de zéro contre le plan BoK 2.1.0 publié. Nous n’incluons pas d’extraits d’examen IAPP ni d’items d’entraînement transcrits.'],
-    ['Comment fonctionne la fenêtre de décision de 30 jours ?', 'Vous payez 200 $US une seule fois. Dès le Jour 0, vous avez accès au Domaine I (Aperçu). En 30 jours, vous pouvez (a) nous écrire pour un remboursement complet — aucune raison requise, ou (b) passer à l’édition complète sans frais supplémentaires, déverrouillant les quatre domaines, après quoi l’option de remboursement ne sera plus disponible. Après le Jour 30, votre compte passe automatiquement à la version complète, et la politique de remboursement ne s’applique plus.'],
-    ['Qu’est-ce que le tuteur IA — et est-il requis ?', 'Optionnel et autoconfiguré. Nous publions la base de connaissance vectorielle Chroma couvrant le corpus de 500+ KP gratuitement sous licence MIT. Importez-la dans un LLM local (Gemma 4 ou compatible). Si vous n’avez aucun intérêt à configurer un modèle local, les six systèmes d’apprentissage de base sont complets à eux seuls.'],
-    ['Y a-t-il des limites d’appareils ou de téléchargements ?', 'Oui. Une licence s’active sur deux appareils au plus et permet quatre téléchargements à vie au cas où vous changeriez d’ordinateur. Les deux limites sont appliquées côté serveur à l’activation.'],
-    ['Combien de temps durent les mises à jour de contenu ?', 'Un an à compter de l’achat. Nous livrons corrections, nouveaux examens blancs et mises à jour d’alignement BoK tout au long de cette année. Une fois l’année écoulée, vos fichiers existants continuent de fonctionner — vous cessez simplement de recevoir du nouveau contenu.'],
-  ];
-  return (
-    <SectionRow idx="08" kicker="FAQ" tone={indigo}
-      title={<>Vos questions, <span style={{ fontStyle:'italic', color: indigo }}>nos réponses.</span></>}>
-      <div style={{ marginTop: 32, maxWidth: 920 }}>
-        {faqs.map(([q, a]) => (
-          <details key={q}><summary>{q}</summary><div className="ans">{a}</div></details>
-        ))}
-      </div>
-    </SectionRow>
-  );
-}
-
 function App() {
   return (
     <>
       <Header current="aigp" lang="fr" langHref="/academy/" />
       <Hero />
       <Exam />
-      <Systems />
-      <OneKP />
-      <Sample />
-      <Pricing />
+      <WhyOrg />
+      <Programs />
       <Fit />
-      <Tutor />
-      <FAQ />
-      <Footer lang="fr" extra={<p style={{ marginTop: 24, fontSize: 11, color: muted, lineHeight: 1.65, maxWidth: 720 }}>AIGP® et IAPP® sont des marques de l’International Association of Privacy Professionals. Layrix est indépendante et n’est pas affiliée, soutenue, ni commanditée par l’IAPP.</p>} />
+      <Footer lang="fr" extra={<p style={{ marginTop: 24, fontSize: 11, color: muted, lineHeight: 1.65, maxWidth: 720 }}>{"AIGP® et IAPP® sont des marques de l'International Association of Privacy Professionals. Layrix est indépendante et n'est pas affiliée, soutenue, ni commanditée par l'IAPP."}</p>} />
     </>
   );
 }
