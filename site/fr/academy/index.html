@@ -78,9 +78,39 @@ function Exam() {
   );
 }
 
+function Demo() {
+  return (
+    <SectionRow idx="02" kicker="En action" tone={indigo}
+      title={<>Chaque format. <span style={{ fontStyle:'italic', color: indigo }}>Le même point de connaissance.</span></>}
+      lead="Découvrez comment les flashcards, le guide d'étude, l'antisèche, les essentiels d'examen et les cours narrés sont tous reliés par un système KP commun.">
+      <div style={{
+        marginTop: 40,
+        background: '#0c0f14',
+        borderRadius: 16,
+        overflow: 'hidden',
+        boxShadow: '0 12px 48px rgba(0,0,0,0.22)',
+        border: '1px solid rgba(255,255,255,0.07)',
+      }}>
+        <iframe
+          src="/academy/demo.html"
+          loading="lazy"
+          title="JC AIGP Quick Pass Guide — interactive feature tour"
+          style={{
+            width: '100%',
+            height: 'clamp(600px, 80vh, 860px)',
+            border: 'none',
+            display: 'block',
+          }}
+          allow="autoplay"
+        />
+      </div>
+    </SectionRow>
+  );
+}
+
 function WhyOrg() {
   return (
-    <SectionRow idx="02" kicker="Pourquoi votre équipe en a besoin" tone={indigo}
+    <SectionRow idx="03" kicker="Pourquoi votre équipe en a besoin" tone={indigo}
       title={<>La gouvernance de l'IA <span style={{ fontStyle:'italic', color: indigo }}>{"n'est pas qu'une question informatique."}</span></>}>
       <div style={{ maxWidth: 840, marginTop: 48 }}>
         <p style={{ fontSize: 17, lineHeight: 1.75, color: muted }}>
@@ -99,7 +129,7 @@ function WhyOrg() {
 
 function Programs() {
   return (
-    <SectionRow idx="03" kicker="Programmes" tone={indigo}
+    <SectionRow idx="04" kicker="Programmes" tone={indigo}
       title={<>Une certification à la fois, <span style={{ fontStyle:'italic', color: indigo }}>conçue pour durer.</span></>}>
       <div id="programs" className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap: 16, marginTop: 56 }}>
         <div className="marq-card" style={{ background: ink, color: paper, padding: 'clamp(28px, 3vw, 40px)', borderRadius: 14, display:'flex', flexDirection:'column' }}>
@@ -144,7 +174,7 @@ function Fit() {
     ["Dirigeants bâtissant des cadres internes de gouvernance IA.", "Cadres supérieurs qui doivent poser les bonnes questions, répartir les risques et créer des structures de responsabilité autour de l'IA."],
   ];
   return (
-    <SectionRow idx="04" kicker="Qui devrait se certifier ?" tone={indigo}
+    <SectionRow idx="05" kicker="Qui devrait se certifier ?" tone={indigo}
       title={<>Les bonnes personnes, <span style={{ fontStyle:'italic', color: indigo }}>pas seulement les plus évidentes.</span></>}>
       <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap: '14px 32px', marginTop: 48 }}>
         {fit.map(([h, b]) => (
@@ -164,6 +194,7 @@ function App() {
       <Header current="aigp" lang="fr" langHref="/academy/" />
       <Hero />
       <Exam />
+      <Demo />
       <WhyOrg />
       <Programs />
       <Fit />

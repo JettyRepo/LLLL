@@ -78,9 +78,39 @@ function Exam() {
   );
 }
 
+function Demo() {
+  return (
+    <SectionRow idx="02" kicker="See it in action" tone={indigo}
+      title={<>Every format. <span style={{ fontStyle:'italic', color: indigo }}>Same knowledge point.</span></>}
+      lead="Watch how flashcards, study guide, cram sheet, exam essentials, and narrated lectures all link through a shared KP system — so you study smarter, not more.">
+      <div style={{
+        marginTop: 40,
+        background: '#0c0f14',
+        borderRadius: 16,
+        overflow: 'hidden',
+        boxShadow: '0 12px 48px rgba(0,0,0,0.22)',
+        border: '1px solid rgba(255,255,255,0.07)',
+      }}>
+        <iframe
+          src="/academy/demo.html"
+          loading="lazy"
+          title="JC AIGP Quick Pass Guide — interactive feature tour"
+          style={{
+            width: '100%',
+            height: 'clamp(600px, 80vh, 860px)',
+            border: 'none',
+            display: 'block',
+          }}
+          allow="autoplay"
+        />
+      </div>
+    </SectionRow>
+  );
+}
+
 function WhyOrg() {
   return (
-    <SectionRow idx="02" kicker="Why your team needs this" tone={indigo}
+    <SectionRow idx="03" kicker="Why your team needs this" tone={indigo}
       title={<>AI governance <span style={{ fontStyle:'italic', color: indigo }}>is not just an IT question.</span></>}>
       <div style={{ maxWidth: 840, marginTop: 48 }}>
         <p style={{ fontSize: 17, lineHeight: 1.75, color: muted }}>
@@ -99,7 +129,7 @@ function WhyOrg() {
 
 function Programs() {
   return (
-    <SectionRow idx="03" kicker="Programs" tone={indigo}
+    <SectionRow idx="04" kicker="Programs" tone={indigo}
       title={<>One credential at a time, <span style={{ fontStyle:'italic', color: indigo }}>built to last.</span></>}>
       <div id="programs" className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap: 16, marginTop: 56 }}>
         <div className="marq-card" style={{ background: ink, color: paper, padding: 'clamp(28px, 3vw, 40px)', borderRadius: 14, display:'flex', flexDirection:'column' }}>
@@ -144,7 +174,7 @@ function Fit() {
     ['Leadership teams building internal AI governance frameworks.', 'Executives and senior managers who need to ask the right questions, allocate risk, and create accountability structures around AI.'],
   ];
   return (
-    <SectionRow idx="04" kicker="Who should get certified?" tone={indigo}
+    <SectionRow idx="05" kicker="Who should get certified?" tone={indigo}
       title={<>The right people, <span style={{ fontStyle:'italic', color: indigo }}>not just the obvious ones.</span></>}>
       <div className="marq-grid-2" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap: '14px 32px', marginTop: 48 }}>
         {fit.map(([h, b]) => (
@@ -164,6 +194,7 @@ function App() {
       <Header current="aigp" langHref="/fr/academy/" />
       <Hero />
       <Exam />
+      <Demo />
       <WhyOrg />
       <Programs />
       <Fit />

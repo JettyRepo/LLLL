@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JC AIGP Quick Pass — Feature Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,wght@0,300;0,400;1,300;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0c0f14; --surface:#161a22; --surface2:#1e232d; --border:#2a3040;
+  --text:#e8eaf0; --text2:#8b92a5; --accent:#4f8cff; --accent2:#6c5ce7;
+  --correct:#00c48c; --wrong:#ff5757; --flag:#ffb347; --gold:#ffd700;
+  --radius:14px; --font:'DM Sans',sans-serif; --mono:'JetBrains Mono',monospace;
+  --serif:'Newsreader',Georgia,serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
+button{font-family:var(--font);cursor:pointer;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes cursorClick{0%{transform:scale(1)}30%{transform:scale(.8)}100%{transform:scale(1)}}
+@keyframes ripple{0%{transform:translate(-50%,-50%) scale(0);opacity:.55}100%{transform:translate(-50%,-50%) scale(3.5);opacity:0}}
+@keyframes popIn{0%{opacity:0;transform:scale(.88)}100%{opacity:1;transform:scale(1)}}
+#demo-app{width:100%;height:100vh;overflow:hidden;position:relative;display:flex;flex-direction:column;background:var(--bg);}
+.demo-inner{flex:1;overflow:hidden;position:relative;padding:14px 22px 0;max-width:960px;width:100%;margin:0 auto;}
+/* ── Screen visibility ── */
+.demo-screen{display:none;width:100%;}
+.demo-screen.active{display:flex;flex-direction:column;animation:fadeIn .22s ease;}
+/* ── Scrollable content areas ── */
+.scroll-area{overflow-y:auto;overflow-x:hidden;}
+.scroll-area::-webkit-scrollbar{width:4px;}
+.scroll-area::-webkit-scrollbar-track{background:transparent;}
+.scroll-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+/* ── Home screen ── */
+.mh-eyebrow{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--text2);margin-bottom:20px;animation:fadeUp .5s ease both;}
+.home-h1{font-family:var(--serif);font-size:clamp(36px,5vw,62px);font-weight:300;line-height:1.0;letter-spacing:-.03em;margin-bottom:6px;text-align:center;animation:fadeUp .5s .08s ease both;}
+.home-h1 span{color:var(--correct);font-style:italic;}
+.home-sub{font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:.1em;margin-bottom:24px;animation:fadeUp .5s .14s ease both;}
+.mh-rule{width:100%;max-width:800px;height:1px;background:var(--border);margin-bottom:16px;animation:fadeUp .5s .18s ease both;}
+.main-home-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:800px;animation:fadeUp .5s .22s ease both;}
+.main-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px 20px 16px 26px;cursor:pointer;transition:border-color .2s,transform .2s;position:relative;overflow:hidden;text-align:left;display:flex;flex-direction:column;}
+.main-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+.main-card:nth-child(1)::after{background:var(--accent);}
+.main-card:nth-child(2)::after{background:var(--accent2);}
+.main-card:nth-child(3)::after{background:var(--correct);}
+.main-card:nth-child(4)::after{background:var(--flag);}
+.main-card.hovered{border-color:rgba(232,234,240,.22);transform:translateY(-2px);}
+.mh-card-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;}
+.main-card:nth-child(1) .mh-card-tag{color:var(--accent);}
+.main-card:nth-child(2) .mh-card-tag{color:var(--accent2);}
+.main-card:nth-child(3) .mh-card-tag{color:var(--correct);}
+.main-card:nth-child(4) .mh-card-tag{color:var(--flag);}
+.mh-card-title{font-family:var(--serif);font-size:22px;font-weight:400;line-height:1.05;letter-spacing:-.01em;margin-bottom:5px;color:var(--text);}
+.mh-card-desc{font-size:12px;line-height:1.5;color:var(--text2);}
+/* ── Flashcard screen ── */
+.fc-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.fc-back{background:none;border:none;color:var(--text2);font-size:13px;display:flex;align-items:center;gap:4px;transition:color .2s;}
+.fc-screen-title{font-family:var(--serif);font-size:24px;font-weight:300;letter-spacing:-.02em;}
+.fc-meta{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;}
+.fc-stage{perspective:900px;width:100%;max-width:560px;margin:0 auto;height:clamp(250px,calc(100vh - 330px),440px);}
+.fc-card{width:100%;height:100%;position:relative;}
+.fc-card-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;}
+.fc-card.flipped .fc-card-inner{transform:rotateY(180deg);}
+.fc-card-front,.fc-card-back{position:absolute;width:100%;height:100%;overflow-y:auto;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);padding:24px 22px;box-sizing:border-box;}
+.fc-card-back{transform:rotateY(180deg);}
+.fc-card-front{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.fc-card-sec{font-size:10px;font-weight:700;color:var(--accent);background:rgba(79,140,255,.1);padding:3px 10px;border-radius:10px;margin-bottom:12px;}
+.fc-kp-id{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--accent);font-family:var(--mono);cursor:pointer;margin-bottom:8px;}
+.fc-card-title{font-size:19px;font-weight:700;color:var(--text);line-height:1.4;}
+.fc-card-hint{font-size:11px;color:var(--text2);margin-top:16px;opacity:.6;}
+.fc-back-label{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.fc-back-body{font-size:13px;color:var(--text);line-height:1.7;margin-bottom:12px;}
+.fc-back-example{background:rgba(79,140,255,.05);border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:8px 12px;font-size:12px;color:var(--text);line-height:1.6;margin-bottom:12px;}
+.fc-back-kp{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);background:rgba(79,140,255,.1);border:1px solid rgba(79,140,255,.2);border-radius:5px;padding:3px 9px;cursor:pointer;}
+.fc-practice-btn{display:inline-block;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;color:var(--accent);border:1px solid var(--accent);background:transparent;cursor:pointer;transition:all .2s;margin-top:8px;}
+.fc-rating{display:flex;justify-content:center;gap:9px;margin-top:12px;opacity:0;transition:opacity .3s;}
+.fc-rating.visible{opacity:1;}
+.fc-rate-btn{padding:8px 22px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid;cursor:pointer;transition:all .2s;}
+.fc-rate-no{background:rgba(255,87,87,.08);color:var(--wrong);border-color:rgba(255,87,87,.3);}
+.fc-rate-yes{background:rgba(0,196,140,.08);color:var(--correct);border-color:rgba(0,196,140,.3);}
+.fc-rate-yes.hovered{background:rgba(0,196,140,.18);}
+.fc-spaced-note{font-size:11px;color:var(--text2);text-align:center;margin-top:8px;opacity:.7;}
+/* ── Materials / Study Guide ── */
+.sm-header{margin-bottom:14px;}
+.sm-panel-title{font-family:var(--serif);font-size:24px;font-weight:300;letter-spacing:-.02em;margin-bottom:3px;}
+.sm-panel-sub{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+.sm-back{background:none;border:none;color:var(--text2);font-size:12px;display:flex;align-items:center;gap:4px;margin-bottom:10px;cursor:pointer;transition:color .2s;align-self:flex-start;}
+.sm-domain-tabs{display:flex;gap:5px;padding:6px 0;overflow-x:auto;flex-wrap:nowrap;margin-bottom:10px;}
+.sm-domain-tab{padding:5px 13px;border-radius:18px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;border:1px solid var(--border);background:var(--surface);color:var(--text2);transition:all .2s;}
+.sm-domain-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.sm-content-area{padding:6px 0;max-height:calc(100vh - 320px);}
+.sm-section-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.sm-block p{font-size:13px;color:var(--text);line-height:1.75;margin:5px 0;}
+.sm-block h3{font-size:13px;font-weight:700;color:var(--text);margin:12px 0 5px;}
+.sm-kp-id{display:inline-block;background:rgba(79,140,255,.12);border:1px solid rgba(79,140,255,.25);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;color:var(--accent);font-family:var(--mono);letter-spacing:.01em;white-space:nowrap;cursor:pointer;transition:background .15s;margin-left:3px;}
+.sm-kp-id:hover,.sm-kp-id.pulse{background:rgba(79,140,255,.3);border-color:rgba(79,140,255,.6);}
+.sm-callout{background:rgba(79,140,255,.04);border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:9px 13px;margin:8px 0;}
+.sm-callout-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.sm-callout-body{font-size:12px;color:var(--text);line-height:1.6;}
+.sm-trap-box{background:rgba(255,87,87,.05);border:1px solid rgba(255,87,87,.22);border-radius:7px;padding:11px 14px;margin:7px 0;}
+.sm-trap-label{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--wrong);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;}
+.sm-trap-text{font-size:12px;color:var(--text);line-height:1.6;}
+.sm-table-wrap{overflow-x:auto;margin:8px 0;}
+.sm-table{width:100%;border-collapse:collapse;font-size:12px;}
+.sm-table th{background:rgba(79,140,255,.08);color:var(--accent);font-weight:700;text-align:left;padding:6px 10px;border-bottom:2px solid var(--border);}
+.sm-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text);line-height:1.5;}
+.sm-trigger-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0;}
+.sm-trigger-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 10px;}
+.sm-trigger-word{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--flag);margin-bottom:2px;}
+.sm-trigger-meaning{font-size:11px;color:var(--text2);}
+/* ── Materials home grid ── */
+.sm-home-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.mode-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 18px 14px 22px;cursor:pointer;transition:border-color .2s,transform .2s;position:relative;overflow:hidden;text-align:left;display:flex;flex-direction:column;}
+.mode-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;}
+.mode-card:nth-child(1)::after{background:var(--accent);}
+.mode-card:nth-child(2)::after{background:var(--accent2);}
+.mode-card:nth-child(3)::after{background:var(--correct);}
+.mode-card:nth-child(4)::after{background:var(--flag);}
+.mode-card.hovered{border-color:rgba(232,234,240,.22);transform:translateY(-2px);}
+.mode-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;}
+.mode-card:nth-child(1) .mode-tag{color:var(--accent);}
+.mode-card:nth-child(2) .mode-tag{color:var(--accent2);}
+.mode-card:nth-child(3) .mode-tag{color:var(--correct);}
+.mode-card:nth-child(4) .mode-tag{color:var(--flag);}
+.mode-title{font-family:var(--serif);font-size:20px;font-weight:400;line-height:1.05;letter-spacing:-.01em;margin-bottom:4px;color:var(--text);}
+.mode-desc{font-size:12px;line-height:1.5;color:var(--text2);}
+/* ── Lecture player ── */
+.lect-toolbar{display:flex;align-items:center;gap:5px;padding:4px 0 8px;flex-wrap:nowrap;overflow:hidden;}
+.lect-tb-back{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:3px 6px;transition:color .2s;}
+.lect-tb-nav{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:3px 9px;font-size:11px;font-weight:600;color:var(--text);cursor:pointer;white-space:nowrap;}
+.lect-tb-sep{width:1px;height:16px;background:var(--border);flex-shrink:0;margin:0 2px;}
+.lect-tb-play{width:26px;height:26px;border-radius:50%;border:1px solid var(--accent);background:transparent;color:var(--accent);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.lect-tb-play.playing{background:var(--accent);color:#fff;}
+.lect-tb-bar-bg{flex:1;height:4px;background:var(--border);border-radius:2px;cursor:pointer;min-width:40px;max-width:90px;}
+.lect-tb-bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .2s;}
+.lect-tb-time{font-size:10px;color:var(--text2);white-space:nowrap;font-family:var(--mono);}
+.lect-tb-speed{font-size:11px;padding:1px 4px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text);}
+.lect-tb-cc{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;font-family:var(--mono);color:var(--text2);cursor:pointer;letter-spacing:.5px;transition:all .2s;flex-shrink:0;}
+.lect-tb-cc.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+.lect-tb-sm{width:22px;height:22px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.lect-tb-flag{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--text2);font-family:var(--mono);min-width:28px;justify-content:center;}
+.lect-tb-spacer{flex:1;}
+.lect-tb-counter{font-size:10px;color:var(--text2);font-family:var(--mono);white-space:nowrap;min-width:30px;text-align:center;}
+.lect-tb-notes-area{flex:1;position:relative;}
+.lect-slide-frame{background:#F4F1EA;border-radius:9px;padding:18px 22px;color:#0B0E14;overflow-y:auto;max-height:calc(100vh - 310px);}
+.lect-slide-kicker{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;margin-bottom:10px;}
+.lect-slide-h1{font-family:'DM Sans',sans-serif;font-size:17px;font-weight:700;color:#0B0E14;margin-bottom:12px;line-height:1.3;}
+.lect-slide-body p{font-size:13px;line-height:1.75;color:#1f2937;margin-bottom:7px;}
+.lect-slide-body .lect-kt{border-radius:2px;transition:color .15s,font-weight .15s;}
+.lect-slide-body .lect-kt.lect-focus{color:#1d4ed8;font-weight:700;}
+.lect-slide-list{margin:8px 0 8px 18px;}
+.lect-slide-list li{font-size:13px;line-height:1.7;color:#1f2937;margin-bottom:3px;}
+.lect-slide-list li .lect-kt.lect-focus{color:#1d4ed8;font-weight:700;}
+.lect-notes-bar{margin-top:10px;background:rgba(255,255,255,.8);border:1px solid #D6D3CC;border-radius:6px;padding:7px 11px;}
+.lect-notes-label{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;margin-bottom:3px;}
+.lect-notes-text{font-size:11px;color:#374151;line-height:1.5;}
+.lect-subtitle-bar{margin-top:8px;min-height:38px;padding:8px 18px;text-align:center;font-size:13px;line-height:1.5;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:9px;display:none;}
+.lect-subtitle-bar.active{display:flex;align-items:center;justify-content:center;}
+/* ── KP Menu Popup ── */
+#kp-menu-popup{position:fixed;z-index:700;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.5);min-width:220px;max-width:280px;overflow:hidden;display:none;animation:popIn .18s ease;}
+#kp-menu-popup.visible{display:block;}
+.kpmp-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px;border-bottom:1px solid var(--border);}
+.kpmp-kp-id{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);}
+.kpmp-close{background:none;border:none;color:var(--text2);font-size:14px;cursor:pointer;padding:0 4px;}
+.kpmp-items{padding:6px 0;}
+.kpmp-item{display:flex;align-items:center;gap:10px;width:100%;padding:9px 14px;background:none;border:none;color:var(--text);font-size:13px;cursor:pointer;text-align:left;transition:background .15s;}
+.kpmp-item:hover,.kpmp-item.hovered{background:rgba(79,140,255,.07);}
+.kpmp-item-icon{font-size:15px;flex-shrink:0;width:20px;text-align:center;}
+.kpmp-item-label{flex:1;}
+.kpmp-item-count{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);background:rgba(79,140,255,.12);padding:1px 6px;border-radius:10px;}
+/* ── KP Practice panel (within materials) ── */
+.kp-practice-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.kp-practice-back{background:none;border:none;color:var(--text2);font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer;transition:color .2s;}
+.kp-practice-badge{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--accent);background:rgba(79,140,255,.12);border:1px solid rgba(79,140,255,.25);border-radius:5px;padding:3px 9px;}
+/* ── Practice / Quiz ── */
+.question-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 22px;margin-bottom:14px;}
+.q-section-label{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1.4px;text-transform:uppercase;margin-bottom:12px;}
+.q-text{font-size:14px;line-height:1.7;margin-bottom:6px;}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.option{background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:12px 16px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:12px;}
+.option:hover{border-color:var(--accent);background:rgba(79,140,255,.04);}
+.option.selected{border-color:var(--accent);background:rgba(79,140,255,.08);}
+.option.correct-show{border-color:var(--correct);background:rgba(0,196,140,.08);}
+.option.wrong-show{border-color:var(--wrong);background:rgba(255,87,87,.08);}
+.option-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.option.selected .option-radio{border-color:var(--accent);background:var(--accent);}
+.option.selected .option-radio::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff;}
+.option.correct-show .option-radio{border-color:var(--correct);background:var(--correct);}
+.option.correct-show .option-radio::after{content:'✓';color:#fff;font-size:11px;font-weight:700;}
+.option.wrong-show .option-radio{border-color:var(--wrong);background:var(--wrong);}
+.option.wrong-show .option-radio::after{content:'✗';color:#fff;font-size:11px;font-weight:700;}
+.option-content{flex:1;}
+.option-cn{font-size:13px;line-height:1.6;}
+.explanation{background:rgba(0,196,140,.06);border:1px solid rgba(0,196,140,.2);border-radius:11px;padding:14px 16px;margin-bottom:14px;animation:fadeUp .3s ease;display:none;}
+.explanation.visible{display:block;}
+.explanation h4{color:var(--correct);font-size:11px;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.explanation p{font-size:12px;line-height:1.7;color:var(--text2);}
+.nav-buttons{display:flex;gap:9px;justify-content:flex-end;}
+.nav-btn{padding:10px 24px;border-radius:11px;border:none;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .25s;}
+.nav-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+.nav-btn.secondary{background:var(--surface);border:1px solid var(--border);color:var(--text2);}
+.quiz-header{display:flex;justify-content:space-between;align-items:center;padding:10px 0 14px;}
+.quiz-back{background:none;border:none;color:var(--text2);cursor:pointer;font-size:13px;font-family:var(--font);display:flex;align-items:center;gap:5px;transition:color .2s;}
+.quiz-back:hover{color:var(--text);}
+.quiz-actions{display:flex;gap:7px;align-items:center;}
+.flag-btn{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:6px 11px;color:var(--text2);cursor:pointer;font-family:var(--font);font-size:13px;transition:all .2s;display:flex;align-items:center;gap:4px;}
+.flag-btn.flagged{color:var(--flag);border-color:var(--flag);background:rgba(255,179,71,.08);}
+.reveal-btn{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:6px 12px;color:var(--text2);cursor:pointer;font-family:var(--font);font-size:13px;transition:all .2s;}
+.reveal-btn.revealed{color:var(--correct);border-color:var(--correct);}
+.progress-wrap{margin-bottom:12px;}
+.progress-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:5px;}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s;}
+.progress-text{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);}
+/* ── Practice Browse ── */
+.dir-title{font-family:var(--serif);font-size:22px;font-weight:300;letter-spacing:-.02em;margin-bottom:4px;}
+.dir-subtitle{font-size:12px;color:var(--text2);margin-bottom:14px;}
+.dir-back{background:none;border:none;color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:4px;margin-bottom:10px;align-self:flex-start;transition:color .2s;}
+.domain-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.domain-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px 16px;cursor:pointer;transition:all .2s;}
+.domain-card:hover,.domain-card.hovered{border-color:var(--accent);background:rgba(79,140,255,.04);}
+.domain-card-label{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;}
+.domain-card-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.domain-card-meta{font-size:11px;color:var(--text2);}
+.comp-section{margin-bottom:16px;}
+.comp-header{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.kp-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:background .15s;border:1px solid transparent;}
+.kp-row:hover,.kp-row.hovered{background:rgba(79,140,255,.05);border-color:rgba(79,140,255,.15);}
+.kp-row-id{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);background:rgba(79,140,255,.1);padding:2px 7px;border-radius:4px;white-space:nowrap;min-width:90px;}
+.kp-row-title{flex:1;font-size:13px;color:var(--text);}
+.kp-row-count{font-size:11px;color:var(--text2);white-space:nowrap;}
+.kp-row-tag{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600;}
+.kp-row-tag.new{color:#28A745;background:rgba(40,167,69,.12);}
+.kp-row-tag.gap{color:var(--accent2);background:rgba(108,92,231,.1);}
+/* ── Wrong/Flagged review list ── */
+.review-list{display:flex;flex-direction:column;gap:7px;}
+.review-item{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px;}
+.review-item-num{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text2);min-width:24px;}
+.review-item-body{flex:1;}
+.review-item-stem{font-size:12px;color:var(--text);line-height:1.5;margin-bottom:5px;}
+.review-item-wrong{font-size:11px;color:var(--wrong);display:flex;align-items:center;gap:4px;}
+.review-item-correct{font-size:11px;color:var(--correct);display:flex;align-items:center;gap:4px;}
+.review-badge{display:inline-flex;align-items:center;gap:5px;border-radius:18px;padding:4px 11px;font-size:11px;font-weight:600;font-family:var(--mono);margin-bottom:12px;}
+.review-badge.wrong-badge{background:rgba(255,87,87,.1);border:1px solid rgba(255,87,87,.3);color:var(--wrong);}
+.review-badge.flag-badge{background:rgba(255,179,71,.1);border:1px solid rgba(255,179,71,.3);color:var(--flag);}
+/* ── Mock exam ── */
+.mock-top-bar{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:9px 16px;margin-bottom:14px;flex-wrap:wrap;gap:5px;}
+.mock-part-label{font-weight:700;font-size:12px;color:var(--accent);white-space:nowrap;}
+.mock-q-label{font-size:11px;color:var(--text2);text-align:center;flex:1;}
+.mock-timer{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--correct);white-space:nowrap;}
+.mock-flag-btn{padding:4px 10px;border-radius:5px;font-size:11px;font-weight:600;background:rgba(255,179,71,.08);color:var(--flag);border:1px solid rgba(255,179,71,.3);cursor:pointer;}
+.mock-palette{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin-top:10px;}
+.mock-palette-title{font-size:10px;color:var(--text2);margin-bottom:7px;font-weight:600;text-transform:uppercase;letter-spacing:1px;}
+.mock-palette-grid{display:flex;flex-wrap:wrap;gap:4px;}
+.mock-palette-btn{width:30px;height:28px;border-radius:5px;font-size:10px;font-weight:600;background:var(--surface2);color:var(--text2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .2s;}
+.mock-palette-btn.current{border-color:var(--accent);color:#fff;background:rgba(79,140,255,.18);}
+.mock-palette-btn.answered{background:rgba(0,196,140,.1);color:var(--correct);border-color:rgba(0,196,140,.3);}
+.mock-palette-btn.flagged::after{content:'';position:absolute;top:2px;right:2px;width:5px;height:5px;background:var(--flag);border-radius:50%;}
+.mock-palette-legend{display:flex;gap:10px;margin-top:7px;font-size:10px;color:var(--text2);flex-wrap:wrap;}
+.mock-legend-dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:2px;}
+.mock-break-screen{display:none;align-items:center;justify-content:center;flex-direction:column;min-height:280px;}
+.mock-break-screen.active{display:flex;animation:fadeIn .25s ease;}
+.mock-break-title{font-family:var(--serif);font-size:28px;font-weight:300;margin-bottom:7px;letter-spacing:-.02em;}
+.mock-break-sub{font-size:12px;color:var(--text2);margin-bottom:20px;}
+.mock-break-timers{display:flex;gap:20px;margin-bottom:18px;}
+.mock-break-timer-box{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:14px 20px;text-align:center;}
+.mock-break-timer-label{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);margin-bottom:5px;}
+.mock-break-timer-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--correct);}
+.mock-break-timer-val.exam{color:var(--flag);}
+/* ── Planner ── */
+.sp-section-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.sp-task-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.sp-task-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:12px;}
+.sp-task-card:hover{border-color:var(--accent);transform:translateY(-1px);}
+.sp-task-card.done{opacity:.55;border-left:3px solid var(--correct);cursor:default;}
+.sp-task-card.overdue{border-left:3px solid var(--flag);}
+.sp-task-card.pending{border-left:3px solid var(--border);}
+.sp-task-icon{font-size:20px;flex-shrink:0;}
+.sp-task-body{flex:1;min-width:0;}
+.sp-task-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.sp-task-meta{font-size:11px;color:var(--text2);}
+.sp-task-time{font-size:10px;color:var(--text2);flex-shrink:0;white-space:nowrap;}
+.sp-task-check{font-size:15px;flex-shrink:0;}
+.sp-rollover-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:9px;background:rgba(255,179,71,.15);color:var(--flag);font-weight:600;margin-top:3px;}
+.sp-schedule-week{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text2);letter-spacing:.5px;padding:10px 0 5px;}
+.sp-day-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:7px;cursor:pointer;transition:background .15s;margin-bottom:3px;}
+.sp-day-row:hover{background:var(--surface2);}
+.sp-day-row.today{background:rgba(79,140,255,.07);border:1px solid rgba(79,140,255,.25);}
+.sp-day-row.rest{opacity:.4;cursor:default;}
+.sp-day-row.past.complete{opacity:.6;}
+.sp-day-num{font-size:12px;font-weight:700;color:var(--text);width:28px;flex-shrink:0;}
+.sp-day-date{font-size:10px;color:var(--text2);width:52px;flex-shrink:0;}
+.sp-day-summary{flex:1;font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sp-day-bar{width:70px;flex-shrink:0;}
+.sp-day-bar-track{height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.sp-day-bar-fill{height:100%;border-radius:2px;}
+.sp-day-milestone{font-size:10px;padding:2px 7px;border-radius:9px;background:rgba(255,215,0,.1);color:var(--gold);font-weight:600;flex-shrink:0;}
+.sp-plan-summary{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;}
+.sp-plan-title{font-family:var(--serif);font-size:18px;font-weight:300;margin-bottom:6px;}
+.sp-plan-meta{font-size:12px;color:var(--text2);line-height:1.6;}
+.sp-plan-stats{display:flex;gap:16px;margin-top:9px;}
+.sp-plan-stat{text-align:center;}
+.sp-plan-stat-val{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--accent);}
+.sp-plan-stat-label{font-size:10px;color:var(--text2);}
+.sp-sub-panel{display:none;}
+.sp-sub-panel.active{display:flex;flex-direction:column;}
+/* ── Closing ── */
+.closing-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:700px;margin-bottom:20px;}
+.closing-pillar{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.closing-pillar-icon{font-size:20px;margin-bottom:7px;}
+.closing-pillar-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.closing-pillar-desc{font-size:11px;color:var(--text2);line-height:1.5;}
+.closing-cta{font-family:var(--mono);font-size:11px;color:var(--text2);text-align:center;letter-spacing:.08em;}
+.closing-cta a{color:var(--accent);text-decoration:none;}
+/* ── Subtitle bar ── */
+#subtitle-bar{flex-shrink:0;background:rgba(12,15,20,.92);backdrop-filter:blur(8px);border-top:1px solid var(--border);padding:9px 18px 9px 18px;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:11px;}
+#subtitle-text{font-size:12px;color:var(--text);line-height:1.5;flex:1;font-style:italic;opacity:.9;min-height:18px;}
+#subtitle-text.active{opacity:1;}
+#unmute-btn{flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:4px 12px;font-size:10px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .2s;font-family:var(--mono);letter-spacing:.06em;}
+#unmute-btn.active{background:rgba(79,140,255,.12);border-color:var(--accent);color:var(--accent);}
+/* ── Fake cursor + ripple ── */
+#fake-cursor{position:fixed;z-index:9999;pointer-events:none;width:22px;height:22px;transition:none;}
+#fake-cursor svg{filter:drop-shadow(1px 1px 3px rgba(0,0,0,.5));}
+#fake-cursor.clicking{animation:cursorClick .15s ease;}
+.click-ripple{position:fixed;z-index:9998;pointer-events:none;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.38);transform:translate(-50%,-50%) scale(0);animation:ripple .5s ease forwards;}
+/* ── KP Return bubble ── */
+#kp-return-bubble{display:none;position:fixed;bottom:72px;right:22px;z-index:800;background:#FF1493;color:#fff;border:none;border-radius:22px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(255,20,147,.4);white-space:nowrap;animation:fadeIn .22s ease;}
+#kp-return-bubble.visible{display:inline-flex;align-items:center;gap:5px;}
+/* ── Scene label ── */
+#scene-label{position:absolute;top:12px;right:16px;z-index:100;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text2);opacity:.45;}
+/* ── Inline KP badge ── */
+.kp-badge{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--accent);font-family:var(--mono);cursor:pointer;transition:background .15s,border-color .15s;display:inline-block;}
+.kp-badge:hover,.kp-badge.pulse{background:rgba(79,140,255,.2);border-color:rgba(79,140,255,.5);}
+@media(max-width:640px){.main-home-grid,.sm-home-grid,.domain-grid,.closing-grid{grid-template-columns:1fr;}}
+@media(prefers-reduced-motion:reduce){.fc-card-inner{transition:none;}#fake-cursor{display:none!important;}.demo-screen.active{animation:none;}}
+</style>
+</head>
+<body>
+<div id="demo-app">
+  <div id="scene-label">JC AIGP Quick Pass</div>
+  <div class="demo-inner" id="demo-inner">
+    <!-- ══ SCREEN 1: HOME ══ -->
+    <div id="s-home" class="demo-screen" style="padding:3vh 0 0;align-items:center;">
+      <p class="mh-eyebrow">AIGP Certification Exam Prep Suite</p>
+      <h1 class="home-h1">JC AIGP <span>Quick Pass</span> Guide</h1>
+      <p class="home-sub">296 Flashcards · 1,170 Questions · 4 Domains · Lectures</p>
+      <div class="mh-rule"></div>
+      <div class="main-home-grid">
+        <div class="main-card" id="card-flashcards">
+          <div class="mh-card-tag">01 · Memory</div>
+          <div class="mh-card-title">Study Flashcards</div>
+          <div class="mh-card-desc">296 KP-linked cards with spaced repetition and weak-card surfacing.</div>
+        </div>
+        <div class="main-card" id="card-materials">
+          <div class="mh-card-tag">02 · Reference</div>
+          <div class="mh-card-title">Study Materials</div>
+          <div class="mh-card-desc">Study Guide, Cram Sheet, Exam Essentials, and narrated Lectures.</div>
+        </div>
+        <div class="main-card" id="card-planner">
+          <div class="mh-card-tag">03 · Schedule</div>
+          <div class="mh-card-title">Study Planner</div>
+          <div class="mh-card-desc">Personalized day-by-day schedule calibrated to your exam date.</div>
+        </div>
+        <div class="main-card" id="card-practice">
+          <div class="mh-card-tag">04 · Practice</div>
+          <div class="mh-card-title">Mock Exam &amp; Practice</div>
+          <div class="mh-card-desc">5 mock exams · Wrong Answer Review · Key Practice by KP.</div>
+        </div>
+      </div>
+    </div>
+    <!-- ══ SCREEN 2: FLASHCARD ══ -->
+    <div id="s-flashcard" class="demo-screen" style="padding:1.5vh 0 0;">
+      <div class="fc-header">
+        <button class="fc-back">← Study Flashcards</button>
+        <div class="fc-screen-title">Domain I — Today's Session</div>
+      </div>
+      <p class="fc-meta">Card 4 of 12 · Due Today · Weak Cards Surfaced First</p>
+      <div class="fc-stage">
+        <div class="fc-card" id="fcCard">
+          <div class="fc-card-inner">
+            <div class="fc-card-front">
+              <div class="fc-card-sec">Domain I · Foundations of AI Governance</div>
+              <span class="fc-kp-id">KP-I-A-1-003</span>
+              <div class="fc-card-title">Risk-Based Approach to AI Governance</div>
+              <div class="fc-card-hint">Tap to flip and see the full explanation</div>
+            </div>
+            <div class="fc-card-back">
+              <div class="fc-back-label">Risk-Based Approach</div>
+              <div class="fc-back-body">Governance obligations are <strong>calibrated to actual risks</strong> posed by an AI system — not to technical capability or sector. High-risk applications face stricter requirements; minimal-risk systems face light or no requirements.
+              <br><br>This principle underpins both the <strong>EU AI Act</strong> (4-tier classification) and the <strong>NIST AI RMF</strong> (MAP function: categorize risk in context). Applying it prevents both over-regulation of low-stakes tools and under-regulation of dangerous systems.</div>
+              <div class="fc-back-example"><strong>Exam angle:</strong> If a question asks why the EU AI Act does NOT regulate a simple spam filter as heavily as a medical diagnosis system — the answer is risk-based proportionality.</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+                <span class="fc-back-kp">KP-I-A-1-003</span>
+                <button class="fc-practice-btn" id="fcPracticeBtn">Practice 7 Questions</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-rating" id="fcRating">
+        <button class="fc-rate-btn fc-rate-no">✕ Don't Know</button>
+        <button class="fc-rate-btn fc-rate-yes" id="fcRateYes">✓ Know It</button>
+      </div>
+      <p class="fc-spaced-note">Spaced repetition · weak cards promoted · 47 cards due tomorrow</p>
+    </div>
+    <!-- ══ SCREEN 3: STUDY MATERIALS ══ -->
+    <div id="s-materials" class="demo-screen" style="padding:1.5vh 0 0;">
+      <!-- Materials home -->
+      <div id="sm-home-view">
+        <div style="font-family:var(--serif);font-size:22px;font-weight:300;letter-spacing:-.02em;margin-bottom:3px;">Study Materials</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">4 formats · same KP · every angle</div>
+        <div class="sm-home-grid">
+          <div class="mode-card" id="mc-guide"><div class="mode-tag">01 · Depth</div><div class="mode-title">Study Guide</div><div class="mode-desc">Comprehensive textbook across all 4 domains with inline KP cross-references.</div></div>
+          <div class="mode-card" id="mc-cram"><div class="mode-tag">02 · Quick Ref</div><div class="mode-title">Cram Sheet</div><div class="mode-desc">Comparison tables, mnemonics, and last-minute review lists.</div></div>
+          <div class="mode-card" id="mc-ess"><div class="mode-tag">03 · Focus</div><div class="mode-title">Exam Essentials</div><div class="mode-desc">Must-memorize definitions, trigger words, and exam death traps.</div></div>
+          <div class="mode-card" id="mc-lect"><div class="mode-tag">04 · Audio</div><div class="mode-title">Lectures</div><div class="mode-desc">Narrated slide decks with karaoke highlights and per-slide notes.</div></div>
+        </div>
+      </div>
+      <!-- Study Guide panel -->
+      <div id="sm-guide-panel" class="sm-content-panel" style="display:none;flex-direction:column;">
+        <button class="sm-back" id="sg-back-btn">← Study Materials</button>
+        <div class="sm-panel-title">Study Guide</div>
+        <div class="sm-panel-sub">Domain I · Foundations of AI &amp; Privacy Governance</div>
+        <div class="sm-domain-tabs">
+          <div class="sm-domain-tab active">Domain I</div>
+          <div class="sm-domain-tab">Domain II</div>
+          <div class="sm-domain-tab">Domain III</div>
+          <div class="sm-domain-tab">Domain IV</div>
+        </div>
+        <div class="sm-content-area scroll-area" id="sg-scroll" style="max-height:calc(100vh - 320px);">
+          <div class="sm-section-title">I.A — AI Governance Frameworks</div>
+          <div class="sm-block">
+            <p>Modern AI governance is built on a <strong>risk-based model</strong>: the obligations imposed on an AI system are proportional to the potential harm it could cause. <span class="sm-kp-id" id="kp-badge-sg">KP-I-A-1-003</span></p>
+            <p>The <strong>NIST AI Risk Management Framework (AI RMF)</strong> organizes governance into four core functions that apply throughout the AI lifecycle: <span class="sm-kp-id">KP-I-A-1-008</span></p>
+            <h3>GOVERN · MAP · MEASURE · MANAGE</h3>
+            <p><strong>GOVERN</strong> establishes policies, culture, and roles. <strong>MAP</strong> identifies and categorizes AI risks in context. <strong>MEASURE</strong> analyzes and prioritizes those risks. <strong>MANAGE</strong> addresses, monitors, and responds to risks on an ongoing basis.</p>
+            <div class="sm-callout"><div class="sm-callout-title">Exam Tip</div><div class="sm-callout-body">NIST AI RMF is <em>voluntary</em> and sector-agnostic. The EU AI Act is <em>mandatory</em> and risk-tiered. Both are risk-based — but differ in legal weight and geographic scope. This distinction is a frequent exam differentiator.</div></div>
+            <p>The framework was published in January 2023 and revised (AI RMF 1.0) the same month. It is designed to be used alongside sector-specific guidance — it does not replace existing regulations.</p>
+          </div>
+          <div class="sm-section-title" style="margin-top:16px;">I.A — EU AI Act Risk Tiers</div>
+          <div class="sm-block">
+            <p>The EU AI Act classifies AI systems into four risk tiers, each with distinct obligations: <span class="sm-kp-id">KP-I-A-1-001</span></p>
+            <h3>Unacceptable Risk (Prohibited)</h3>
+            <p>Systems that pose an unacceptable threat to people's safety, livelihoods, or rights. Examples: subliminal manipulation below conscious awareness causing harm; real-time biometric surveillance in public spaces (narrow exceptions apply); social scoring by public authorities.</p>
+            <h3>High Risk</h3>
+            <p>Systems used in critical areas listed in Annex III: biometric identification, critical infrastructure, education, employment, essential services, law enforcement, migration, and administration of justice. These must undergo conformity assessment, maintain technical documentation, and enable human oversight.</p>
+            <div class="sm-callout"><div class="sm-callout-title">Exam Tip</div><div class="sm-callout-body">Annex III lists <strong>8 categories</strong> of high-risk AI. Memorize: biometrics, infrastructure, education, employment, essential services, law enforcement, migration/border, justice/democracy.</div></div>
+            <h3>Limited Risk</h3>
+            <p>Systems with specific transparency obligations — for example, chatbots must disclose they are AI; deepfake content must be labeled as AI-generated.</p>
+            <h3>Minimal Risk</h3>
+            <p>All other AI systems: spam filters, AI in video games, recommendation systems. No specific obligations under the Act, though voluntary codes of practice apply.</p>
+            <div class="sm-callout" style="border-color:var(--wrong);background:rgba(255,87,87,.04);"><div class="sm-callout-title" style="color:var(--wrong);">Death Trap</div><div class="sm-callout-body">High-risk AI is NOT the same as prohibited AI. High-risk AI is <em>permitted</em> subject to conformity requirements. Prohibited AI is <em>banned outright</em>. Conflating these is one of the most common AIGP exam errors.</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Cram Sheet panel -->
+      <div id="sm-cram-panel" class="sm-content-panel" style="display:none;flex-direction:column;">
+        <button class="sm-back">← Study Materials</button>
+        <div class="sm-panel-title">Cram Sheet</div>
+        <div class="sm-panel-sub">Domain I · Quick-reference comparisons</div>
+        <div class="sm-content-area scroll-area" id="cram-scroll" style="max-height:calc(100vh - 280px);">
+          <div class="sm-section-title">GDPR vs. EU AI Act — Core Differences</div>
+          <div class="sm-table-wrap"><table class="sm-table"><thead><tr><th>Dimension</th><th>GDPR</th><th>EU AI Act</th></tr></thead><tbody>
+            <tr><td>Subject matter</td><td>Personal data processing</td><td>AI systems placed on EU market</td></tr>
+            <tr><td>Risk model</td><td>Data subject rights + harm</td><td>4-tier (prohibited → minimal)</td></tr>
+            <tr><td>Key duty</td><td>Lawful basis + DPO + DPIA</td><td>Conformity assessment + CE marking</td></tr>
+            <tr><td>Enforcer</td><td>National DPA</td><td>National market surveillance + AI Office</td></tr>
+            <tr><td>Max fine</td><td>4% global turnover / €20M</td><td>3–7% global turnover (tier-dependent)</td></tr>
+          </tbody></table></div>
+          <div class="sm-callout"><div class="sm-callout-title">Mnemonic</div><div class="sm-callout-body">GDPR = data flows · EU AI Act = system tiers. They overlap when a high-risk AI system also processes personal data — <em>both</em> regimes apply simultaneously. A DPIA may be required AND a conformity assessment.</div></div>
+          <div class="sm-section-title" style="margin-top:14px;">NIST AI RMF vs. ISO/IEC 42001</div>
+          <div class="sm-table-wrap"><table class="sm-table"><thead><tr><th>Dimension</th><th>NIST AI RMF</th><th>ISO/IEC 42001</th></tr></thead><tbody>
+            <tr><td>Type</td><td>Framework (voluntary guidance)</td><td>Certifiable standard</td></tr>
+            <tr><td>Origin</td><td>US (NIST)</td><td>International (ISO/IEC)</td></tr>
+            <tr><td>Structure</td><td>GOVERN/MAP/MEASURE/MANAGE</td><td>Plan-Do-Check-Act (PDCA)</td></tr>
+            <tr><td>Certification</td><td>No third-party cert</td><td>Yes — auditable AI management system</td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+      <!-- Exam Essentials panel -->
+      <div id="sm-ess-panel" class="sm-content-panel" style="display:none;flex-direction:column;">
+        <button class="sm-back">← Study Materials</button>
+        <div class="sm-panel-title">Exam Essentials</div>
+        <div class="sm-panel-sub">Domain I · Death traps &amp; trigger words</div>
+        <div class="sm-content-area scroll-area" id="ess-scroll" style="max-height:calc(100vh - 280px);">
+          <div class="sm-section-title">Death Traps — EU AI Act</div>
+          <div class="sm-trap-box"><div class="sm-trap-label">⚠ Death Trap #1</div><div class="sm-trap-text"><strong>"High-risk AI = Prohibited AI"</strong> — WRONG. These are separate tiers. Prohibited systems are banned outright. High-risk systems are <em>allowed</em> but must meet strict conformity, documentation, and transparency requirements. On the exam, if a question describes a system that "requires conformity assessment" — that's high-risk, not prohibited.</div></div>
+          <div class="sm-trap-box"><div class="sm-trap-label">⚠ Death Trap #2</div><div class="sm-trap-text"><strong>"NIST AI RMF is legally binding in the US"</strong> — WRONG. It is voluntary guidance. No US federal AI law currently mandates its adoption, though sector-specific agencies may reference it in regulation. Contrast with the EU AI Act, which IS legally binding.</div></div>
+          <div class="sm-trap-box"><div class="sm-trap-label">⚠ Death Trap #3</div><div class="sm-trap-text"><strong>"A GPAI model = an AI system under the EU AI Act"</strong> — NOT automatically. A general-purpose AI model becomes subject to high-risk obligations only when it is integrated into a high-risk application and actually deployed. The provider of the foundation model has separate, lighter duties under Article 53.</div></div>
+          <div class="sm-trap-box"><div class="sm-trap-label">⚠ Death Trap #4</div><div class="sm-trap-text"><strong>"Deterministic rule-based software = AI system"</strong> — WRONG under EU AI Act Article 3(1). A system that applies fixed IF-THEN rules with no learning capability does not perform "inference" and is therefore NOT an AI system for regulatory purposes. This distinction matters for scope questions.</div></div>
+          <div class="sm-section-title" style="margin-top:14px;">Trigger Words — Domain I</div>
+          <div class="sm-trigger-grid">
+            <div class="sm-trigger-item"><div class="sm-trigger-word">Real-time biometric</div><div class="sm-trigger-meaning">→ Likely prohibited (in public, law enforcement)</div></div>
+            <div class="sm-trigger-item"><div class="sm-trigger-word">Subliminal</div><div class="sm-trigger-meaning">→ Prohibited if causes harm below threshold</div></div>
+            <div class="sm-trigger-item"><div class="sm-trigger-word">Conformity assessment</div><div class="sm-trigger-meaning">→ High-risk (not prohibited)</div></div>
+            <div class="sm-trigger-item"><div class="sm-trigger-word">Voluntary / guidance</div><div class="sm-trigger-meaning">→ NIST AI RMF (not EU AI Act)</div></div>
+            <div class="sm-trigger-item"><div class="sm-trigger-word">CE marking</div><div class="sm-trigger-meaning">→ EU AI Act high-risk obligation</div></div>
+            <div class="sm-trigger-item"><div class="sm-trigger-word">GOVERN/MAP/MEASURE</div><div class="sm-trigger-meaning">→ NIST AI RMF functions</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Lectures panel -->
+      <div id="sm-lect-panel" class="sm-content-panel" style="display:none;flex-direction:column;">
+        <div class="lect-toolbar">
+          <button class="lect-tb-back">←</button>
+          <button class="lect-tb-nav">◀ Prev</button>
+          <button class="lect-tb-nav">Next ▶</button>
+          <div class="lect-tb-sep"></div>
+          <button class="lect-tb-play playing" id="lect-play-btn">⏸</button>
+          <div class="lect-tb-bar-bg"><div class="lect-tb-bar-fill" id="lect-bar" style="width:38%"></div></div>
+          <span class="lect-tb-time">1:24 / 3:42</span>
+          <div class="lect-tb-sep"></div>
+          <select class="lect-tb-speed"><option>0.75x</option><option selected>1x</option><option>1.25x</option><option>1.5x</option></select>
+          <div class="lect-tb-sep"></div>
+          <button class="lect-tb-cc active">CC</button>
+          <button class="lect-tb-sm" title="Notes">📝</button>
+          <button class="lect-tb-sm" title="Flag">⚑</button>
+          <div class="lect-tb-spacer"></div>
+          <span class="lect-tb-counter">7 / 15</span>
+        </div>
+        <div class="lect-slide-frame" id="lect-slide-frame">
+          <div class="lect-slide-kicker">I.A · AI Governance Frameworks · Slide 7</div>
+          <div class="lect-slide-h1">The EU AI Act Risk Classification System</div>
+          <div class="lect-slide-body">
+            <p>The EU AI Act uses a <span class="lect-kt" id="lkt-tiered">tiered risk model</span> — obligations scale with potential harm. Each tier carries a distinct set of requirements, from outright prohibition to voluntary codes.</p>
+            <ul class="lect-slide-list">
+              <li><strong>Tier 1 — Prohibited:</strong> <span class="lect-kt lect-focus" id="lkt-prohibited">Systems banned for posing unacceptable societal risk</span> — subliminal manipulation, real-time public biometrics, social scoring by state actors.</li>
+              <li><strong>Tier 2 — High Risk:</strong> Annex III applications (8 categories). Must pass conformity assessment, maintain documentation, enable human oversight, register in EU database.</li>
+              <li><strong>Tier 3 — Limited Risk:</strong> <span class="lect-kt" id="lkt-limited">Transparency obligations only</span> — chatbots must disclose AI identity; deepfakes must be labeled.</li>
+              <li><strong>Tier 4 — Minimal Risk:</strong> No specific obligations. Voluntary AI codes of practice encouraged.</li>
+            </ul>
+            <p>The critical exam insight: <span class="lect-kt" id="lkt-insight">conformity assessment ≠ prohibition</span>. A system requiring conformity assessment is high-risk — it can be deployed after assessment. Only Tier 1 systems are banned.</p>
+          </div>
+          <div class="lect-notes-bar">
+            <div class="lect-notes-label">📝 My Note — Slide 7</div>
+            <div class="lect-notes-text">Remember: Annex III has exactly 8 categories. Conformity = high-risk permitted. Real-time biometrics in PUBLIC = prohibited (law enforcement narrow exceptions). Post-market monitoring mandatory for high-risk after deployment.</div>
+          </div>
+        </div>
+        <div class="lect-subtitle-bar active" id="lect-sub"><span>The EU AI Act uses a tiered risk model — obligations scale with potential harm.</span></div>
+      </div>
+      <!-- KP Practice panel (from badge click) -->
+      <div id="sm-kp-practice-panel" class="sm-content-panel" style="display:none;flex-direction:column;">
+        <div class="kp-practice-header">
+          <button class="kp-practice-back" id="kp-prac-back">← Study Guide</button>
+          <span class="kp-practice-badge">KP-I-A-1-003 · Risk-Based Approach</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Practice Questions · 7 questions for this KP</div>
+        <div class="question-card">
+          <div class="q-section-label">Domain I · KP-I-A-1-003</div>
+          <div class="q-text">Under the EU AI Act, an organization's automated CV screening tool rejects candidates based on AI-assessed cultural fit scores. The system has been validated and certified. Which tier most accurately describes this system?</div>
+          <div class="options" id="kp-prac-options">
+            <div class="option" id="kp-opt-a"><div class="option-radio"></div><div class="option-content"><div class="option-cn">A. Prohibited AI — cultural fit scoring constitutes social scoring by an employer.</div></div></div>
+            <div class="option" id="kp-opt-b"><div class="option-radio"></div><div class="option-content"><div class="option-cn">B. High-risk AI — employment screening is an Annex III category requiring conformity assessment.</div></div></div>
+            <div class="option" id="kp-opt-c"><div class="option-radio"></div><div class="option-content"><div class="option-cn">C. Limited risk — only transparency obligations apply since it involves decision-making.</div></div></div>
+            <div class="option" id="kp-opt-d"><div class="option-radio"></div><div class="option-content"><div class="option-cn">D. Minimal risk — the system has been validated and poses no significant harm.</div></div></div>
+          </div>
+          <div class="explanation" id="kp-prac-explain">
+            <h4>✓ Correct — Option B</h4>
+            <p>Employment and recruitment screening is explicitly listed in <strong>Annex III, Category 4</strong> of the EU AI Act as a high-risk AI use case. High-risk AI is permitted subject to conformity assessment, documentation, and human oversight requirements. Option A is incorrect: social scoring by employers is not a prohibited practice — prohibition applies to social scoring by <em>public authorities</em>. Option D is a classic death trap: validation does not change the tier classification.</p>
+          </div>
+        </div>
+        <div class="nav-buttons"><button class="nav-btn secondary">← Prev</button><button class="nav-btn primary" id="kp-prac-next">Next →</button></div>
+      </div>
+    </div><!-- /s-materials -->
+    <!-- ══ SCREEN 4: PRACTICE (browse → question → review) ══ -->
+    <div id="s-practice" class="demo-screen" style="padding:1.5vh 0 0;">
+      <!-- Practice home -->
+      <div id="pr-home-view">
+        <div style="font-family:var(--serif);font-size:22px;font-weight:300;letter-spacing:-.02em;margin-bottom:3px;">Mock Exam &amp; Practice</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">targeted review · full simulation</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+          <div class="mode-card" id="pc-mock"><div class="mode-tag">01 · Exam</div><div class="mode-title">Mock Exam</div><div class="mode-desc">100 q · 180 min · Part 1 + Break + Part 2.</div></div>
+          <div class="mode-card" id="pc-browse"><div class="mode-tag">02 · Browse</div><div class="mode-title">All Practice</div><div class="mode-desc">1,170 questions by domain, topic, or KP.</div></div>
+          <div class="mode-card" id="pc-flagged"><div class="mode-tag">03 · Flagged</div><div class="mode-title">Key Practice</div><div class="mode-desc">Questions you flagged as critical review points.</div></div>
+          <div class="mode-card" id="pc-wrong"><div class="mode-tag">04 · Review</div><div class="mode-title">Wrong Answer Review</div><div class="mode-desc">Re-attempt every question you've answered incorrectly.</div></div>
+        </div>
+      </div>
+      <!-- Domain list -->
+      <div id="pr-domain-view" style="display:none;flex-direction:column;">
+        <button class="dir-back" id="pr-domain-back">← Practice</button>
+        <div class="dir-title">All Practice — By Knowledge Point</div>
+        <div class="dir-subtitle">Select a domain to browse knowledge points</div>
+        <div class="domain-grid">
+          <div class="domain-card" id="pr-domain-I"><div class="domain-card-label">Domain I</div><div class="domain-card-title">Foundations of AI &amp; Privacy Governance</div><div class="domain-card-meta">289 questions · 24 KPs</div></div>
+          <div class="domain-card"><div class="domain-card-label">Domain II</div><div class="domain-card-title">AI Laws, Regulations &amp; Standards</div><div class="domain-card-meta">312 questions · 28 KPs</div></div>
+          <div class="domain-card"><div class="domain-card-label">Domain III</div><div class="domain-card-title">AI Development Governance</div><div class="domain-card-meta">341 questions · 31 KPs</div></div>
+          <div class="domain-card"><div class="domain-card-label">Domain IV</div><div class="domain-card-title">AI Deployment &amp; Use Governance</div><div class="domain-card-meta">228 questions · 21 KPs</div></div>
+        </div>
+      </div>
+      <!-- KP list (Domain I) -->
+      <div id="pr-kp-view" style="display:none;flex-direction:column;">
+        <button class="dir-back" id="pr-kp-back">← Domain I</button>
+        <div class="dir-title">Domain I — Knowledge Points</div>
+        <div class="dir-subtitle">289 questions across 24 KPs</div>
+        <div class="scroll-area" id="kp-list-scroll" style="max-height:calc(100vh - 280px);">
+          <div class="comp-section">
+            <div class="comp-header">Competency A · AI Concepts &amp; Technologies</div>
+            <div class="kp-row hovered" id="kp-row-003"><span class="kp-row-id">KP-I-A-1-003</span><span class="kp-row-title">Risk-Based Approach to AI Governance</span><span class="kp-row-count">7 q</span></div>
+            <div class="kp-row"><span class="kp-row-id">KP-I-A-1-001</span><span class="kp-row-title">Definition and Types of AI Systems</span><span class="kp-row-count">13 q</span><span class="kp-row-tag gap">⚡ gap</span></div>
+            <div class="kp-row"><span class="kp-row-id">KP-I-A-1-008</span><span class="kp-row-title">NIST AI Risk Management Framework</span><span class="kp-row-count">19 q</span><span class="kp-row-tag new">✓ done</span></div>
+            <div class="kp-row"><span class="kp-row-id">KP-I-A-2-001</span><span class="kp-row-title">Machine Learning Fundamentals</span><span class="kp-row-count">11 q</span></div>
+            <div class="kp-row"><span class="kp-row-id">KP-I-A-3-001</span><span class="kp-row-title">Foundation Models &amp; GPAI</span><span class="kp-row-count">8 q</span><span class="kp-row-tag gap">⚡ gap</span></div>
+          </div>
+          <div class="comp-section">
+            <div class="comp-header">Competency B · AI Risks &amp; Harms</div>
+            <div class="kp-row"><span class="kp-row-id">KP-I-B-3-001</span><span class="kp-row-title">Bias, Fairness &amp; Discrimination in AI</span><span class="kp-row-count">20 q</span><span class="kp-row-tag gap">⚡ gap</span></div>
+            <div class="kp-row"><span class="kp-row-id">KP-I-B-5-007</span><span class="kp-row-title">AI Transparency &amp; Explainability</span><span class="kp-row-count">13 q</span></div>
+            <div class="kp-row"><span class="kp-row-id">KP-I-B-1-001</span><span class="kp-row-title">AI System Lifecycle &amp; Governance Points</span><span class="kp-row-count">9 q</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- Question screen -->
+      <div id="pr-question-view" style="display:none;flex-direction:column;">
+        <div class="quiz-header">
+          <button class="quiz-back" id="pr-q-back">← KP-I-A-1-003</button>
+          <div class="quiz-actions">
+            <button class="flag-btn" id="pr-flag-btn">⚑ Flag</button>
+            <button class="reveal-btn" id="pr-reveal-btn">Answer</button>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="pr-progress-fill" style="width:14%"></div></div>
+          <div class="progress-text"><span id="pr-prog-label">Question 1 of 7</span><span style="color:var(--accent);font-size:11px;">KP-I-A-1-003</span></div>
+        </div>
+        <div class="question-card">
+          <div class="q-section-label">Domain I · Foundations · KP-I-A-1-003</div>
+          <div class="q-text" id="pr-q-stem">A manufacturing company deploys an AI system that uses fixed IF-THEN rules: alerts trigger if temperature exceeds 80°C; shutdown occurs if pressure falls below 2 atm. The system has no learning capability and does not adapt to new data. Under EU AI Act Article 3(1), how is this system most likely classified?</div>
+          <div class="options" id="pr-options">
+            <div class="option" id="pr-opt-a"><div class="option-radio"></div><div class="option-content"><div class="option-cn">A. A general-purpose AI model requiring transparency obligations under Article 53.</div></div></div>
+            <div class="option wrong-show" id="pr-opt-b"><div class="option-radio"></div><div class="option-content"><div class="option-cn">B. A high-risk AI system that qualifies for exemption under Annex III industrial machinery provisions.</div></div></div>
+            <div class="option" id="pr-opt-c"><div class="option-radio"></div><div class="option-content"><div class="option-cn">C. A minimal-risk AI system subject only to voluntary codes of practice.</div></div></div>
+            <div class="option correct-show" id="pr-opt-d"><div class="option-radio"></div><div class="option-content"><div class="option-cn">D. Deterministic software that does not qualify as an AI system under the EU AI Act definition.</div></div></div>
+          </div>
+          <div class="explanation visible" id="pr-explain">
+            <h4>✓ Correct — Option D</h4>
+            <p>Article 3(1) requires that an AI system generate outputs "through inference." A purely fixed IF-THEN rule system applies pre-set thresholds — it performs no inference and has no adaptive capability. It therefore falls outside the EU AI Act's scope entirely. This is a frequent exam trap: not all automated software is AI under the Act.</p>
+          </div>
+        </div>
+        <div class="nav-buttons"><button class="nav-btn secondary">← Prev</button><button class="nav-btn primary" id="pr-next-btn">Next →</button></div>
+      </div>
+      <!-- Wrong Answer Review list -->
+      <div id="pr-wrong-view" style="display:none;flex-direction:column;">
+        <button class="dir-back">← Practice</button>
+        <div class="dir-title">Wrong Answer Review</div>
+        <div class="review-badge wrong-badge">✕ 34 questions answered incorrectly</div>
+        <div class="review-list scroll-area" style="max-height:calc(100vh - 300px);">
+          <div class="review-item"><div class="review-item-num">#1</div><div class="review-item-body"><div class="review-item-stem">Which EU AI Act tier requires CE marking and registration in the EU AI database?</div><div class="review-item-wrong">✗ Your answer: Limited Risk</div><div class="review-item-correct">✓ Correct: High Risk</div></div><span class="sm-kp-id" style="font-size:10px;padding:2px 6px;align-self:flex-start;">KP-I-A-1-001</span></div>
+          <div class="review-item"><div class="review-item-num">#2</div><div class="review-item-body"><div class="review-item-stem">NIST AI RMF is described as "sector-agnostic." This means it...</div><div class="review-item-wrong">✗ Your answer: Applies only to federal agencies</div><div class="review-item-correct">✓ Correct: Can be adopted by any organization regardless of sector</div></div><span class="sm-kp-id" style="font-size:10px;padding:2px 6px;align-self:flex-start;">KP-I-A-1-008</span></div>
+          <div class="review-item"><div class="review-item-num">#3</div><div class="review-item-body"><div class="review-item-stem">An AI chatbot on an e-commerce site assists customers. The EU AI Act most likely classifies this as...</div><div class="review-item-wrong">✗ Your answer: High Risk (customer-facing system)</div><div class="review-item-correct">✓ Correct: Limited Risk — transparency obligation only (must disclose AI)</div></div><span class="sm-kp-id" style="font-size:10px;padding:2px 6px;align-self:flex-start;">KP-I-A-1-001</span></div>
+          <div class="review-item"><div class="review-item-num">#4</div><div class="review-item-body"><div class="review-item-stem">Which function of the NIST AI RMF involves identifying and categorizing AI risks in their organizational context?</div><div class="review-item-wrong">✗ Your answer: GOVERN</div><div class="review-item-correct">✓ Correct: MAP</div></div><span class="sm-kp-id" style="font-size:10px;padding:2px 6px;align-self:flex-start;">KP-I-A-1-008</span></div>
+        </div>
+      </div>
+      <!-- Key Practice (flagged) list -->
+      <div id="pr-flagged-view" style="display:none;flex-direction:column;">
+        <button class="dir-back">← Practice</button>
+        <div class="dir-title">Key Practice</div>
+        <div class="review-badge flag-badge">⚑ 18 questions flagged for review</div>
+        <div class="review-list scroll-area" style="max-height:calc(100vh - 300px);">
+          <div class="review-item"><div class="review-item-num">⚑</div><div class="review-item-body"><div class="review-item-stem">A law enforcement agency uses an AI system for real-time facial recognition in a public square to identify suspects. Under the EU AI Act, this system is most likely...</div><div style="font-size:11px;color:var(--text2);margin-top:4px;">Flagged during Mock Exam B · Part 1</div></div><span class="sm-kp-id" style="font-size:10px;padding:2px 6px;align-self:flex-start;">KP-I-A-1-001</span></div>
+          <div class="review-item"><div class="review-item-num">⚑</div><div class="review-item-body"><div class="review-item-stem">Which of the following best describes the relationship between a DPIA under GDPR and a conformity assessment under the EU AI Act when a high-risk AI system processes personal data?</div><div style="font-size:11px;color:var(--text2);margin-top:4px;">Flagged during Practice — Domain II</div></div><span class="sm-kp-id" style="font-size:10px;padding:2px 6px;align-self:flex-start;">KP-II-A-2-001</span></div>
+        </div>
+      </div>
+      <!-- Mock exam view -->
+      <div id="pr-mock-view" style="display:none;flex-direction:column;">
+        <div class="mock-top-bar">
+          <div class="mock-part-label">Part 1 / 50</div>
+          <div class="mock-q-label">Question 7 of 50</div>
+          <div class="mock-timer" id="mock-timer-display">02:43:18</div>
+          <button class="mock-flag-btn">⚑ Flag</button>
+        </div>
+        <div class="question-card" style="margin-bottom:10px;">
+          <div class="q-section-label">Domain II · Laws &amp; Standards</div>
+          <div class="q-text">An organization's AI governance policy requires a Data Protection Impact Assessment before deploying any AI system that processes personal data. Which EU regulation most directly mandates this DPIA requirement?</div>
+          <div class="options">
+            <div class="option"><div class="option-radio"></div><div class="option-content"><div class="option-cn">A. EU AI Act — Article 9 (Risk Management System for high-risk AI)</div></div></div>
+            <div class="option selected"><div class="option-radio"></div><div class="option-content"><div class="option-cn">B. GDPR — Article 35 (Data Protection Impact Assessment)</div></div></div>
+            <div class="option"><div class="option-radio"></div><div class="option-content"><div class="option-cn">C. EU AI Act — Recital 47 (High-Risk System Documentation)</div></div></div>
+            <div class="option"><div class="option-radio"></div><div class="option-content"><div class="option-cn">D. ePrivacy Directive — Article 5 (Confidentiality of Communications)</div></div></div>
+          </div>
+        </div>
+        <div class="mock-palette">
+          <div class="mock-palette-title">Question Navigator</div>
+          <div class="mock-palette-grid" id="mock-palette-grid"></div>
+          <div class="mock-palette-legend">
+            <span><span class="mock-legend-dot" style="background:var(--surface2);border:1px solid var(--border)"></span>Unanswered</span>
+            <span><span class="mock-legend-dot" style="background:rgba(0,196,140,.1);border:1px solid rgba(0,196,140,.3)"></span>Answered</span>
+            <span><span class="mock-legend-dot" style="background:rgba(79,140,255,.18);border:1px solid var(--accent)"></span>Current</span>
+          </div>
+        </div>
+      </div>
+      <!-- Mock break screen -->
+      <div id="pr-break-view" class="mock-break-screen">
+        <div class="mock-break-title">Scheduled Break</div>
+        <div class="mock-break-sub">Part 1 complete · 50 questions answered · Exam clock keeps running</div>
+        <div class="mock-break-timers">
+          <div class="mock-break-timer-box"><div class="mock-break-timer-label">Break Time Remaining</div><div class="mock-break-timer-val" id="break-timer-val">14:52</div></div>
+          <div class="mock-break-timer-box"><div class="mock-break-timer-label">Exam Elapsed</div><div class="mock-break-timer-val exam" id="exam-elapsed-val">01:16:42</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);text-align:center;max-width:400px;line-height:1.6;">The real AIGP exam has this same 3-phase structure: Part 1 → Break → Part 2. Your total time is 180 minutes — the break is included.</div>
+      </div>
+    </div><!-- /s-practice -->
+    <!-- ══ SCREEN 5: STUDY PLANNER ══ -->
+    <div id="s-planner" class="demo-screen" style="padding:1.5vh 0 0;">
+      <div style="font-family:var(--serif);font-size:22px;font-weight:300;letter-spacing:-.02em;margin-bottom:3px;">Study Planner</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Personalized · Weak-domain biased · Exam-date driven</div>
+      <!-- Plan summary -->
+      <div id="sp-plan-view">
+        <div class="sp-plan-summary">
+          <div class="sp-plan-title">AIGP Exam — June 28, 2026</div>
+          <div class="sp-plan-meta">24 days remaining · 45 min/day · Domain III weighted ×1.8 (your weakest)</div>
+          <div class="sp-plan-stats">
+            <div class="sp-plan-stat"><div class="sp-plan-stat-val">18</div><div class="sp-plan-stat-label">Days Planned</div></div>
+            <div class="sp-plan-stat"><div class="sp-plan-stat-val">6</div><div class="sp-plan-stat-label">Completed</div></div>
+            <div class="sp-plan-stat"><div class="sp-plan-stat-val">71%</div><div class="sp-plan-stat-label">On Track</div></div>
+            <div class="sp-plan-stat"><div class="sp-plan-stat-val">1</div><div class="sp-plan-stat-label">Mock Exam Left</div></div>
+          </div>
+        </div>
+        <div class="scroll-area" id="sp-schedule-scroll" style="max-height:calc(100vh - 380px);">
+          <div class="sp-schedule-week">Week 1 · Jun 2–8</div>
+          <div class="sp-day-row past complete"><div class="sp-day-num">1</div><div class="sp-day-date">Mon Jun 2</div><div class="sp-day-summary">Flashcards — Domain I (38 due) · Study Guide I.A</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:100%;background:var(--correct)"></div></div></div></div>
+          <div class="sp-day-row past complete"><div class="sp-day-num">2</div><div class="sp-day-date">Tue Jun 3</div><div class="sp-day-summary">Wrong Answer Review (34 q) · Cram Sheet — Domain II</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:100%;background:var(--correct)"></div></div></div></div>
+          <div class="sp-day-row past complete"><div class="sp-day-num">3</div><div class="sp-day-date">Wed Jun 4</div><div class="sp-day-summary">Flashcards — Domain III (weak · 52 due) · Essentials III.C</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:100%;background:var(--correct)"></div></div></div></div>
+          <div class="sp-day-row past complete"><div class="sp-day-num">4</div><div class="sp-day-date">Thu Jun 5</div><div class="sp-day-summary">Lecture — I.A · Practice KP-I-A-1-001 (13 q)</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:100%;background:var(--correct)"></div></div></div></div>
+          <div class="sp-day-row past complete"><div class="sp-day-num">5</div><div class="sp-day-date">Fri Jun 6</div><div class="sp-day-summary">Mock Exam — Form A (180 min)</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:100%;background:var(--correct)"></div></div></div><div class="sp-day-milestone">📋 Mock</div></div>
+          <div class="sp-day-row past complete"><div class="sp-day-num">6</div><div class="sp-day-date">Sat Jun 7</div><div class="sp-day-summary">Review mock results · Key Practice (flagged)</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:100%;background:var(--correct)"></div></div></div></div>
+          <div class="sp-day-row rest"><div class="sp-day-num">7</div><div class="sp-day-date">Sun Jun 8</div><div class="sp-day-summary">Rest</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:0%"></div></div></div></div>
+          <div class="sp-schedule-week">Week 2 · Jun 9–15</div>
+          <div class="sp-day-row today" id="sp-today-row"><div class="sp-day-num">8</div><div class="sp-day-date" style="color:var(--accent);">Tue Jun 10</div><div class="sp-day-summary">Flashcards — Domain III (57 due) · Study Guide III.C</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:0%;background:var(--accent)"></div></div></div></div>
+          <div class="sp-day-row"><div class="sp-day-num">9</div><div class="sp-day-date">Wed Jun 11</div><div class="sp-day-summary">Wrong Answer Review · Cram Sheet — Domain III (weak)</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:0%"></div></div></div></div>
+          <div class="sp-day-row"><div class="sp-day-num">10</div><div class="sp-day-date">Thu Jun 12</div><div class="sp-day-summary">Mock Exam — Form B (180 min)</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:0%"></div></div></div><div class="sp-day-milestone">📋 Mock</div></div>
+          <div class="sp-day-row"><div class="sp-day-num">11</div><div class="sp-day-date">Fri Jun 13</div><div class="sp-day-summary">Review mock results · Practice Domain III (gap KPs)</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:0%"></div></div></div></div>
+          <div class="sp-day-row"><div class="sp-day-num">12</div><div class="sp-day-date">Sat Jun 14</div><div class="sp-day-summary">Lectures — Domain IV · Key Practice (flagged 18 q)</div><div class="sp-day-bar"><div class="sp-day-bar-track"><div class="sp-day-bar-fill" style="width:0%"></div></div></div></div>
+        </div>
+      </div>
+      <!-- Day detail (clicked) -->
+      <div id="sp-day-view" class="sp-sub-panel">
+        <button class="dir-back" id="sp-day-back">← Schedule</button>
+        <div style="font-family:var(--serif);font-size:20px;font-weight:300;letter-spacing:-.02em;margin-bottom:3px;">Tuesday, June 10</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:14px;">Day 8 of 18 · 45 min target · Domain III weighted</div>
+        <div class="sp-section-title">Today's Tasks</div>
+        <div class="sp-task-list">
+          <div class="sp-task-card pending"><div class="sp-task-icon">🃏</div><div class="sp-task-body"><div class="sp-task-title">Flashcards — Domain III</div><div class="sp-task-meta">57 cards due · Weak: KP-III-C-1-001, KP-III-C-5-005</div></div><div class="sp-task-time">~20 min</div><div class="sp-task-check">○</div></div>
+          <div class="sp-task-card pending"><div class="sp-task-icon">📖</div><div class="sp-task-body"><div class="sp-task-title">Study Guide — Domain III.C</div><div class="sp-task-meta">AI Development Governance · Technical Robustness</div><div class="sp-rollover-badge">↩ rolled over from Jun 9</div></div><div class="sp-task-time">~15 min</div><div class="sp-task-check">○</div></div>
+          <div class="sp-task-card pending"><div class="sp-task-icon">✕</div><div class="sp-task-body"><div class="sp-task-title">Wrong Answer Review</div><div class="sp-task-meta">Focus: Domain III misses from Mock Form A</div></div><div class="sp-task-time">~10 min</div><div class="sp-task-check">○</div></div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;">Each task links directly into the study mode — tap to open. Completing all tasks marks the day done and unlocks tomorrow's schedule.</div>
+      </div>
+    </div>
+    <!-- ══ SCREEN 6: CLOSING ══ -->
+    <div id="s-closing" class="demo-screen" style="padding:3vh 0 0;align-items:center;">
+      <div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--text2);margin-bottom:18px;">Why JC AIGP Quick Pass</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(26px,4vw,40px);font-weight:300;text-align:center;letter-spacing:-.02em;line-height:1.1;margin-bottom:7px;">One product. <em style="color:var(--accent);">Every</em> angle of the exam.</h2>
+      <div style="font-size:13px;color:var(--text2);text-align:center;line-height:1.6;max-width:540px;margin-bottom:22px;">The same knowledge point appears in your flashcards, study guide, cram sheet, and lecture — connected by clickable KP badges. You build a map, not just a list of facts.</div>
+      <div class="closing-grid">
+        <div class="closing-pillar"><div class="closing-pillar-icon">🌐</div><div class="closing-pillar-title">Auto-translates in any browser</div><div class="closing-pillar-desc">Pure HTML — right-click → Translate in Chrome, Safari, Edge. No plugin required. Full bilingual support for any language.</div></div>
+        <div class="closing-pillar"><div class="closing-pillar-icon">💻</div><div class="closing-pillar-title">Fully offline, any machine</div><div class="closing-pillar-desc">One HTML file. Works on locked-down corporate laptops, tablets, or any device with a browser — no installation ever.</div></div>
+        <div class="closing-pillar"><div class="closing-pillar-icon">🔗</div><div class="closing-pillar-title">KP-linked multimodal study</div><div class="closing-pillar-desc">Every flashcard, question, and lecture slide links to the same KP. Click any badge to cross-navigate all formats for that concept.</div></div>
+        <div class="closing-pillar"><div class="closing-pillar-icon">📊</div><div class="closing-pillar-title">Calibrated to real exam format</div><div class="closing-pillar-desc">5 mock exams built to the official 5-tier question blueprint. Your mock score is a reliable readiness thermometer.</div></div>
+      </div>
+      <div class="closing-cta">Try Domain I free at <a href="#">layrix.ai/academy</a> — upgrade when ready.</div>
+    </div>
+  </div><!-- /demo-inner -->
+  <!-- KP Menu Popup -->
+  <div id="kp-menu-popup">
+    <div class="kpmp-header">
+      <span class="kpmp-kp-id" id="kpmp-id">KP-I-A-1-003</span>
+      <button class="kpmp-close" id="kpmp-close">✕</button>
+    </div>
+    <div class="kpmp-items" id="kpmp-items">
+      <button class="kpmp-item" id="kpmp-practice"><span class="kpmp-item-icon">📝</span><span class="kpmp-item-label">Practice Questions</span><span class="kpmp-item-count">7</span></button>
+      <button class="kpmp-item" id="kpmp-flash"><span class="kpmp-item-icon">🃏</span><span class="kpmp-item-label">Flashcards</span><span class="kpmp-item-count">3</span></button>
+      <button class="kpmp-item" id="kpmp-guide"><span class="kpmp-item-icon">📖</span><span class="kpmp-item-label">Study Guide →</span></button>
+      <button class="kpmp-item" id="kpmp-lect"><span class="kpmp-item-icon">🎬</span><span class="kpmp-item-label">Lectures →</span></button>
+    </div>
+  </div>
+  <!-- KP Return bubble -->
+  <button id="kp-return-bubble">← Return</button>
+  <!-- Subtitle bar -->
+  <div id="subtitle-bar"><div id="subtitle-text"></div><button id="unmute-btn">🔇 Unmute</button></div>
+</div><!-- /demo-app -->
+<!-- Fake cursor -->
+<div id="fake-cursor"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 2L18 11L11 12.5L8 19L4 2Z" fill="white" stroke="#333" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+<audio id="demo-audio" preload="auto" muted><!-- AUDIO_SOURCES injected by build_demo.py --></audio>
+<script>
+// ════ STUB DATA (replaced by build_demo.py) ════
+const TOTAL_MS = 196047; // audio duration = 196.0s
+// Generated by build_demo.py — 26 cues, 196.0s
+const CUES = [
+  {start:0.0,end:7.968,text:"JC AIGP Quick Pass Guide is a complete prep system for the AIGP certification exam."},
+  {start:8.318,end:17.702,text:"Four study modes work together: Flashcards for memory, four Study Materials formats, a personalized Study Planner, and five full Mock Exams with targeted practice."},
+  {start:18.002,end:21.77,text:"Every mode links to the same structured knowledge point system."},
+  {start:21.8,end:26.384,text:"Flashcards: 296 cards with spaced repetition."},
+  {start:26.684,end:37.46,text:"Each card links to a knowledge point in the exam blueprint. Flip to reveal the full explanation and a button to practice exam questions on that exact concept."},
+  {start:37.76,end:43.976,text:"Rate it Known or Unknown and the engine schedules your next review. Weak cards surface first."},
+  {start:44.005,end:47.893,text:"Study Materials gives you four formats for the same content."},
+  {start:48.193,end:55.609,text:"Study Guide: full textbook with KP badges you can click to cross-navigate to related questions and lectures."},
+  {start:55.889,end:63.953,text:"Cram Sheet: side-by-side comparisons. Exam Essentials: death traps like confusing prohibited AI with high-risk AI."},
+  {start:64.233,end:71.889,text:"Lectures: narrated slides with karaoke highlights showing exactly what the narrator is covering. Add your own notes per slide."},
+  {start:72.189,end:75.837,text:"Now watch what happens when you click a KP badge."},
+  {start:76.237,end:88.693,text:"Every badge in the Study Guide is clickable. Click it, and you instantly see all material connected to that exact knowledge point — every flashcard, every practice question, every lecture reference."},
+  {start:89.093,end:93.989,text:"A pink Return button keeps your place so you can explore without losing track of where you were."},
+  {start:94.339,end:105.883,text:"This is the core of the system. The same knowledge point, studied from the angle that suits the moment — narrative, comparison, trap alert, or live narration. All reachable from a single click."},
+  {start:106.283,end:115.691,text:"This cross-reference layer is what most exam prep tools are missing. You are not memorizing isolated facts — you are building a connected map of the subject."},
+  {start:115.721,end:118.745,text:"Practice offers two targeted review tools."},
+  {start:119.025,end:125.289,text:"Wrong Answer Review collects every question you have gotten wrong and lets you re-drill exactly your weak spots."},
+  {start:125.569,end:131.785,text:"Key Practice holds questions you flagged as critical. Great for the day before the exam."},
+  {start:132.085,end:147.493,text:"The Mock Exam mirrors the real format: 100 questions, 180 minutes, Part 1 then a scheduled break then Part 2. Your exam clock keeps running during the break, just like the real test."},
+  {start:147.522,end:154.938,text:"The Study Planner builds a personalized day-by-day schedule from your exam date, daily study time, and weakest domains."},
+  {start:155.238,end:161.862,text:"Each task links directly into the right study mode. Missed days roll over automatically."},
+  {start:161.892,end:164.076,text:"Two things stand out about the format."},
+  {start:164.376,end:175.2,text:"First: the whole app is native HTML, so your browser can auto-translate it into any language in one click. Helpful for candidates whose first language is not English."},
+  {start:175.5,end:184.188,text:"Second: it is a single file that runs fully offline, including on locked-down corporate laptops where installing software is not allowed."},
+  {start:184.488,end:191.712,text:"KP-linked study across every format. Five calibrated mock exams. Works anywhere."},
+  {start:191.962,end:196.018,text:"Try Domain I free at layrix dot ai slash academy."},
+];
+const SCENES = [
+  {id:'home', t0:0, t1:21799},
+  {id:'flashcards', t0:21799, t1:44005},
+  {id:'materials', t0:44005, t1:115720},
+  {id:'practice', t0:115720, t1:147522},
+  {id:'planner', t0:147522, t1:161891},
+  {id:'closing', t0:161891, t1:196047},
+];
+const STEPS = [
+  {
+    "t": 0,
+    "type": "screen",
+    "target": "s-home"
+  },
+  {
+    "t": 8719,
+    "type": "cursor",
+    "to": "card-flashcards",
+    "dur": 900
+  },
+  {
+    "t": 9373,
+    "type": "hover",
+    "target": "card-flashcards",
+    "on": true
+  },
+  {
+    "t": 10681,
+    "type": "hover",
+    "target": "card-flashcards",
+    "on": false
+  },
+  {
+    "t": 10681,
+    "type": "cursor",
+    "to": "card-materials",
+    "dur": 700
+  },
+  {
+    "t": 11335,
+    "type": "hover",
+    "target": "card-materials",
+    "on": true
+  },
+  {
+    "t": 12643,
+    "type": "hover",
+    "target": "card-materials",
+    "on": false
+  },
+  {
+    "t": 12643,
+    "type": "cursor",
+    "to": "card-planner",
+    "dur": 700
+  },
+  {
+    "t": 13297,
+    "type": "hover",
+    "target": "card-planner",
+    "on": true
+  },
+  {
+    "t": 14605,
+    "type": "hover",
+    "target": "card-planner",
+    "on": false
+  },
+  {
+    "t": 14605,
+    "type": "cursor",
+    "to": "card-practice",
+    "dur": 700
+  },
+  {
+    "t": 15259,
+    "type": "hover",
+    "target": "card-practice",
+    "on": true
+  },
+  {
+    "t": 17003,
+    "type": "hover",
+    "target": "card-practice",
+    "on": false
+  },
+  {
+    "t": 18529,
+    "type": "cursor",
+    "to": "card-flashcards",
+    "dur": 900
+  },
+  {
+    "t": 20055,
+    "type": "hover",
+    "target": "card-flashcards",
+    "on": true
+  },
+  {
+    "t": 20927,
+    "type": "click",
+    "target": "card-flashcards"
+  },
+  {
+    "t": 21799,
+    "type": "screen",
+    "target": "s-flashcard"
+  },
+  {
+    "t": 25796,
+    "type": "cursor",
+    "to": "fcCard",
+    "dur": 1000
+  },
+  {
+    "t": 27350,
+    "type": "click",
+    "target": "fcCard"
+  },
+  {
+    "t": 27350,
+    "type": "flip",
+    "target": "fcCard",
+    "on": true
+  },
+  {
+    "t": 32457,
+    "type": "cursor",
+    "to": "fcPracticeBtn",
+    "dur": 1100
+  },
+  {
+    "t": 36899,
+    "type": "class",
+    "target": "fcRating",
+    "add": "visible"
+  },
+  {
+    "t": 38675,
+    "type": "cursor",
+    "to": "fcRateYes",
+    "dur": 800
+  },
+  {
+    "t": 40452,
+    "type": "hover",
+    "target": "fcRateYes",
+    "on": true
+  },
+  {
+    "t": 41784,
+    "type": "click",
+    "target": "fcRateYes"
+  },
+  {
+    "t": 44005,
+    "type": "screen",
+    "target": "s-materials"
+  },
+  {
+    "t": 46156,
+    "type": "cursor",
+    "to": "mc-guide",
+    "dur": 900
+  },
+  {
+    "t": 47734,
+    "type": "hover",
+    "target": "mc-guide",
+    "on": true
+  },
+  {
+    "t": 48307,
+    "type": "click",
+    "target": "mc-guide"
+  },
+  {
+    "t": 48738,
+    "type": "panel",
+    "target": "sm-home-view",
+    "active": false
+  },
+  {
+    "t": 48738,
+    "type": "panel",
+    "target": "sm-guide-panel",
+    "active": true
+  },
+  {
+    "t": 51176,
+    "type": "scroll",
+    "target": "sg-scroll",
+    "to": 250
+  },
+  {
+    "t": 53686,
+    "type": "scroll",
+    "target": "sg-scroll",
+    "to": 560
+  },
+  {
+    "t": 55479,
+    "type": "panel",
+    "target": "sm-guide-panel",
+    "active": false
+  },
+  {
+    "t": 55479,
+    "type": "panel",
+    "target": "sm-cram-panel",
+    "active": true
+  },
+  {
+    "t": 58348,
+    "type": "scroll",
+    "target": "cram-scroll",
+    "to": 230
+  },
+  {
+    "t": 60499,
+    "type": "panel",
+    "target": "sm-cram-panel",
+    "active": false
+  },
+  {
+    "t": 60499,
+    "type": "panel",
+    "target": "sm-ess-panel",
+    "active": true
+  },
+  {
+    "t": 63224,
+    "type": "scroll",
+    "target": "ess-scroll",
+    "to": 260
+  },
+  {
+    "t": 65519,
+    "type": "scroll",
+    "target": "ess-scroll",
+    "to": 520
+  },
+  {
+    "t": 67670,
+    "type": "panel",
+    "target": "sm-ess-panel",
+    "active": false
+  },
+  {
+    "t": 67670,
+    "type": "panel",
+    "target": "sm-lect-panel",
+    "active": true
+  },
+  {
+    "t": 67814,
+    "type": "timer",
+    "id": "lect-bar",
+    "base": 38,
+    "speed": 0.9
+  },
+  {
+    "t": 69463,
+    "type": "lect-highlight",
+    "target": "lkt-tiered"
+  },
+  {
+    "t": 71256,
+    "type": "lect-highlight",
+    "target": "lkt-prohibited"
+  },
+  {
+    "t": 73049,
+    "type": "lect-highlight",
+    "target": "lkt-limited"
+  },
+  {
+    "t": 74699,
+    "type": "lect-highlight",
+    "target": "lkt-insight"
+  },
+  {
+    "t": 75559,
+    "type": "lect-highlight",
+    "target": null
+  },
+  {
+    "t": 75559,
+    "type": "panel",
+    "target": "sm-lect-panel",
+    "active": false
+  },
+  {
+    "t": 75559,
+    "type": "panel",
+    "target": "sm-guide-panel",
+    "active": true
+  },
+  {
+    "t": 76635,
+    "type": "cursor",
+    "to": "kp-badge-sg",
+    "dur": 1600
+  },
+  {
+    "t": 79719,
+    "type": "hover",
+    "target": "kp-badge-sg",
+    "on": true
+  },
+  {
+    "t": 80723,
+    "type": "click",
+    "target": "kp-badge-sg"
+  },
+  {
+    "t": 81153,
+    "type": "popup",
+    "show": true,
+    "anchor": "kp-badge-sg"
+  },
+  {
+    "t": 84165,
+    "type": "cursor",
+    "to": "kpmp-practice",
+    "dur": 900
+  },
+  {
+    "t": 85958,
+    "type": "hover",
+    "target": "kpmp-practice",
+    "on": true
+  },
+  {
+    "t": 89328,
+    "type": "click",
+    "target": "kpmp-practice"
+  },
+  {
+    "t": 89759,
+    "type": "popup",
+    "show": false
+  },
+  {
+    "t": 89759,
+    "type": "panel",
+    "target": "sm-guide-panel",
+    "active": false
+  },
+  {
+    "t": 89759,
+    "type": "panel",
+    "target": "sm-kp-practice-panel",
+    "active": true
+  },
+  {
+    "t": 90261,
+    "type": "class",
+    "target": "kp-return-bubble",
+    "add": "visible"
+  },
+  {
+    "t": 94205,
+    "type": "cursor",
+    "to": "kp-opt-b",
+    "dur": 1400
+  },
+  {
+    "t": 97432,
+    "type": "click",
+    "target": "kp-opt-b"
+  },
+  {
+    "t": 97432,
+    "type": "class",
+    "target": "kp-opt-b",
+    "add": "selected"
+  },
+  {
+    "t": 100659,
+    "type": "class",
+    "target": "kp-opt-b",
+    "remove": "selected"
+  },
+  {
+    "t": 100731,
+    "type": "class",
+    "target": "kp-opt-b",
+    "add": "correct-show"
+  },
+  {
+    "t": 101018,
+    "type": "class",
+    "target": "kp-prac-explain",
+    "add": "visible"
+  },
+  {
+    "t": 106755,
+    "type": "cursor",
+    "to": "kp-return-bubble",
+    "dur": 1400
+  },
+  {
+    "t": 109982,
+    "type": "click",
+    "target": "kp-return-bubble"
+  },
+  {
+    "t": 110699,
+    "type": "class",
+    "target": "kp-return-bubble",
+    "remove": "visible"
+  },
+  {
+    "t": 110699,
+    "type": "panel",
+    "target": "sm-kp-practice-panel",
+    "active": false
+  },
+  {
+    "t": 110699,
+    "type": "panel",
+    "target": "sm-guide-panel",
+    "active": true
+  },
+  {
+    "t": 115720,
+    "type": "screen",
+    "target": "s-practice"
+  },
+  {
+    "t": 116197,
+    "type": "cursor",
+    "to": "pc-browse",
+    "dur": 700
+  },
+  {
+    "t": 116833,
+    "type": "hover",
+    "target": "pc-browse",
+    "on": true
+  },
+  {
+    "t": 117055,
+    "type": "click",
+    "target": "pc-browse"
+  },
+  {
+    "t": 117246,
+    "type": "panel",
+    "target": "pr-home-view",
+    "active": false
+  },
+  {
+    "t": 117246,
+    "type": "panel",
+    "target": "pr-domain-view",
+    "active": true
+  },
+  {
+    "t": 117787,
+    "type": "cursor",
+    "to": "pr-domain-I",
+    "dur": 700
+  },
+  {
+    "t": 118327,
+    "type": "hover",
+    "target": "pr-domain-I",
+    "on": true
+  },
+  {
+    "t": 118518,
+    "type": "click",
+    "target": "pr-domain-I"
+  },
+  {
+    "t": 118709,
+    "type": "panel",
+    "target": "pr-domain-view",
+    "active": false
+  },
+  {
+    "t": 118709,
+    "type": "panel",
+    "target": "pr-kp-view",
+    "active": true
+  },
+  {
+    "t": 119377,
+    "type": "scroll",
+    "target": "kp-list-scroll",
+    "to": 180
+  },
+  {
+    "t": 120172,
+    "type": "cursor",
+    "to": "kp-row-003",
+    "dur": 700
+  },
+  {
+    "t": 120649,
+    "type": "click",
+    "target": "kp-row-003"
+  },
+  {
+    "t": 120871,
+    "type": "panel",
+    "target": "pr-kp-view",
+    "active": false
+  },
+  {
+    "t": 120871,
+    "type": "panel",
+    "target": "pr-question-view",
+    "active": true
+  },
+  {
+    "t": 120903,
+    "type": "class",
+    "target": "pr-opt-b",
+    "remove": "wrong-show"
+  },
+  {
+    "t": 120935,
+    "type": "class",
+    "target": "pr-opt-d",
+    "remove": "correct-show"
+  },
+  {
+    "t": 120967,
+    "type": "class",
+    "target": "pr-explain",
+    "remove": "visible"
+  },
+  {
+    "t": 121444,
+    "type": "cursor",
+    "to": "pr-opt-b",
+    "dur": 800
+  },
+  {
+    "t": 122080,
+    "type": "click",
+    "target": "pr-opt-b"
+  },
+  {
+    "t": 122080,
+    "type": "class",
+    "target": "pr-opt-b",
+    "add": "selected"
+  },
+  {
+    "t": 122875,
+    "type": "cursor",
+    "to": "pr-reveal-btn",
+    "dur": 700
+  },
+  {
+    "t": 123352,
+    "type": "click",
+    "target": "pr-reveal-btn"
+  },
+  {
+    "t": 123352,
+    "type": "class",
+    "target": "pr-reveal-btn",
+    "add": "revealed"
+  },
+  {
+    "t": 123511,
+    "type": "class",
+    "target": "pr-opt-b",
+    "remove": "selected"
+  },
+  {
+    "t": 123543,
+    "type": "class",
+    "target": "pr-opt-b",
+    "add": "wrong-show"
+  },
+  {
+    "t": 123543,
+    "type": "class",
+    "target": "pr-opt-d",
+    "add": "correct-show"
+  },
+  {
+    "t": 123606,
+    "type": "class",
+    "target": "pr-explain",
+    "add": "visible"
+  },
+  {
+    "t": 124370,
+    "type": "cursor",
+    "to": "pr-flag-btn",
+    "dur": 600
+  },
+  {
+    "t": 124751,
+    "type": "click",
+    "target": "pr-flag-btn"
+  },
+  {
+    "t": 124751,
+    "type": "class",
+    "target": "pr-flag-btn",
+    "add": "flagged"
+  },
+  {
+    "t": 125324,
+    "type": "cursor",
+    "to": "pr-next-btn",
+    "dur": 600
+  },
+  {
+    "t": 125705,
+    "type": "click",
+    "target": "pr-next-btn"
+  },
+  {
+    "t": 126214,
+    "type": "panel",
+    "target": "pr-question-view",
+    "active": false
+  },
+  {
+    "t": 126214,
+    "type": "panel",
+    "target": "pr-wrong-view",
+    "active": true
+  },
+  {
+    "t": 129394,
+    "type": "panel",
+    "target": "pr-wrong-view",
+    "active": false
+  },
+  {
+    "t": 129394,
+    "type": "panel",
+    "target": "pr-flagged-view",
+    "active": true
+  },
+  {
+    "t": 132129,
+    "type": "panel",
+    "target": "pr-flagged-view",
+    "active": false
+  },
+  {
+    "t": 132129,
+    "type": "panel",
+    "target": "pr-mock-view",
+    "active": true
+  },
+  {
+    "t": 132161,
+    "type": "timer",
+    "id": "mock-timer",
+    "base": 9798,
+    "speed": 1
+  },
+  {
+    "t": 141161,
+    "type": "panel",
+    "target": "pr-mock-view",
+    "active": false
+  },
+  {
+    "t": 141161,
+    "type": "mock-break",
+    "on": true
+  },
+  {
+    "t": 141193,
+    "type": "timer",
+    "id": "break-timer",
+    "base": 892,
+    "speed": 1
+  },
+  {
+    "t": 141225,
+    "type": "timer",
+    "id": "exam-elapsed",
+    "base": 4602,
+    "speed": 1
+  },
+  {
+    "t": 147522,
+    "type": "screen",
+    "target": "s-planner"
+  },
+  {
+    "t": 149246,
+    "type": "scroll",
+    "target": "sp-schedule-scroll",
+    "to": 170
+  },
+  {
+    "t": 152263,
+    "type": "cursor",
+    "to": "sp-today-row",
+    "dur": 900
+  },
+  {
+    "t": 153700,
+    "type": "click",
+    "target": "sp-today-row"
+  },
+  {
+    "t": 154706,
+    "type": "sp-day",
+    "on": true
+  },
+  {
+    "t": 161891,
+    "type": "screen",
+    "target": "s-closing"
+  }
+];
+// ════ ENGINE ════
+const audio = document.getElementById('demo-audio');
+const subtitleEl = document.getElementById('subtitle-text');
+const unmuteBtn = document.getElementById('unmute-btn');
+const cursorEl = document.getElementById('fake-cursor');
+const returnBubble = document.getElementById('kp-return-bubble');
+const kpMenu = document.getElementById('kp-menu-popup');
+let startTime = null, pausedElapsed = null, audioEnabled = false;
+let appliedSteps = new Set(), lastSeekAt = 0, activeTimers = {};
+let lastSubtitle = null;
+const reduceMotion = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const screens = ['s-home','s-flashcard','s-materials','s-practice','s-planner','s-closing'];
+
+// Build mock palette
+(function(){
+  const g = document.getElementById('mock-palette-grid');
+  if(!g) return;
+  const st = ['answered','answered','answered','answered','answered','answered','current','answered','flagged','','','','','','','','','','',''];
+  for(let i=0;i<20;i++){const b=document.createElement('div');b.className='mock-palette-btn'+(st[i]?' '+st[i]:'');b.textContent=i+1;g.appendChild(b);}
+})();
+
+// Cursor tween
+let cx={x:50,y:50,tx:50,ty:50,sx:50,sy:50,ts:0,dur:0};
+function getCenter(id){
+  const e=document.getElementById(id)||document.querySelector('.'+id);
+  if(!e)return null;
+  const r=e.getBoundingClientRect();
+  return{x:r.left+r.width/2,y:r.top+r.height/2};
+}
+function tweenCursor(now){
+  if(reduceMotion)return;
+  if(cx.dur>0){
+    const t=Math.min(1,(now-cx.ts)/cx.dur);
+    const e=t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+    cx.x=cx.sx+(cx.tx-cx.sx)*e; cx.y=cx.sy+(cx.ty-cx.sy)*e;
+    if(t>=1)cx.dur=0;
+  }
+  cursorEl.style.left=cx.x+'px'; cursorEl.style.top=cx.y+'px';
+}
+function spawnRipple(x,y){
+  if(reduceMotion)return;
+  const r=document.createElement('div');r.className='click-ripple';
+  r.style.left=x+'px';r.style.top=y+'px';
+  document.body.appendChild(r);setTimeout(()=>r.remove(),600);
+}
+
+// Screen management
+function showScreen(id){
+  screens.forEach(s=>{const e=document.getElementById(s);if(e)e.classList.toggle('active',s===id);});
+}
+
+// Sub-view management (IDs → show/hide)
+const _panels = {};
+function setPanel(id, active){
+  let el = _panels[id] || (document.getElementById(id));
+  if(!el){_panels[id]=null;return;}
+  _panels[id]=el;
+  if(active){el.style.display='flex';} else {el.style.display='none';}
+}
+
+// Scroll animation
+function scrollPanel(id, to){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.scrollTo({top:to, behavior:'smooth'});
+}
+
+// Timer rendering
+function fHMS(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');}
+function fMS(s){const m=Math.floor(s/60),ss=s%60;return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');}
+function renderTimers(now){
+  for(const[id,t] of Object.entries(activeTimers)){
+    const elapsed=Math.floor((now-t.startedAt)/1000)*t.speed;
+    if(id==='mock-timer'){const r=Math.max(0,t.base-elapsed);const e=document.getElementById('mock-timer-display');if(e)e.textContent=fHMS(r);}
+    else if(id==='break-timer'){const r=Math.max(0,t.base-elapsed);const e=document.getElementById('break-timer-val');if(e)e.textContent=fMS(r);}
+    else if(id==='exam-elapsed'){const v=t.base+elapsed;const e=document.getElementById('exam-elapsed-val');if(e)e.textContent=fHMS(v);}
+    else if(id==='lect-bar'){const pct=Math.min(100,(t.base+elapsed*t.speed));const e=document.getElementById('lect-bar');if(e)e.style.width=pct+'%';}
+  }
+}
+
+// Cue lookup
+function findCue(sec){
+  let lo=0,hi=CUES.length-1;
+  while(lo<=hi){const m=(lo+hi)>>1;const c=CUES[m];if(c.start<=sec&&c.end>sec)return c;if(c.end<=sec)lo=m+1;else hi=m-1;}
+  if(CUES.length&&sec>=CUES[CUES.length-1].start)return CUES[CUES.length-1];
+  return null;
+}
+
+// Apply a single step
+function applyStep(s){
+  if(s.type==='screen'){
+    showScreen(s.target);
+    // Reset sub-panels when screen changes
+    if(s.target==='s-materials'){
+      setPanel('sm-home-view',true);setPanel('sm-guide-panel',false);setPanel('sm-cram-panel',false);
+      setPanel('sm-ess-panel',false);setPanel('sm-lect-panel',false);setPanel('sm-kp-practice-panel',false);
+      const sg=document.getElementById('sg-scroll');if(sg)sg.scrollTop=0;
+    }
+    if(s.target==='s-practice'){
+      setPanel('pr-home-view',true);setPanel('pr-domain-view',false);setPanel('pr-kp-view',false);
+      setPanel('pr-question-view',false);setPanel('pr-wrong-view',false);setPanel('pr-flagged-view',false);
+      setPanel('pr-mock-view',false);
+      const pb=document.getElementById('pr-break-view');if(pb)pb.classList.remove('active');
+    }
+    if(s.target==='s-planner'){
+      setPanel('sp-plan-view',true);
+      const sv=document.getElementById('sp-day-view');if(sv)sv.classList.remove('active');
+    }
+  }
+  else if(s.type==='panel'){setPanel(s.target,s.active);}
+  else if(s.type==='class'){
+    const el=document.getElementById(s.target);
+    if(el){if(s.add)el.classList.add(s.add);if(s.remove)el.classList.remove(s.remove);}
+  }
+  else if(s.type==='cursor'){
+    if(!reduceMotion){const p=getCenter(s.to);if(p){cx.sx=cx.x;cx.sy=cx.y;cx.tx=p.x;cx.ty=p.y;cx.ts=performance.now()-startTime;cx.dur=s.dur||1200;}}
+  }
+  else if(s.type==='hover'){const e=document.getElementById(s.target);if(e)e.classList.toggle('hovered',s.on);}
+  else if(s.type==='click'){
+    const e=document.getElementById(s.target);
+    if(e&&!reduceMotion){const r=e.getBoundingClientRect();spawnRipple(r.left+r.width/2,r.top+r.height/2);cursorEl.classList.add('clicking');setTimeout(()=>cursorEl.classList.remove('clicking'),200);}
+  }
+  else if(s.type==='flip'){const e=document.getElementById(s.target);if(e)e.classList.toggle('flipped',s.on);}
+  else if(s.type==='scroll'){scrollPanel(s.target,s.to);}
+  else if(s.type==='popup'){
+    if(s.show){
+      kpMenu.classList.add('visible');
+      if(s.anchor){const a=document.getElementById(s.anchor);if(a){const r=a.getBoundingClientRect();kpMenu.style.top=(r.bottom+6)+'px';kpMenu.style.left=Math.min(r.left,window.innerWidth-290)+'px';}}
+    } else {kpMenu.classList.remove('visible');}
+  }
+  else if(s.type==='timer'){const n=performance.now()-startTime;activeTimers[s.id]={base:s.base,speed:s.speed||1,startedAt:n};}
+  else if(s.type==='mock-break'){const e=document.getElementById('pr-break-view');if(e)e.classList.toggle('active',s.on);}
+  else if(s.type==='sp-day'){const e=document.getElementById('sp-day-view');if(e){e.classList.toggle('active',s.on);setPanel('sp-plan-view',!s.on);}}
+  else if(s.type==='lect-highlight'){
+    document.querySelectorAll('.lect-kt').forEach(e=>e.classList.remove('lect-focus'));
+    if(s.target){const e=document.getElementById(s.target);if(e)e.classList.add('lect-focus');}
+  }
+}
+function applyStepsUpTo(now){
+  for(const s of STEPS){if(s.t<=now&&!appliedSteps.has(s)){applyStep(s);appliedSteps.add(s);}}
+}
+
+// Reset
+function resetAll(){
+  appliedSteps=new Set();activeTimers={};
+  screens.forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('active');});
+  document.getElementById('fcCard')?.classList.remove('flipped');
+  document.getElementById('fcRating')?.classList.remove('visible');
+  document.getElementById('fcRateYes')?.classList.remove('hovered');
+  returnBubble.classList.remove('visible');
+  kpMenu.classList.remove('visible');
+  document.querySelectorAll('.hovered').forEach(e=>e.classList.remove('hovered'));
+  document.querySelectorAll('.lect-kt').forEach(e=>e.classList.remove('lect-focus'));
+}
+
+// Main loop
+function frame(){
+  if(pausedElapsed!==null||startTime===null){requestAnimationFrame(frame);return;}
+  let now=performance.now()-startTime;
+  if(now>=TOTAL_MS){now=0;startTime=performance.now();resetAll();if(audioEnabled){audio.currentTime=0;audio.play().catch(()=>{});}}
+  applyStepsUpTo(now);tweenCursor(now);renderTimers(now);
+  // Subtitle
+  const cue=findCue(now/1000);const txt=cue?cue.text:'';
+  if(txt!==lastSubtitle){subtitleEl.textContent=txt;subtitleEl.classList.toggle('active',!!txt);lastSubtitle=txt;}
+  // Audio drift correction
+  if(audioEnabled&&!audio.paused&&!audio.seeking){
+    const drift=Math.abs(audio.currentTime-now/1000);
+    const gap=now-(lastSeekAt||0);
+    if(drift>2.5&&gap>3000){audio.currentTime=now/1000;lastSeekAt=now;}
+  }
+  requestAnimationFrame(frame);
+}
+
+// IntersectionObserver + visibilitychange
+let isVisible=true;
+new IntersectionObserver(entries=>{
+  const v=entries[0].intersectionRatio>0.05;
+  if(!isVisible&&v&&pausedElapsed!==null){startTime=performance.now()-pausedElapsed;pausedElapsed=null;if(audioEnabled){audio.currentTime=(performance.now()-startTime)/1000;audio.play().catch(()=>{});}}
+  else if(isVisible&&!v){pausedElapsed=performance.now()-startTime;if(audioEnabled)audio.pause();}
+  isVisible=v;
+},{threshold:[0.05]}).observe(document.getElementById('demo-app'));
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){if(pausedElapsed===null){pausedElapsed=performance.now()-startTime;if(audioEnabled)audio.pause();}}
+  else{if(pausedElapsed!==null&&isVisible){startTime=performance.now()-pausedElapsed;pausedElapsed=null;if(audioEnabled){audio.currentTime=(performance.now()-startTime)/1000;audio.play().catch(()=>{});}}}
+});
+
+// Unmute
+unmuteBtn.addEventListener('click',function toggle(){
+  if(!audioEnabled){
+    audioEnabled=true;audio.muted=false;audio.currentTime=(performance.now()-startTime)/1000;audio.play().catch(()=>{});
+    unmuteBtn.textContent='🔊 Mute';unmuteBtn.classList.add('active');
+    unmuteBtn.removeEventListener('click',toggle);
+    unmuteBtn.addEventListener('click',function mute(){audioEnabled=false;audio.pause();audio.muted=true;unmuteBtn.textContent='🔇 Unmute';unmuteBtn.classList.remove('active');unmuteBtn.removeEventListener('click',mute);unmuteBtn.addEventListener('click',toggle);});
+  }
+});
+
+startTime=performance.now();requestAnimationFrame(frame);
+</script>
+</body>
+</html>

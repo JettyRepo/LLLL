@@ -7,7 +7,7 @@ FAIL=0
 echo "=== Theme Consistency (paper/serif tokens per page) ==="
 # Pages either inline a <style> with --paper or load site-shared.css; check for that + marq- class usage + Caerus footer.
 # Skip standalone iframe widgets that intentionally use their own art direction.
-SKIP_THEMING="site/llll/demo.html"
+SKIP_THEMING="site/llll/demo.html site/academy/demo.html"
 PAGES=$(find site -type f -name "*.html" | sort)
 for f in $PAGES; do
   if echo "$SKIP_THEMING" | grep -qF "$f"; then
