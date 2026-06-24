@@ -1,5 +1,7 @@
 <h1><img src="LLLL.svg" height="36" alt="LLLL logo" style="vertical-align:middle">&nbsp; LLLL (Layrix Logic Layer Loop)</h1>
 
+**[→ layrix.ai/llll — Layrix AI Compliance Platform](https://layrix.ai/llll/)**
+
 > Licensed under the [MIT License](LICENSE). Free to use, fork, and build on. If you create a derivative project, we ask that you acknowledge the original work and don't misrepresent it as an official Layrix product.
 
 ### Start in 30 seconds — prevent source code leaks and compliance gaps before they leave your machine.
