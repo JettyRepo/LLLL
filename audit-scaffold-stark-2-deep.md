@@ -2,7 +2,9 @@ Output Mode: LLLL Basic — Deep Analysis
 
 # ⚖️ Layrix Compliance Layer — Scaffold-Stark-2 (Strict Review)
 
-⚠️ **Foundation Alert:** Layer 0 has multiple Critical/High findings — including a **live secret committed to the public repository**, a missing LICENSE file, and a CI workflow consuming a floating GitHub Action reference (`actions/checkout@master`). These compound: the repo has 170 forks, so each Layer 0 defect propagates 170× downstream. Fix Layer 0 before Layer 2.
+> **CORRECTION (2026-08-12):** Gap 1 / HRF-1 below ("live secret exposure," Alchemy API key) was a **false positive** and has been struck through in place rather than removed, so the original audit output and the correction are both visible. The Alchemy key is the scaffold's intentional, publicly-documented default RPC endpoint — the same pattern Scaffold-ETH and most Web3 scaffolds use so `git clone` works out of the box. It is shipped in `packages/snfoundry/.env.example` and `packages/nextjs/.env.example` (both variables named/prefixed to indicate public use — `NEXT_PUBLIC_SEPOLIA_PROVIDER_URL` is bundled into the client by Next.js by design), covers both Sepolia and Mainnet, and is documented as the current endpoint in the repo's own README. It has been present since at least 2026-02-03 across many contributor commits, including after this audit ran, with no indication anyone treats it as compromised. This audit's severity engine flagged a credential-shaped string embedded in a build-config file (`Scarb.toml`) without checking whether the same value is an intentional, documented default elsewhere in the repo — that check is the actual gap, and it's being fixed in LLLL's scan/deep pipeline, not in this repo. No rotation, no disclosure, and no history rewrite of *this project's* key was needed. See root-cause note in `INCIDENT_RESPONSE.md` (this repo).
+
+⚠️ **Foundation Alert:** Layer 0 has multiple Critical/High findings — ~~including a **live secret committed to the public repository**~~ (see correction above; not a live secret), a missing LICENSE file, and a CI workflow consuming a floating GitHub Action reference (`actions/checkout@master`). These compound: the repo has 170 forks, so each Layer 0 defect propagates 170× downstream. Fix Layer 0 before Layer 2.
 
 ---
 
@@ -11,7 +13,7 @@ Output Mode: LLLL Basic — Deep Analysis
 **Sensitivity level: HIGH** (escalated from Medium in `/llll` baseline)
 
 Reasoning:
-1. **Live secret exposure** — Sepolia Alchemy API key found embedded in `packages/snfoundry/contracts/Scarb.toml`. Pattern: `https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_10/_hKu4IgnPgrF8O82GLuYU`. Trailing path segment is the API token (Alchemy uses path-based auth). This is a public repo — the key is exfiltrable by anyone, including the entire fork tree.
+1. ~~**Live secret exposure** — Sepolia Alchemy API key found embedded in `packages/snfoundry/contracts/Scarb.toml`. Pattern: `https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_10/_hKu4IgnPgrF8O82GLuYU`. Trailing path segment is the API token (Alchemy uses path-based auth). This is a public repo — the key is exfiltrable by anyone, including the entire fork tree.~~ **[FALSE POSITIVE — see correction at top of document.]** This is the scaffold's intentional public default RPC key, also shipped in both `.env.example` files and documented in the README; not a leaked credential.
 2. **Financial-infrastructure tooling** — though the template itself is dev tooling, every fork inevitably crosses into Domain M (Sensitive Sector) by deploying user-fund-handling contracts. The template is the upstream node of an ecosystem of regulated activity.
 3. **Supply-chain attack surface** — the CI uses an unpinned action (`actions/checkout@master`), no `permissions:` restriction (defaults to write), and sync workflows that push to other repos using `ORG_GITHUB_TOKEN`. A compromise here would propagate across the Scaffold-Stark org.
 4. **Wallet defaults** — `scaffold.config.ts` sets `walletAutoConnect: true` and `onlyLocalBurnerWallet: false`, meaning burner wallets are wired up on whatever network is configured (devnet today, but a fork's first config change is `targetNetworks`).
@@ -27,10 +29,9 @@ Reasoning:
 | **CVE-2025-29927 (Next.js middleware bypass)** | The template runs Next.js 15.2.8 (patched), but downstream forks may pin earlier 15.2.x versions |
 | **Starknet mainnet maturity** | Starknet is in production with billions in TVL; templates that ship there carry real money |
 | **EU AI Act + DORA enforcement** (2025) | DORA's ICT third-party risk rules apply to financial entities — many of which use Starknet. A "trusted upstream template" is now a third-party risk in EU compliance terms |
-| **GitHub's secret-scanning push notifications** | Once a fork pushes the leaked Alchemy key, GitHub's secret scanner will fire — potential public disclosure event |
 | **OpenSSF Scorecard pressure** | Major Web3 projects are being scored publicly. A scorecard run today on this repo would fail on: License, Security-Policy, Pinned-Dependencies, Token-Permissions, SAST, Dependency-Update-Tool. That's 6/18 metrics failing. |
 
-This is not abstract risk. The live API key, alone, is an "address it today" issue.
+*(Row removed 2026-08-12: "GitHub's secret-scanning push notifications" — premised on the Alchemy key being leaked, which was a false positive; see correction at top of document.)*
 
 ---
 
@@ -56,7 +57,7 @@ This is not abstract risk. The live API key, alone, is an "address it today" iss
 
 Risk is heavily clustered in **three** zones:
 
-1. **Secret hygiene + supply chain (CI/build path)** — Alchemy key in tracked file, floating action ref, missing `permissions:` block, no scanning. *Single-finding probability of exploit: low. Compound probability of misuse over 12 months: high.*
+1. **Supply chain (CI/build path)** — floating action ref, missing `permissions:` block, no scanning. (The Alchemy key originally flagged here was a false positive — see correction at top of document.) *Single-finding probability of exploit: low. Compound probability of misuse over 12 months: high.*
 2. **Governance vacuum (LICENSE + SECURITY.md + CODEOWNERS + branch protection)** — A template at this scale needs a security operating model. None visible. *This is the "no one is responsible" cluster.*
 3. **Inherited-by-fork defaults (vercel:yolo, walletAutoConnect, passWithNoTests)** — These are fine for a hackathon but actively dangerous as ecosystem defaults. *This is the "your defaults become the ecosystem's defaults" cluster.*
 
@@ -78,7 +79,7 @@ A reviewer's instinct should be: fix cluster 1 today, draft cluster 2 this week,
 
 | Signal | Source | Note |
 |--------|--------|------|
-| 🚨 **Live Alchemy Sepolia API key** | `packages/snfoundry/contracts/Scarb.toml` line ~25 | Pattern `…/v0_10/_hKu4IgnPgrF8O82GLuYU` — trailing segment is the auth token |
+| ~~🚨 Live Alchemy Sepolia API key~~ **FALSE POSITIVE** | `packages/snfoundry/contracts/Scarb.toml` line ~25 | Same value is the scaffold's intentional public default, also in both `.env.example` files and the README — not a leaked secret |
 | 🚨 `actions/checkout@master` floating reference | `.github/workflows/main.yml:23` | Resolves dynamically; supply-chain compromise vector |
 | 🚨 No `permissions:` block in `main.yml` | workflow inspection | Defaults to write permissions on the GitHub token |
 | `actions/setup-node@v3` (deprecated) | `main.yml:26` | v3 EOL'd; v4+ required |
@@ -97,7 +98,7 @@ A reviewer's instinct should be: fix cluster 1 today, draft cluster 2 this week,
 | `CLAUDE.md` is a 2-line redirect to `AGENTS.md` | root | Acceptable pattern |
 | `postinstall: shx cp -n .env.example .env` in **both** packages | `nextjs` and `snfoundry` package.json | Implicit file creation outside `node_modules` during install |
 | Husky present | `.husky/` | Pre-commit hooks active |
-| `.env` gitignored, `.env.example` allow-listed | `.gitignore` | Pattern correct; **but Scarb.toml is not protected by this pattern** — that's how the Alchemy key slipped through |
+| `.env` gitignored, `.env.example` allow-listed | `.gitignore` | Pattern correct. The same Alchemy key is intentionally present in `Scarb.toml` and both `.env.example` files as the scaffold's public default — this is not a case of a secret escaping the `.gitignore` boundary |
 | Issue + PR templates | `.github/` | Present |
 | 6 sync workflows propagate to sibling repos | `.github/workflows/` | Each is a potential pivot point |
 
@@ -140,7 +141,7 @@ A reviewer's instinct should be: fix cluster 1 today, draft cluster 2 this week,
 | **A3** Incident response / disclosure | 🔴 Gap | No SECURITY.md |
 | **B2** Dependency vuln scanning | 🔴 Gap | No Dependabot/CodeQL/audit |
 | **B6** CI/CD privilege management | 🔴 Gap | No `permissions:` block |
-| **B9** Secret management | 🔴 **Gap** | **Live Alchemy key in `Scarb.toml`** |
+| **B9** Secret management | 🟢 **Covered** | No live secrets found; the Alchemy key in `Scarb.toml` is the scaffold's intentional public default (also in `.env.example` × 2, documented in README) — see correction at top of document |
 | **C1** Supply chain — pinning | 🔴 Gap | `actions/checkout@master`; OpenZeppelin Cairo deps unbounded |
 | **C4** Supply chain — known-vuln gate | 🔴 Gap | None |
 | **C5** Pinned GitHub Actions | 🔴 Gap | `@master` and `@v3`/`@v4` (unpinned to SHA) |
@@ -157,7 +158,7 @@ A reviewer's instinct should be: fix cluster 1 today, draft cluster 2 this week,
 
 | # | Domain | Check | Gap | Risk | Label |
 |---|--------|-------|-----|------|-------|
-| 1 | **B / N** | B9 / N6 | **Live Sepolia Alchemy API key embedded in `packages/snfoundry/contracts/Scarb.toml`**. The trailing path segment of the RPC URL (`_hKu4IgnPgrF8O82GLuYU`) is an Alchemy auth token. Public, in git history, exposed to all 170 forks. | 🔴🔴 **Critical** | NEEDS TECHNICAL CONFIRMATION + immediate rotation |
+| 1 | **B / N** | B9 / N6 | ~~**Live Sepolia Alchemy API key embedded in `packages/snfoundry/contracts/Scarb.toml`**. The trailing path segment of the RPC URL (`_hKu4IgnPgrF8O82GLuYU`) is an Alchemy auth token. Public, in git history, exposed to all 170 forks.~~ **FALSE POSITIVE, confirmed 2026-08-12:** same key is the scaffold's intentional public default RPC endpoint, also shipped in `packages/snfoundry/.env.example` and `packages/nextjs/.env.example` and documented in README:250. No rotation or disclosure required. | ~~🔴🔴 Critical~~ **N/A — false positive** | RESOLVED — verified false positive, no action needed |
 | 2 | **C / B** | C5 / B6 | `actions/checkout@master` in `main.yml:23` is a **floating reference** to the upstream action's `master` branch. Any compromise of `actions/checkout` (or a successful PR-merge attack against it) executes immediately in this CI on every PR. Combined with **no `permissions:` block** in the workflow, the GitHub token defaults to write permissions, meaning a compromise has commit access to the repo. | 🔴🔴 **Critical** | NEEDS TECHNICAL CONFIRMATION |
 | 3 | **O** | O1 | `LICENSE` file missing despite `package.json` declaring MIT. 170 forks inherit ambiguous provenance. SBOM/SCA tools and enterprise procurement teams flag as "unlicensed." | 🔴🔴 **Critical** | NEEDS BUSINESS DECISION (which copyright entity) |
 | 4 | **A / N** | A3 / N5 | No `SECURITY.md`. No documented private disclosure path for a template that propagates to 170 forks. A researcher who finds a Cairo contract vulnerability has no responsible channel. | 🔴 **High** | NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT |
@@ -184,7 +185,7 @@ A reviewer's instinct should be: fix cluster 1 today, draft cluster 2 this week,
 
 | # | Priority | Action | Owner | Addresses |
 |---|----------|--------|-------|-----------|
-| 1 | **P1 — TODAY** | **Rotate the exposed Alchemy API key.** Log into Alchemy → revoke `_hKu4IgnPgrF8O82GLuYU` → issue replacement → store in GitHub Actions secret as `STARKNET_SEPOLIA_RPC_URL` and reference via env in `Scarb.toml` (or use a public unauthenticated Sepolia endpoint for snforge fork tests). Then `git filter-repo` or BFG to purge the key from history (note: the key must be considered compromised regardless of history rewrite, since 170 forks may have it). | Engineering | Gap 1 |
+| 1 | ~~P1 — TODAY~~ **RESOLVED** | ~~Rotate the exposed Alchemy API key…~~ **No action needed — Gap 1 was a false positive.** The key is the scaffold's intentional public default (also in both `.env.example` files, documented in README:250); rotating it would break the scaffold's out-of-the-box behavior for all 170 forks. | Engineering | Gap 1 |
 | 2 | **P1 — TODAY** | Pin `actions/checkout@master` to a SHA: `actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1`. Add `permissions: contents: read` (or per-job minimum) at the top of every workflow. Run this fix on `main.yml` AND all six `sync-*.yaml` workflows. | Engineering | Gap 2 |
 | 3 | **P1** | Add `LICENSE` file at repo root with MIT text and "Copyright (c) 2024 Q3 Labs". Verify `gh repo view` returns `licenseInfo.name = "MIT License"`. | Engineering + Legal | Gap 3 |
 | 4 | **P1** | Add `SECURITY.md` with: supported versions table, private disclosure channel (security@q3labs.io or GitHub Security Advisory), 5-business-day initial response SLA, and explicit scope statement covering downstream-fork inheritance. | Engineering + Compliance | Gap 4 |
@@ -213,7 +214,7 @@ These items genuinely warrant compliance-expert or legal-professional review:
 
 | Flag | Item | Reason for human review |
 |------|------|-------------------------|
-| **HRF-1** 🔴🔴 | Gap 1 — Exposed Alchemy API key | Beyond rotation: assess whether any usage during the exposure window constitutes terms-of-service violation with Alchemy, billing exposure, or third-party damage. Determine notification obligations (Alchemy ToS may require disclosure of compromise). |
+| ~~**HRF-1** 🔴🔴~~ **RESOLVED** | Gap 1 — Alchemy API key | **False positive, confirmed 2026-08-12** — key is the scaffold's intentional public default, not a compromise. No legal/ToS review needed. |
 | **HRF-2** 🔴 | Gap 11 — Demo wallet processing without privacy notice | EU users will visit the demo. Wallet addresses + IP + browser fingerprint via Vercel Analytics may constitute personal data under GDPR. A compliance lawyer should determine: (a) is there a lawful basis, (b) is there a notice obligation, (c) is there a controller/processor allocation between Q3 Labs and Vercel. |
 | **HRF-3** 🔴 | Gap 4 — SECURITY.md content | Drafting a disclosure policy for a template with 170 forks involves novel scope decisions: does the policy cover forks? Does it cover the sample Cairo contracts? Does it cover the npx `create-stark` distribution? A compliance lawyer should set the scope language. |
 | **HRF-4** 🔴 | Gap 18 — Mainnet deployment guidance | The text framing here matters legally. A "checklist for fork operators" can be construed as warranting fitness-for-purpose. Wording must thread the line between helpful guidance and implied liability. |
@@ -232,7 +233,6 @@ These items genuinely warrant compliance-expert or legal-professional review:
 | `ORG_GITHUB_TOKEN` actual scope | Token contents not visible to non-admins | If scope is org-wide `repo`, a single CI run compromise → write access to every Q3 Labs / Scaffold-Stark repo |
 | Contents of sample Cairo contracts in `packages/snfoundry/contracts/src` | Not fetched in this audit | Sample contracts could contain unsafe patterns (reentrancy, integer issues, missing access control) that propagate to forks |
 | Vercel Analytics actual configuration on demo | Vercel project settings not visible publicly | Personal data could be processing without consent right now |
-| Whether the leaked Alchemy key is rate-limited or paid | Alchemy account dashboard not accessible | If on a paid plan, attacker can rack up costs against Q3 Labs' bill |
 | Whether Cairo contract audit reports exist | Not visible in repo | Forks may inherit unaudited primitives without knowing |
 | `Scarb.lock` reproducibility | `Scarb.lock` exists per CI step but contents not fetched | Cairo dep resolution may already be drifting |
 | Provenance of `CONTRIBUTING.md` | Found docusaurus directives, didn't trace its source | The mis-sourcing suggests the repo doc workflow is fragile in other places too |
@@ -255,7 +255,7 @@ These items genuinely warrant compliance-expert or legal-professional review:
 
 ## 15. Education Insight
 
-**Compliance — the leaked credential is the canonical "Layer 0 vs Layer 2" lesson.** A team can have an immaculate Privacy Policy, a beautifully-drafted Terms of Service, and a SOC 2 Type II report — and still suffer a data breach because an API key was committed to a `Scarb.toml` file. Layer 2 compliance (privacy, governance, sectoral) sits on top of Layer 0 (engineering hygiene). When Layer 0 fails, Layer 2 controls do not protect you. This is why DORA Article 28 (ICT third-party risk management) and the EU Cyber Resilience Act both reach down into "secure development practices" — regulators have learned that policy without engineering substrate is theatre. The fix here is mechanical: rotate the key, add a `Scarb.toml` line to a `secrets-allowlist` audit, and add gitleaks (or GitHub's native secret scanning + push protection) as a pre-commit hook. The key insight is *which file types you scan*. Most teams scan `*.env`, `*.json`, `*.yaml` and forget that domain-specific config files (Scarb.toml, Cargo.toml, Move.toml, Anchor.toml, hardhat.config.js, foundry.toml) are the new high-leverage hiding places for secrets. Add them to your scanning patterns explicitly.
+**Corrected 2026-08-12 — this section originally used the (false-positive) Alchemy key as a worked example; the lesson below is rewritten to be about the false positive itself, which is the more useful lesson.** A credential-shaped string in a build-config file is not automatically a leak: `Scarb.toml`, `Cargo.toml`, `Move.toml`, `Anchor.toml`, `hardhat.config.js`, and `foundry.toml` are exactly the domain-specific files a naive secret scanner treats as "unexpected" and therefore high-severity — but scaffolding templates routinely ship intentional, publicly-documented default credentials in these files precisely so `git clone` works out of the box (Scaffold-ETH does the same). A severity engine that flags "credential pattern found" without cross-checking whether the same value is declared as a public default elsewhere in the repo (`.env.example`, README) will produce confident, wrong Critical findings — and an unconfirmed Critical finding that sits in a public report for months is itself a Layer 0 failure on the *auditor's* side. The fix is mechanical: before labeling a finding Critical/leaked-secret, check the value against `.env.example`/template files and README-documented defaults in the same repo; a match downgrades the finding to informational, not Critical.
 
 **Compliance — the upstream-template responsibility doctrine.** There is no formal regulation today that says "if your template has 170 forks, you have heightened responsibility for those forks' compliance." But the *direction* of regulation — DORA, EU CRA, the proposed US OSS security framework, OpenSSF Scorecard pressure on Web3 — all converge on a model where upstream maintainers carry inherited duty-of-care. Practically, this means the question "is this a hackathon toy or production infrastructure?" is no longer a maintainer's choice. Once your template crosses an adoption threshold (forks, downloads, contributors), the ecosystem treats it as production whether you do or not. Scaffold-Stark, with 170 forks and a positioning as *the* canonical Starknet dev stack, has crossed that threshold. The implication is that `vercel:yolo` and `--passWithNoTests` and `walletAutoConnect: true` are no longer "convenience defaults for hackers" — they are *de facto* policy for the Starknet ecosystem. The maintainer's choice is no longer "set good defaults vs. set hacker defaults" but "set good defaults vs. accept ecosystem-wide responsibility for the bad ones."
 

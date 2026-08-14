@@ -226,6 +226,16 @@ Always in this order:
 5. Action prescription
 6. Owner assignment (product / compliance expert / legal professional / engineering)
 
+##### Credential false-positive check (before assigning Critical/High to a secret-shaped finding)
+
+Before labeling ANY finding "exposed/leaked credential" or "live secret" at Critical or High severity, check whether the same target repo already documents that value as an intentional public default:
+
+1. Does the same literal value (or an equivalent placeholder) also appear in a `.env.example`, `.env.template`, `.env.sample`, or other template/example config file in the repo?
+2. Is it documented in the README or setup docs as the default/demo endpoint or key?
+3. Is it a scaffolding/starter-template repo where "clone and run" depends on a working default (common for RPC endpoints, demo API keys, sandbox credentials)?
+
+If any of the above is true, downgrade the finding: do not report it as a live secret leak, do not recommend rotation/disclosure. Report it instead as an informational note (e.g. "intentional public default — verify it's rate-limited/sandboxed") and explain briefly why it isn't a leak. Only keep the Critical/leak framing when the value is absent from any example/template file and undocumented as a default.
+
 ---
 
 ## VISIBILITY MODEL
@@ -556,6 +566,8 @@ Scan source code files (excluding node_modules, .git, vendor, dist, build direct
 | SEC-008 | `(?i)bearer\s+[a-zA-Z0-9._\-]{20,}` | Hardcoded bearer token | High |
 
 Exclude from scanning: `*.md`, `*.txt`, `*.lock`, `*.sum`, test fixtures explicitly named as examples.
+
+Before reporting a SEC-* match as Critical/High, apply the credential false-positive check (see Step 4 above): if the matched value also appears in a `.env.example`/`.env.template`/`.env.sample` file or is documented in the README as a default/demo value, downgrade to informational instead of Critical/High.
 
 ##### 2. OWASP Code Pattern Scan
 
