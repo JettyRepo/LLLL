@@ -67,6 +67,17 @@ print_box() {
   echo ""
 }
 
+redact_match() {
+  # Never print a matched secret in full: terminal scrollback, CI logs and
+  # screen shares are all exfiltration paths. Keep enough to locate the value.
+  local s="$1" n=${#1}
+  if [[ $n -le 12 ]]; then
+    printf '%s' "****"
+  else
+    printf '%s...%s (%d chars, redacted)' "${s:0:4}" "${s: -4}" "$n"
+  fi
+}
+
 print_finding() {
   # args: severity id title file line match category action
   local sev="$1" id="$2" title="$3" file="$4" line="$5" match="$6" category="$7" action="$8"
@@ -83,7 +94,7 @@ print_finding() {
     printf "  %s  File: %s%s\n" "$GRAY" "$loc" "$RESET"
   fi
   if [[ -n "$match" ]]; then
-    printf "  %s  Match: %.80s%s\n" "$GRAY" "$match" "$RESET"
+    printf "  %s  Match: %s%s\n" "$GRAY" "$(redact_match "$match")" "$RESET"
   fi
   printf "  %s  Category: %s%s\n" "$GRAY" "$category" "$RESET"
   printf "    Action: %s\n" "$action"
@@ -223,7 +234,10 @@ run_push() {
     if [[ "$dl" =~ ^diff\ --git\ .*\ b/(.+)$ ]]; then
       current_file="${BASH_REMATCH[1]}"
       in_hunk=0
-    elif [[ "$dl" =~ ^@@.*@@$ ]]; then
+    elif [[ "$dl" == @@* ]]; then
+      # Prefix match only: git appends function context after the closing @@
+      # for languages with a funcname pattern (Python, Java, C, Rust, ...).
+      # An end-anchored match silently skips every added line in those files.
       in_hunk=1
     elif [[ "$dl" =~ ^\+[^+] && $in_hunk -eq 1 && -n "$current_file" ]]; then
       file_added_lines["$current_file"]+="${dl:1}"$'\n'
@@ -371,6 +385,18 @@ run_release() {
 
 # ── Override command ───────────────────────────────────────────────────────
 
+json_escape() {
+  # Raw interpolation of user text produces invalid JSONL as soon as the
+  # justification contains a quote or backslash, corrupting the whole log.
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\t'/\\t}"
+  s="${s//$'\n'/\\n}"
+  s="${s//$'\r'/\\r}"
+  printf '%s' "$s"
+}
+
 run_override() {
   local finding_id="${1:-}" justification="${2:-}"
   if [[ -z "$finding_id" || -z "$justification" ]]; then
@@ -378,7 +404,11 @@ run_override() {
     return 1
   fi
 
-  local log_dir=".llll/logs"
+  # Anchor to the repo root: a cwd-relative path creates a second, orphaned
+  # log whenever override is run from a subdirectory.
+  local repo_root
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
+  local log_dir="${repo_root}/.llll/logs"
   mkdir -p "$log_dir"
   local log_file="${log_dir}/guard-log.jsonl"
 
@@ -388,7 +418,7 @@ run_override() {
   timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
   printf '{"timestamp":"%s","action":"override","findingIds":["%s"],"actor":"%s","justification":"%s","filesAffected":[],"verdictBefore":"SOFT_BLOCK","verdictAfter":"PASS (overridden)"}\n' \
-    "$timestamp" "$finding_id" "$actor" "$justification" >> "$log_file"
+    "$timestamp" "$(json_escape "$finding_id")" "$(json_escape "$actor")" "$(json_escape "$justification")" >> "$log_file"
 
   printf "Override recorded for %s\n" "$finding_id"
   printf "  Actor: %s\n" "$actor"
@@ -409,9 +439,16 @@ run_install_hook() {
     return 1
   fi
 
-  local repo_root
-  repo_root=$(git rev-parse --show-toplevel)
-  local hook_path="${repo_root}/.git/hooks/pre-push"
+  # In a worktree or submodule, .git is a file, not a directory — a hardcoded
+  # <root>/.git/hooks path fails there. Ask git where the hooks actually live.
+  local hooks_dir hook_path
+  hooks_dir=$(git rev-parse --git-path hooks 2>/dev/null)
+  if [[ -z "$hooks_dir" ]]; then
+    echo "Could not resolve the git hooks directory." >&2
+    return 1
+  fi
+  mkdir -p "$hooks_dir" || { echo "Could not create ${hooks_dir}." >&2; return 1; }
+  hook_path="${hooks_dir}/pre-push"
 
   if [[ -f "$hook_path" && $force -eq 0 ]]; then
     if grep -q 'LLLL Guard' "$hook_path" 2>/dev/null; then
@@ -438,7 +475,13 @@ if [ \$exit_code -ne 0 ]; then
 fi
 HOOK_EOF
 
-  chmod 755 "$hook_path"
+  # The script runs without `set -e`; without these checks a failed write is
+  # reported as a successful install and the repo is left ungated.
+  if [[ ! -s "$hook_path" ]]; then
+    echo "Failed to write the pre-push hook to ${hook_path}." >&2
+    return 1
+  fi
+  chmod 755 "$hook_path" || { echo "Failed to make ${hook_path} executable." >&2; return 1; }
   printf "%sLLLL Guard pre-push hook installed successfully.%s\n" "$GREEN_BOLD" "$RESET"
   printf "  Location: %s\n\n" "$hook_path"
   echo "The hook will run 'guard push' before every git push."
