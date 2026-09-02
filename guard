@@ -150,8 +150,59 @@ print_results() {
 
 # ── Finding helpers ────────────────────────────────────────────────────────
 
+# Some credentials are published deliberately: scaffold templates ship a shared
+# demo RPC endpoint so the repo works after a clone, and client-side frameworks
+# bundle "public" keys into the browser by design. Treating those as leaks
+# produces false HARD_BLOCKs and tells the user to rotate a key that is meant to
+# be shared. Detect the intent and downgrade — never suppress.
+#
+# Returns a reason on stdout and 0 when the value looks public by design.
+public_by_design_reason() {
+  local line="$1" file="${2:-}" id="${3:-}"
+
+  # Private key material is never public by design, wherever it appears.
+  [[ "$id" == "PG-H005" ]] && return 1
+
+  # 1. Framework prefixes that mean "shipped to the client".
+  if [[ "$line" =~ (NEXT_PUBLIC_|NUXT_PUBLIC_|EXPO_PUBLIC_|REACT_APP_|GATSBY_|VITE_) ]]; then
+    printf 'client-exposed variable prefix %s' "${BASH_REMATCH[1]}"
+    return 0
+  fi
+
+  # 2. The finding is itself inside an env template.
+  case "$file" in
+    *.env.example|*.env.sample|*.env.template|*.env.defaults)
+      printf 'declared in an env template'
+      return 0 ;;
+  esac
+
+  # 3. The same value is already distributed in a tracked template or the README.
+  local tok where
+  while read -r tok; do
+    [[ -z "$tok" ]] && continue
+    where=$(git grep -l --fixed-strings -- "$tok" -- \
+      '*.env.example' '*.env.sample' '*.env.template' 'README*' 2>/dev/null | head -1)
+    if [[ -n "$where" ]]; then
+      printf 'same value is published in %s' "$where"
+      return 0
+    fi
+  done < <(printf '%s' "$line" | grep -oE '[A-Za-z0-9_-]{16,}' 2>/dev/null || true)
+
+  return 1
+}
+
 add_finding() {
   local sev="$1" id="$2" title="$3" file="${4:-}" line="${5:-}" match="${6:-}" category="$7" action="$8"
+
+  if [[ "$sev" == "HARD" && "$category" == "secret" ]]; then
+    local reason
+    if reason=$(public_by_design_reason "$match" "$file" "$id"); then
+      sev="WARN"
+      title="${title} — published on purpose"
+      action="Shared public endpoint: ${reason}. Not a leak. Confirm the quota/billing exposure is intended and that forks inheriting this value is acceptable."
+    fi
+  fi
+
   # truncate match to avoid pipe separator issues
   match="${match:0:100}"
   local entry="${id}|${title}|${file}|${line}|${match}|${category}|${action}"
@@ -489,6 +540,10 @@ HOOK_EOF
 }
 
 # ── Entry point ────────────────────────────────────────────────────────────
+
+# When sourced, stop here and expose the functions only — this lets tests
+# exercise individual rules without running a gate.
+[[ "${BASH_SOURCE[0]}" != "${0}" ]] && return 0
 
 CMD="${1:-}"
 shift 2>/dev/null || true
