@@ -1,5 +1,4 @@
-import { afterEach, beforeEach, describe, expect } from 'vitest';
-import { knownBug } from '../helpers/known-bug.js';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Sandbox } from '../helpers/repo.js';
 
 // Audit finding covered here: H-4 (shell injection through the branch name).
@@ -16,7 +15,7 @@ afterEach(() => {
 });
 
 describe('git arguments never reach a shell', () => {
-  knownBug('does not execute shell syntax that is part of the branch name (audit H-4)', () => {
+  it('does not execute shell syntax that is part of the branch name (audit H-4)', () => {
     // git accepts this name: `git check-ref-format --branch 'fix$(touch${IFS}PWNED)'`
     const branch = 'fix$(touch${IFS}PWNED)';
     sb.git(['switch', '-c', branch]);
@@ -27,7 +26,7 @@ describe('git arguments never reach a shell', () => {
     expect(sb.exists('PWNED')).toBe(false);
   });
 
-  knownBug('does not execute shell syntax passed through --branch (audit H-4)', () => {
+  it('does not execute shell syntax passed through --branch (audit H-4)', () => {
     sb.commit({ 'a.js': 'const a = 1;\n' });
 
     sb.run(['push', '--branch', 'x$(touch${IFS}PWNED)']);

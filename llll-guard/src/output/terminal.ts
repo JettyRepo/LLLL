@@ -42,6 +42,11 @@ export function printResult(result: ScanResult): void {
     for (const finding of hardBlocks) {
       printFinding(finding);
     }
+    if (hardBlocks.some(f => f.category === 'secret')) {
+      console.log(chalk.red('  A committed secret stays in git history even if a later commit removes it.'));
+      console.log(chalk.red('  Remove it from the commit (amend or rebase) and rotate the credential.'));
+      console.log('');
+    }
   }
 
   if (softBlocks.length > 0) {
