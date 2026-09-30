@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { scanForSecrets, scanFilePathForSecrets } from '../src/scanners/secret-scanner.js';
+import { FAKE } from './helpers/fixtures.js';
 
 describe('scanForSecrets', () => {
   it('detects AWS access key', () => {
-    const content = 'const key = "AKIAIOSFODNN7EXAMPLE";';
+    const content = `const key = "${FAKE.awsKey}";`;
     const findings = scanForSecrets(content, 'config.ts');
     expect(findings).toHaveLength(1);
     expect(findings[0].id).toBe('PG-H001');
@@ -11,25 +12,25 @@ describe('scanForSecrets', () => {
   });
 
   it('detects OpenAI/Stripe secret key', () => {
-    const content = 'const apiKey = "sk-abcdefghijklmnopqrstuvwxyz1234567890";';
+    const content = `const apiKey = "${FAKE.openaiKey}";`;
     const findings = scanForSecrets(content, 'api.ts');
     expect(findings.some(f => f.id === 'PG-H002')).toBe(true);
   });
 
   it('detects sk-proj-* format OpenAI key', () => {
-    const content = 'const key = "sk-proj-abc123def456ghi789jkl012mno345pqr678stu901vwx";';
+    const content = `const key = "${FAKE.openaiProjectKey}";`;
     const findings = scanForSecrets(content, 'config.ts');
     expect(findings.some(f => f.id === 'PG-H002')).toBe(true);
   });
 
   it('detects GitHub PAT', () => {
-    const content = 'const token = "ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij";';
+    const content = `const token = "${FAKE.githubPat}";`;
     const findings = scanForSecrets(content, 'auth.ts');
     expect(findings.some(f => f.id === 'PG-H003')).toBe(true);
   });
 
   it('detects private key', () => {
-    const content = '-----BEGIN RSA PRIVATE KEY-----\nMIIE...';
+    const content = `${FAKE.pemRsa}\nMIIE...`;
     const findings = scanForSecrets(content, 'cert.pem');
     expect(findings.some(f => f.id === 'PG-H005')).toBe(true);
   });
@@ -53,9 +54,9 @@ describe('scanForSecrets', () => {
   });
 
   it('redacts matched secrets in findings', () => {
-    const content = 'const key = "AKIAIOSFODNN7EXAMPLE";';
+    const content = `const key = "${FAKE.awsKey}";`;
     const findings = scanForSecrets(content, 'config.ts');
-    expect(findings[0].match).not.toContain('AKIAIOSFODNN7EXAMPLE');
+    expect(findings[0].match).not.toContain(FAKE.awsKey);
     expect(findings[0].match).toContain('...');
   });
 });
