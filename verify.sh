@@ -7,11 +7,11 @@ cd "$(dirname "$0")"
 echo "=== LLLL Integrity Check ==="
 
 # Domain count (A-O = 15)
-DOMAINS=$(grep -c "^## [A-O]\." compliance-checklist-master.md)
+DOMAINS=$(grep -c "^## [A-O]\." compliance-checklist-master.md || true)
 test "$DOMAINS" -eq 15 && echo "PASS: $DOMAINS domains (A-O)" || { echo "FAIL: $DOMAINS domains (expected 15)"; exit 1; }
 
 # Check count (>=51)
-CHECKS=$(grep -c "^### [A-O][0-9]" compliance-checklist-master.md)
+CHECKS=$(grep -c "^### [A-O][0-9]" compliance-checklist-master.md || true)
 test "$CHECKS" -ge 51 && echo "PASS: $CHECKS checks (expected >=51)" || { echo "FAIL: $CHECKS checks (expected >=51)"; exit 1; }
 
 # All domain letters present
@@ -52,12 +52,36 @@ grep -q "mtime +90" SKILL.md && echo "PASS: Cleanup reminder (90-day) documented
 grep -qE "append \`-S\`|\`-S\` flag|pre-save gates verify" SKILL.md && { echo "FAIL: -S flag reference still present"; exit 1; } || echo "PASS: -S flag fully removed"
 grep -q "auditable history" SKILL.md && { echo "FAIL: 'auditable history' language still present"; exit 1; } || echo "PASS: Overclaim language removed"
 grep -q "ephemeral" SKILL.md && echo "PASS: Ephemeral language present" || { echo "FAIL: Ephemeral language missing"; exit 1; }
-grep -q "allowed-tools: Read, Grep, Glob, Bash$" SKILL.md && echo "PASS: allowed-tools reverted (no Write)" || { echo "FAIL: allowed-tools still has Write"; exit 1; }
+TOOLS=$(grep -m1 "^allowed-tools:" SKILL.md)
+case "$TOOLS" in
+  *" Write"*|*" Edit"*) echo "FAIL: allowed-tools lists Write or Edit"; exit 1 ;;
+esac
+case "$TOOLS" in
+  *"Bash,"*|*"Bash") echo "FAIL: allowed-tools has an unrestricted Bash"; exit 1 ;;
+esac
+case "$TOOLS" in
+  "allowed-tools: Read, Grep, Glob, "*"Bash(llll-guard push:*)"*"Bash(llll-guard release:*)"*) echo "PASS: allowed-tools has no Write/Edit, Bash is restricted, the guard engine push and release are reachable" ;;
+  *) echo "FAIL: allowed-tools must start 'Read, Grep, Glob' and include Bash(llll-guard push:*) and Bash(llll-guard release:*)"; exit 1 ;;
+esac
 grep -q "data controller" SKILL.md && echo "PASS: Personal data / data-controller warning (H1)" || { echo "FAIL: H1 personal data warning missing"; exit 1; }
 grep -q "GDPR Art" SKILL.md && echo "PASS: GDPR articles cited (H1)" || { echo "FAIL: H1 GDPR citations missing"; exit 1; }
 grep -q "Gitignore integrity check" SKILL.md && echo "PASS: Runtime gitignore check documented (H2)" || { echo "FAIL: H2 gitignore check missing"; exit 1; }
 grep -q "git check-ignore -q \.llll/" SKILL.md && echo "PASS: Gitignore check command specified (H2)" || { echo "FAIL: H2 check command missing"; exit 1; }
 grep -q "GITIGNORE_MISSING" SKILL.md && echo "PASS: Gitignore warning render flag (H2)" || { echo "FAIL: H2 render flag missing"; exit 1; }
+
+# One version for the document set: VERSION, and the heading of every reference file
+VERSION_NOW=$(tr -d '[:space:]' < VERSION)
+for f in SKILL.md scan-patterns.md guard-patterns.md output-templates.md compliance-checklist-master.md examples.md checklist-schema.md; do
+  head -n 8 "$f" | grep -q "v${VERSION_NOW}\b" && echo "PASS: $f is v${VERSION_NOW}" || { echo "FAIL: $f does not say v${VERSION_NOW} (VERSION file) near the top"; exit 1; }
+done
+grep -q "Embedded Compliance Layer v${VERSION_NOW}" SKILL.md && echo "PASS: install-codex.sh will read v${VERSION_NOW} from SKILL.md" || { echo "FAIL: SKILL.md title version differs from VERSION"; exit 1; }
+
+# Rule ids: guard-patterns.md, taxonomy and the engine name the same rules (needs llll-guard dependencies)
+if [ -d llll-guard/node_modules ]; then
+  (cd llll-guard && npx vitest run tests/rule-docs-sync.test.ts >/dev/null 2>&1) && echo "PASS: rule ids in sync with the engine" || { echo "FAIL: rule ids out of sync (run: cd llll-guard && npx vitest run tests/rule-docs-sync.test.ts)"; exit 1; }
+else
+  echo "SKIP: rule id sync (run npm ci in llll-guard/ to enable)"
+fi
 
 # No internal files accidentally tracked
 LEAKED=$(git ls-files | grep -iE "(Competitive_Analysis|Full_Analysis|AGENT_PROMPT|MCP_analysis)" || true)

@@ -1,4 +1,4 @@
-# LLLL Scan Patterns v4.0
+# LLLL Scan Patterns v5.0
 
 Reference data for the `/llll scan` command. Defines grep patterns, shell commands, and finding classifications for automated security and hygiene scanning.
 
@@ -15,9 +15,9 @@ Scan source code files (excluding node_modules, .git, vendor, dist, build direct
 | SEC-001 | `(?i)(api[_-]?key\|api[_-]?secret\|access[_-]?key)\s*[=:]\s*['"][A-Za-z0-9+/=]{16,}['"]` | Hardcoded API key assignment | Critical |
 | SEC-002 | `(?i)password\s*[=:]\s*['"][^'"]{4,}['"]` | Hardcoded password (excluding test files) | Critical |
 | SEC-003 | `AKIA[0-9A-Z]{16}` | AWS Access Key ID | Critical |
-| SEC-004 | `sk-[a-zA-Z0-9]{20,}` | OpenAI / Stripe secret key pattern | Critical |
+| SEC-004 | `\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}` | OpenAI / Stripe secret key pattern | Critical |
 | SEC-005 | `ghp_[a-zA-Z0-9]{36}` | GitHub personal access token | Critical |
-| SEC-006 | `-----BEGIN (RSA\|DSA\|EC\|OPENSSH) PRIVATE KEY-----` | Private key in source | Critical |
+| SEC-006 | `-----BEGIN (?:RSA \|DSA \|EC \|OPENSSH \|ENCRYPTED )?PRIVATE KEY-----` | Private key in source | Critical |
 | SEC-007 | `(?i)(database_url\|db_password\|db_pass)\s*[=:]\s*['"][^'"]+['"]` | Database credential | Critical |
 | SEC-008 | `(?i)bearer\s+[a-zA-Z0-9._\-]{20,}` | Hardcoded bearer token | High |
 
@@ -29,19 +29,19 @@ Scan application source code for common vulnerability patterns.
 
 | Pattern ID | Regex Pattern | Language | Vulnerability | Severity | Domain Check |
 |-----------|---------------|----------|---------------|----------|-------------|
-| OWA-001 | `\beval\s*\(` | JS/Python | Code injection | Critical | B5 |
-| OWA-002 | `\bexec\s*\(` | Python | Command injection | Critical | B5 |
+| OWA-001 | `(?:^\|[^.\w])eval\s*\(` | JS/Python | Code injection | Critical | B5 |
+| OWA-002 | `(?:^\|[^.\w])exec\s*\(` | Python | Command injection | Critical | B5 |
 | OWA-003 | `child_process\.(exec\|execSync)\s*\(` | Node.js | Command injection | Critical | B5 |
 | OWA-004 | `os\.system\s*\(` | Python | Command injection | Critical | B5 |
 | OWA-005 | `subprocess\.(call\|run\|Popen)\s*\(.*shell\s*=\s*True` | Python | Shell injection | Critical | B5 |
 | OWA-006 | `innerHTML\s*=` | JS | DOM XSS | High | B6 |
 | OWA-007 | `dangerouslySetInnerHTML` | React | XSS via raw HTML | High | B6 |
 | OWA-008 | `v-html\s*=` | Vue | XSS via raw HTML | High | B6 |
-| OWA-009 | `\$\{.*\}.*(?:SELECT\|INSERT\|UPDATE\|DELETE\|DROP)` | JS/TS | SQL injection via template literal | Critical | B5 |
+| OWA-009 | `(?i)\b(?:SELECT\|INSERT\|UPDATE\|DELETE\|DROP)\b[^\x60\n]*\$\{` | JS/TS | SQL injection via template literal | Critical | B5 |
 | OWA-010 | `f".*(?:SELECT\|INSERT\|UPDATE\|DELETE\|DROP).*\{` | Python | SQL injection via f-string | Critical | B5 |
 | OWA-011 | `".*(?:SELECT\|INSERT\|UPDATE\|DELETE).*"\s*%` | Python | SQL injection via % formatting | Critical | B5 |
 | OWA-012 | `(?i)document\.write\s*\(` | JS | DOM manipulation XSS | High | B6 |
-| OWA-013 | `(?i)(md5\|sha1)\s*\(` | Any | Weak hashing algorithm | High | B7 |
+| OWA-013 | `(?i)(createHash\(\s*['"](md5\|sha1)['"]\|hashlib\.(md5\|sha1)\s*\()` | Any | Weak hashing algorithm | High | B7 |
 | OWA-014 | `(?i)DEBUG\s*=\s*(True\|true\|1\|"true")` | Any | Debug mode enabled | High | B8 |
 | OWA-015 | `(?i)Access-Control-Allow-Origin.*\*` | Any | Permissive CORS | Medium | B8 |
 
@@ -52,12 +52,12 @@ These checks use git and GitHub CLI commands.
 | Check ID | Command | What It Checks | Severity |
 |----------|---------|----------------|----------|
 | GIT-001 | `test -f .gitignore` | .gitignore file exists | High |
-| GIT-002 | `grep -q "\.env" .gitignore` | .env excluded from tracking | Critical |
-| GIT-003 | `git log --all --diff-filter=A -- '*.env' '.env.*'` | .env files never committed to history | Critical |
-| GIT-004 | `git log --all --diff-filter=A -- '*.pem' '*.key' 'id_rsa*'` | Private keys never committed | Critical |
-| GIT-005 | `gh api repos/{owner}/{repo}/branches/main/protection 2>/dev/null` | Branch protection on main | High |
-| GIT-006 | `test -f LICENSE` | LICENSE file exists | High |
-| GIT-007 | `test -f CODEOWNERS` | CODEOWNERS file exists | Low |
+| GIT-002 | `git check-ignore -q .env` | .env excluded from tracking | Critical |
+| GIT-003 | `git log --all --diff-filter=A --name-only --format= -- '.env' '*.env' '.env.*' ':!*.example' ':!*.sample' ':!*.template'` | .env files never committed to history | Critical |
+| GIT-004 | `git log --all --diff-filter=A --name-only --format= -- '*.pem' '*.key' '*id_rsa*' ':!*.pub'` | Private keys never committed | Critical |
+| GIT-005 | `gh api repos/{owner}/{repo}/branches/{default_branch}/protection 2>/dev/null` (needs `gh` and admin access; otherwise NEEDS TECHNICAL CONFIRMATION) | Branch protection on main | High |
+| GIT-006 | `test -f LICENSE \|\| test -f LICENSE.md \|\| test -f LICENSE.txt \|\| test -f COPYING` | LICENSE file exists | High |
+| GIT-007 | `test -f CODEOWNERS \|\| test -f .github/CODEOWNERS \|\| test -f docs/CODEOWNERS` | CODEOWNERS file exists | Low |
 
 ## 4. Dependency Audit Commands
 
@@ -68,7 +68,7 @@ Run the appropriate command based on detected tech stack.
 | Node.js (npm) | `npm audit --json 2>/dev/null` | `package-lock.json` |
 | Node.js (yarn) | `yarn audit --json 2>/dev/null` | `yarn.lock` |
 | Node.js (pnpm) | `pnpm audit --json 2>/dev/null` | `pnpm-lock.yaml` |
-| Python (pip) | `pip audit --format=json 2>/dev/null` | `requirements.txt` |
+| Python (pip) | `pip-audit -r requirements.txt -f json 2>/dev/null` | `requirements.txt` |
 | Python (pipenv) | `pipenv check --json 2>/dev/null` | `Pipfile.lock` |
 | Python (poetry) | `poetry audit 2>/dev/null` | `poetry.lock` |
 | Rust | `cargo audit --json 2>/dev/null` | `Cargo.lock` |
