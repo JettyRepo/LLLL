@@ -1,19 +1,36 @@
 #!/usr/bin/env bash
 # LLLL installer for OpenAI Codex CLI
-# Usage: ./install-codex.sh
+# Usage: ./install-codex.sh [--uninstall]
 #
-# Creates or updates ~/.codex/AGENTS.md with LLLL integration.
-# If AGENTS.md already exists, appends the LLLL section (idempotent).
+# Creates or updates ~/.codex/AGENTS.md with LLLL integration. The LLLL section sits between
+# BEGIN/END markers, so running this again after `git pull` replaces it in place (upgrade) and
+# --uninstall removes exactly that section. The file is backed up before any change.
 
 set -euo pipefail
 
-INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 AGENTS_MD="$HOME/.codex/AGENTS.md"
+BEGIN_MARK="<!-- BEGIN LLLL (managed by install-codex.sh; do not edit between the markers) -->"
+END_MARK="<!-- END LLLL -->"
+LEGACY_HEAD="# LLLL — Embedded Compliance Layer"
+LEGACY_LAST="4. LLLL never writes files — read-only analysis only."
+
+case "${1:-}" in
+  ""|--uninstall) ;;
+  *) echo "Usage: $0 [--uninstall]" >&2; exit 2 ;;
+esac
+
+# The version comes from SKILL.md, the one place it is written.
+VERSION="$(sed -n 's/.*Embedded Compliance Layer v\([0-9][0-9.]*\).*/\1/p' "$INSTALL_DIR/SKILL.md" | head -1)"
+if [[ -z "$VERSION" ]]; then
+  echo "Error: could not read the version from $INSTALL_DIR/SKILL.md." >&2
+  exit 1
+fi
 
 LLLL_SECTION=$(cat << EOF
 # LLLL — Embedded Compliance Layer
 
-You have **LLLL (Layrix Logic Layer Loop) v5.0** active as an embedded compliance engine.
+You have **LLLL (Layrix Logic Layer Loop) v${VERSION}** active as an embedded compliance engine.
 
 ---
 
@@ -93,7 +110,7 @@ When the user mentions pushing, deploying, publishing, or releasing:
 
 Check \`~/.layrix/config.json\` for \`"registered": true\`:
 - Present → LLLL Basic (full output, no folding)
-- Absent/false → LLLL Unregistered (fold Medium/Low findings, show registration hint)
+- Absent/false → LLLL Unregistered (half-visibility: in every finding table show round(N/2) of N rows, highest severity first, list the folded ones by name, show registration hint)
 
 ---
 
@@ -112,21 +129,67 @@ Check \`~/.layrix/config.json\` for \`"registered": true\`:
 EOF
 )
 
+# Prints stdin without any LLLL section: the marked one, or the unmarked one that older versions
+# of this installer appended. Exits 3 if a section starts and never ends, so nothing is cut blindly.
+strip_llll() {
+  awk -v b="$BEGIN_MARK" -v e="$END_MARK" -v lh="$LEGACY_HEAD" -v ll="$LEGACY_LAST" '
+    state == 0 && $0 == b  { state = 1; next }
+    state == 1             { if ($0 == e) state = 0; next }
+    state == 0 && $0 == lh { state = 2; next }
+    state == 2             { if ($0 == ll) state = 0; next }
+    { print }
+    END { if (state != 0) exit 3 }'
+}
+
+has_section() {
+  grep -qxF -e "$BEGIN_MARK" -e "$LEGACY_HEAD" "$1"
+}
+
 mkdir -p "$(dirname "$AGENTS_MD")"
 
 if [[ ! -f "$AGENTS_MD" ]]; then
-  echo "$LLLL_SECTION" > "$AGENTS_MD"
-  echo "✓ Created $AGENTS_MD"
-else
-  if grep -q 'LLLL — Embedded Compliance Layer' "$AGENTS_MD" 2>/dev/null; then
-    echo "LLLL section already present in $AGENTS_MD — skipping."
-  else
-    echo "" >> "$AGENTS_MD"
-    echo "---" >> "$AGENTS_MD"
-    echo "" >> "$AGENTS_MD"
-    echo "$LLLL_SECTION" >> "$AGENTS_MD"
-    echo "✓ Appended LLLL section to $AGENTS_MD"
+  if [[ "${1:-}" == "--uninstall" ]]; then
+    echo "Nothing to remove: $AGENTS_MD does not exist."
+    exit 0
   fi
+  printf '%s\n%s\n%s\n' "$BEGIN_MARK" "$LLLL_SECTION" "$END_MARK" > "$AGENTS_MD"
+  echo "✓ Created $AGENTS_MD (LLLL v${VERSION})"
+  echo "  Start a Codex session and type /llll to activate."
+  exit 0
 fi
 
+if [[ "${1:-}" == "--uninstall" ]] && ! has_section "$AGENTS_MD"; then
+  echo "No LLLL section in $AGENTS_MD. Nothing to remove."
+  exit 0
+fi
+
+BACKUP="${AGENTS_MD}.bak.$(date +%s)"
+cp "$AGENTS_MD" "$BACKUP"
+
+TMP="$(mktemp "${AGENTS_MD}.XXXXXX")"
+STRIPPED="$(mktemp "${AGENTS_MD}.XXXXXX")"
+if ! strip_llll < "$AGENTS_MD" > "$STRIPPED"; then
+  rm -f "$TMP" "$STRIPPED"
+  echo "Error: an LLLL section in $AGENTS_MD starts but its end was not found." >&2
+  echo "       $AGENTS_MD is unchanged. Remove the section by hand, then run this again." >&2
+  exit 1
+fi
+# Drop the blank lines left at the end where the section was, so running again does not add more.
+awk '/^[[:space:]]*$/ { blanks++; next } { while (blanks > 0) { print ""; blanks-- } print }' "$STRIPPED" > "$TMP"
+rm -f "$STRIPPED"
+
+if [[ "${1:-}" == "--uninstall" ]]; then
+  cat "$TMP" > "$AGENTS_MD" && rm -f "$TMP"
+  echo "✓ Removed the LLLL section from $AGENTS_MD (backup: $BACKUP)"
+  exit 0
+fi
+
+# Keep what was there, then add the current section; a blank line separates them if there is content.
+if grep -q '[^[:space:]]' "$TMP"; then
+  printf '\n' >> "$TMP"
+fi
+printf '%s\n%s\n%s\n' "$BEGIN_MARK" "$LLLL_SECTION" "$END_MARK" >> "$TMP"
+cat "$TMP" > "$AGENTS_MD" && rm -f "$TMP"
+
+echo "✓ Installed LLLL v${VERSION} section in $AGENTS_MD (backup: $BACKUP)"
 echo "  Start a Codex session and type /llll to activate."

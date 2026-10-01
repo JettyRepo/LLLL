@@ -1,0 +1,8 @@
+{
+  "internalFilePatterns": [
+    "*Competitive_Analysis*",
+    "*Full_Analysis*",
+    "AGENT_PROMPT_*",
+    "MCP_analysis*"
+  ]
+}

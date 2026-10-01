@@ -29,8 +29,13 @@ for f in SKILL.md compliance-checklist-master.md checklist-schema.md output-temp
   test -f "$f" && echo "PASS: $f exists" || { echo "FAIL: $f missing"; exit 1; }
 done
 
-# Guard CLI exists
+# Guard engine and launcher exist, and the shell scripts parse (the launcher under the system bash, 3.2 on macOS)
 test -d "llll-guard/src" && echo "PASS: llll-guard/ exists" || { echo "FAIL: llll-guard/ missing"; exit 1; }
+grep -q "LLLL-GUARD-SHIM" guard && echo "PASS: guard is the thin launcher" || { echo "FAIL: guard is not the launcher"; exit 1; }
+for script in guard install-claude-code.sh install-opencode.sh install-codex.sh verify.sh; do
+  /bin/bash -n "$script" && echo "PASS: $script parses" || { echo "FAIL: $script has a syntax error"; exit 1; }
+done
+test "$(wc -l < guard)" -lt 250 && echo "PASS: guard stays a launcher (no rules in it)" || { echo "FAIL: guard has grown past a launcher; rules belong in llll-guard/"; exit 1; }
 
 # SKILL.md key concepts
 grep -q "Layer 0" SKILL.md && echo "PASS: Layer 0 in SKILL.md" || { echo "FAIL: Layer 0 missing"; exit 1; }

@@ -11,18 +11,21 @@
 git clone https://github.com/JettyRepo/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
 # Restart Claude Code → type /llll
 
-# Step 2 — Auto-block on every git push (optional, per-project)
+# Step 2 — Build the Guard engine (needs Node.js 20 or newer)
+~/.llll/guard doctor --fix
+
+# Step 3 — Auto-block on every git push (optional, per-project)
 # Runs without AI — complements /llll guard push
 cd /your/project && ~/.llll/guard install-hook
 
-# Opencode and Codex CLI support coming soon
+# Opencode and Codex CLI: ./install-opencode.sh and ./install-codex.sh (see Installation)
 ```
 
 **Pre-push compliance gate — optional, per-project**
 
 Installs a git pre-push hook that runs automatically on every `git push`, without needing to invoke the AI. Complements `/llll guard push` (manual, AI-invoked) as an always-on safety net.
 
-> Every `git push` is now guarded. Leaked API keys, hardcoded credentials, and source maps are **blocked before they leave your machine**.
+> Every `git push` is now scanned. Leaked API keys, hardcoded credentials and private keys are **blocked before they leave your machine**.
 >
 > Register free at [layrix.ai](https://layrix.ai) to unlock full compliance findings.
 
@@ -107,9 +110,23 @@ AI Governance Professional (AIGP) certification preparation.
 git clone https://github.com/JettyRepo/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
 ```
 
-Creates a symlink `~/.claude/skills/llll → ~/.llll` so Claude Code auto-discovers LLLL. Restart Claude Code, then use `/llll` immediately.
+Creates `~/.claude/skills/llll/` holding links to the skill files only (not the rest of the clone), so Claude Code auto-discovers LLLL and `git pull` in `~/.llll` updates it. Restart Claude Code, then use `/llll` immediately. Remove with `~/.llll/install-claude-code.sh --uninstall`.
 
-> Opencode and Codex CLI support coming soon.
+**Opencode:** `~/.llll/install-opencode.sh` (add `--merge` to merge into an existing config with jq; `--uninstall` removes it).
+**Codex CLI:** `~/.llll/install-codex.sh` (adds a marked section to `~/.codex/AGENTS.md`; run it again after `git pull` to upgrade, `--uninstall` removes it).
+
+Every installer backs up a file before changing it.
+
+### Step 2 — Build the Guard engine
+
+LLLL Guard is a Node.js program (`llll-guard/`, needs **Node.js 20 or newer**). `guard` in this folder is a small launcher that finds Node and the engine.
+
+```bash
+~/.llll/guard doctor --fix     # npm ci && npm run build in ~/.llll/llll-guard
+~/.llll/guard doctor           # shows which node and engine it found
+```
+
+An npm package (`@layrix/llll-guard`) is planned; until it is published, use the clone as above.
 
 ### Step 3 — Activate pre-push compliance gate (optional)
 
@@ -122,15 +139,22 @@ cd /your/project
 
 Every `git push` will now be scanned automatically. Secrets and policy-relevant changes are blocked before they leave the machine.
 
-To uninstall: `rm /your/project/.git/hooks/pre-push`
+- A pre-push hook you already have is kept and still runs after the guard (both must pass). Use `--force` to replace it instead; it is backed up, not deleted.
+- Works in git worktrees and with `core.hooksPath`. If your hook lives inside the project (husky), `install-hook` prints the one line to add instead of editing a tracked file.
+- If the engine or Node cannot be found when you push, the hook says so loudly, leaves a note in `.llll/logs/guard-not-run.log` and lets the push through (for now). Set `LLLL_GUARD_STRICT=1` to stop the push instead; stopping becomes the default in 1.0.
+
+To uninstall: `~/.llll/guard uninstall-hook` (restores the hook it replaced, if any).
 
 ### Guard commands (available anywhere)
 
 ```bash
 ~/.llll/guard push              # scan outgoing commits
-~/.llll/guard release           # scan release artifacts
+~/.llll/guard release           # scan what npm would publish
 ~/.llll/guard override PG-S004 "justification"
+~/.llll/guard doctor            # check node and the engine
 ```
+
+Exit codes: `0` passed, `1` blocked, `2` the guard could not run (never a pass).
 
 ## File Structure
 
@@ -142,7 +166,10 @@ output-templates.md             — Output templates for all modes and visibilit
 examples.md                     — Usage examples including passive activation and continuous compliance
 scan-patterns.md                — Reference data for /llll scan
 guard-patterns.md               — Detection rules for guard push and release
-guard                           — LLLL Guard (push/release compliance gate shell script)
+guard                           — Launcher for the Guard engine (finds Node and llll-guard/, holds no rules)
+llll-guard/                     — LLLL Guard engine (TypeScript): push gate, release gate, override log
+llll.policy.json                — This repository's own Guard policy
+install-claude-code.sh          — Claude Code installer (skill files only)
 install-opencode.sh             — opencode integration installer
 install-codex.sh                — Codex CLI integration installer
 ```
