@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // What is published: no source maps (RG-H004 blocks them, and they carry the source) and no
+    // declaration files, since the package is a command line tool.
+    "sourceMap": false,
+    "declaration": false,
+    "declarationMap": false
+  }
+}

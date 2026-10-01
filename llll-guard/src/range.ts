@@ -106,6 +106,15 @@ export function rangeForPushedRef(ref: PushedRef, remote: string | undefined): R
   };
 }
 
+/**
+ * The commit whose policy governs a release: the remote's default branch, when this directory is
+ * in a repository that knows one. Null otherwise (not a repository, or no remote branch yet).
+ */
+export function remotePolicyBase(): string | null {
+  if (gitTry(['rev-parse', '--git-dir']) === null) return null;
+  return defaultBranchTip(null)?.sha ?? null;
+}
+
 interface DefaultBranchTip {
   sha: string;
   /** The branch name on the remote, if it is known. */

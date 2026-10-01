@@ -107,6 +107,12 @@ export class Sandbox {
     writeFileSync(file, content);
   }
 
+  writeBytes(rel: string, content: Buffer, cwd: string = this.work): void {
+    const file = this.path(rel, cwd);
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, content);
+  }
+
   read(rel: string, cwd: string = this.work): string {
     return readFileSync(this.path(rel, cwd), 'utf-8');
   }

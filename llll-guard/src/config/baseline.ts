@@ -1,15 +1,17 @@
 import { GuardError } from '../errors.js';
 import { gitShowFile } from '../git.js';
-import type { GuardConfig } from '../types.js';
-import { DEFAULT_CONFIG } from './defaults.js';
-import { parseConfig, parseGuardIgnore } from './loader.js';
+import type { GuardConfig, WhitelistConfig } from '../types.js';
+import { DEFAULT_CONFIG, DEFAULT_WHITELIST } from './defaults.js';
+import { parseConfig, parseGuardIgnore, parseWhitelist } from './loader.js';
 
 export interface Policy {
   config: GuardConfig;
   ignorePatterns: string[];
+  /** `llll.whitelist.json`: used by the release gate. */
+  whitelist: WhitelistConfig;
 }
 
-const DEFAULT_POLICY: Policy = { config: DEFAULT_CONFIG, ignorePatterns: [] };
+const DEFAULT_POLICY: Policy = { config: DEFAULT_CONFIG, ignorePatterns: [], whitelist: DEFAULT_WHITELIST };
 
 /**
  * The policy that governs a push is the one the remote already has: `llll.policy.json` and
@@ -26,10 +28,12 @@ export function readPolicyAt(base: string | null): Policy {
   try {
     const policy = gitShowFile(base, 'llll.policy.json');
     const ignore = gitShowFile(base, '.guardignore');
+    const whitelist = gitShowFile(base, 'llll.whitelist.json');
 
     return {
       config: policy === null ? DEFAULT_CONFIG : parseConfig(policy, `llll.policy.json at ${label}`),
       ignorePatterns: ignore === null ? [] : parseGuardIgnore(ignore, `.guardignore at ${label}`),
+      whitelist: whitelist === null ? DEFAULT_WHITELIST : parseWhitelist(whitelist, `llll.whitelist.json at ${label}`),
     };
   } catch (error) {
     if (!(error instanceof GuardError)) throw error;

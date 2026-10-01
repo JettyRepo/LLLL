@@ -76,6 +76,6 @@ export interface RuleConfig {
 }
 
 export interface WhitelistConfig {
-  allowedPatterns: string[];
-  maxPackageSize?: number;
+  /** RG-S007: a release larger than this many bytes is flagged. */
+  maxPackageSize: number;
 }
