@@ -5,7 +5,7 @@ import { pushCommand } from './commands/push.js';
 import { hookCommand } from './commands/hook.js';
 import { releaseCommand } from './commands/release.js';
 import { overrideCommand } from './commands/override.js';
-import { installHook } from './hooks/install.js';
+import { installHook, uninstallHook } from './hooks/install.js';
 
 const program = new Command();
 
@@ -55,9 +55,15 @@ program
 
 program
   .command('install-hook')
-  .description('Install git pre-push hook')
-  .option('--force', 'Overwrite existing pre-push hook')
+  .description('Install the git pre-push hook (an existing hook of yours is kept and still runs)')
+  .option('--force', 'Replace an existing pre-push hook instead of chaining it (it is backed up)')
+  .option('--shim <path>', 'The launcher the hook runs (set by the guard launcher)')
   .action(installHook);
+
+program
+  .command('uninstall-hook')
+  .description('Remove the LLLL Guard pre-push hook and restore the one it replaced')
+  .action(uninstallHook);
 
 program.parseAsync().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);

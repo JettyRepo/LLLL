@@ -1,21 +1,62 @@
 #!/usr/bin/env bash
 # LLLL installer for opencode
-# Usage: ./install-opencode.sh [--merge]
+# Usage: ./install-opencode.sh [--merge | --uninstall]
 #
-# Copies LLLL data files to ~/.llll/opencode/ and creates (or merges into)
-# ~/.config/opencode/config.json with the LLLL agent and /llll command.
-# If the config already exists, prints the snippet to merge manually (or use --merge
-# to attempt an automatic merge with jq).
+# Copies LLLL data files to ~/.local/share/llll/opencode/ (outside the clone, so `git clean` or
+# re-cloning cannot remove them) and creates (or merges into) ~/.config/opencode/config.json with
+# the LLLL agent and /llll command. If the config already exists, prints the snippet to merge by
+# hand, or use --merge to merge it with jq. The existing config is backed up first and is never
+# truncated before the new content is ready.
+#
+# The agent can read and run shell commands (it needs bash for `llll-guard`); it cannot write or edit.
 
 set -euo pipefail
 
-INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DATA_DIR="$HOME/.llll/opencode"
+INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/llll/opencode"
 CONFIG="$HOME/.config/opencode/config.json"
-MERGE=0
-[[ "${1:-}" == "--merge" ]] && MERGE=1
+MODE="install"
 
-# Copy data files to dedicated opencode directory
+case "${1:-}" in
+  "") ;;
+  --merge) MODE="merge" ;;
+  --uninstall) MODE="uninstall" ;;
+  *) echo "Usage: $0 [--merge | --uninstall]" >&2; exit 2 ;;
+esac
+
+# Writes the jq result over the config only if it is a non-empty JSON object (jq prints nothing and
+# exits 0 for an empty input). Writes through the file, so a symlinked config stays a symlink.
+apply_jq() {
+  local backup="$1" tmp
+  shift
+  tmp="$(mktemp "${CONFIG}.XXXXXX")"
+  if jq "$@" "$backup" > "$tmp" && [[ -s "$tmp" ]] && jq -e 'type == "object"' "$tmp" >/dev/null 2>&1; then
+    cat "$tmp" > "$CONFIG"
+    rm -f "$tmp"
+  else
+    rm -f "$tmp"
+    echo "Error: could not edit $CONFIG (empty, or not valid JSON?). It is unchanged." >&2
+    exit 1
+  fi
+}
+
+if [[ "$MODE" == "uninstall" ]]; then
+  # Config first, data last: a failed config edit must not leave the command pointing at deleted files.
+  if [[ -f "$CONFIG" ]]; then
+    if ! command -v jq >/dev/null 2>&1; then
+      echo "Remove the \"llll\" entries under \"agent\" and \"command\" in $CONFIG by hand (jq is not installed). Nothing was removed." >&2
+      exit 1
+    fi
+    BACKUP="${CONFIG}.bak.$(date +%s)"
+    cp "$CONFIG" "$BACKUP"
+    apply_jq "$BACKUP" 'del(.agent.llll) | del(.command.llll)'
+    echo "✓ Removed the llll agent and command from $CONFIG (backup: $BACKUP)"
+  fi
+  rm -rf "$DATA_DIR"
+  echo "✓ Removed $DATA_DIR"
+  exit 0
+fi
+
 mkdir -p "$DATA_DIR"
 cp "$INSTALL_DIR/SKILL.md"                       "$DATA_DIR/SKILL.md"
 cp "$INSTALL_DIR/compliance-checklist-master.md" "$DATA_DIR/checklist.md"
@@ -25,7 +66,7 @@ echo "✓ Data files copied to $DATA_DIR"
 
 AGENT_BLOCK=$(cat << EOF
 {
-  "description": "LLLL Compliance Engine — read-only, no writes",
+  "description": "LLLL Compliance Engine — analysis only: reads files and runs llll-guard, never writes or edits",
   "mode": "subagent",
   "model": "anthropic/claude-sonnet-4-6",
   "tools": { "read": true, "bash": true, "write": false, "edit": false }
@@ -47,7 +88,8 @@ mkdir -p "$(dirname "$CONFIG")"
 
 # --- Fresh install ---------------------------------------------------------
 if [[ ! -f "$CONFIG" ]]; then
-  cat > "$CONFIG" << JSONEOF
+  TMP="$(mktemp "${CONFIG}.XXXXXX")"
+  cat > "$TMP" << JSONEOF
 {
   "\$schema": "https://opencode.ai/config.json",
   "agent": {
@@ -58,13 +100,14 @@ if [[ ! -f "$CONFIG" ]]; then
   }
 }
 JSONEOF
+  mv "$TMP" "$CONFIG"
   echo "✓ Created $CONFIG"
   echo "  Restart opencode and type /llll to activate."
   exit 0
 fi
 
 # --- Existing config: try jq merge ----------------------------------------
-if [[ $MERGE -eq 1 ]]; then
+if [[ "$MODE" == "merge" ]]; then
   if ! command -v jq >/dev/null 2>&1; then
     echo "Error: --merge requires jq. Install with: brew install jq" >&2
     exit 1
@@ -72,10 +115,8 @@ if [[ $MERGE -eq 1 ]]; then
   BACKUP="${CONFIG}.bak.$(date +%s)"
   cp "$CONFIG" "$BACKUP"
   echo "Backed up existing config to $BACKUP"
-  jq --argjson agent "$AGENT_BLOCK" \
-     --argjson cmd "$COMMAND_BLOCK" \
-     '.agent.llll = $agent | .command.llll = $cmd' \
-     "$BACKUP" > "$CONFIG"
+  apply_jq "$BACKUP" --argjson agent "$AGENT_BLOCK" --argjson cmd "$COMMAND_BLOCK" \
+    '.agent.llll = $agent | .command.llll = $cmd'
   echo "✓ Merged LLLL agent and command into $CONFIG"
   echo "  Restart opencode and type /llll to activate."
   exit 0
@@ -98,3 +139,5 @@ echo '    ...existing commands...'
 echo '  }'
 echo ""
 echo "Run with --merge to apply automatically: ./install-opencode.sh --merge"
+echo "The LLLL agent and command are NOT registered yet."
+exit 3
