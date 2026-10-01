@@ -99,7 +99,7 @@ describe('push (manual mode): errors and output', () => {
   });
 
   it('exits 2 when llll.policy.json is not valid JSON (audit M-7)', () => {
-    sb.write('llll.policy.json', '{ not json');
+    sb.publish({ 'llll.policy.json': '{ not json' });
     sb.commit({ 'a.js': 'const a = 1;\n' });
 
     const res = sb.run(['push']);
@@ -110,7 +110,7 @@ describe('push (manual mode): errors and output', () => {
 
   it('refuses a negated pattern in .guardignore instead of silently ignoring every other file', () => {
     // minimatch reads "!keep.js" as "everything except keep.js".
-    sb.write('.guardignore', '!keep.js\n');
+    sb.publish({ '.guardignore': '!keep.js\n' });
     sb.commit({ 'src/config.js': leak() }, 'add config');
 
     const res = sb.run(['push']);
@@ -120,7 +120,7 @@ describe('push (manual mode): errors and output', () => {
   });
 
   it('refuses a negated pattern in llll.policy.json excludePatterns', () => {
-    sb.write('llll.policy.json', JSON.stringify({ excludePatterns: ['!keep.js'] }));
+    sb.publish({ 'llll.policy.json': JSON.stringify({ excludePatterns: ['!keep.js'] }) });
     sb.commit({ 'src/config.js': leak() }, 'add config');
 
     const res = sb.run(['push']);
@@ -138,7 +138,7 @@ describe('push (manual mode): errors and output', () => {
     ['enabled given as a string', { enabled: 'no' }],
     ['excludePatterns given as a string', { excludePatterns: '*.md' }],
   ])('refuses a policy file with %s, instead of weakening the guard', (_label, policy) => {
-    sb.write('llll.policy.json', JSON.stringify(policy));
+    sb.publish({ 'llll.policy.json': JSON.stringify(policy) });
     sb.commit({ 'src/config.js': leak() }, 'add config');
 
     const res = sb.run(['push']);
@@ -148,7 +148,7 @@ describe('push (manual mode): errors and output', () => {
   });
 
   it('still accepts an explicit false, which is a deliberate choice', () => {
-    sb.write('llll.policy.json', JSON.stringify({ pushRules: { hardBlock: false } }));
+    sb.publish({ 'llll.policy.json': JSON.stringify({ pushRules: { hardBlock: false } }) });
     sb.commit({ 'src/config.js': leak() }, 'add config');
 
     expect(sb.run(['push']).code).toBe(0);

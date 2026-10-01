@@ -25,6 +25,20 @@ export function printResult(result: ScanResult): void {
   console.log(chalk.gray('└' + '─'.repeat(50) + '┘'));
   console.log('');
 
+  for (const note of result.notes ?? []) {
+    console.log(chalk.yellow(`  Note: ${note}`));
+  }
+  if ((result.notes ?? []).length > 0) console.log('');
+
+  // Hidden is not silent: the policy on the remote turned these rules off, and the user is told so.
+  if (result.suppressedByPolicy) {
+    const hidden = Object.entries(result.suppressedByPolicy)
+      .map(([id, count]) => `${id} x${count}`)
+      .join(', ');
+    console.log(chalk.yellow(`  Hidden by disabledRules in the policy: ${hidden}`));
+    console.log('');
+  }
+
   if (result.findings.length === 0) {
     console.log(chalk.green('  No issues found. Safe to proceed.'));
     console.log('');
@@ -55,7 +69,14 @@ export function printResult(result: ScanResult): void {
     for (const finding of softBlocks) {
       printFinding(finding);
     }
-    console.log(chalk.yellow('  Override with: llll-guard override <FINDING-ID> "<justification>"'));
+  }
+
+  const overridden = result.findings.filter(f => f.severity === 'SOFT_BLOCK' && f.overridden);
+  if (overridden.length > 0) {
+    console.log(chalk.gray('  Overridden (accepted by a person, expires):'));
+    for (const finding of overridden) {
+      console.log(chalk.gray(`    [${finding.id}] ${finding.file ?? ''} — ${finding.overrideJustification ?? ''}`));
+    }
     console.log('');
   }
 
@@ -85,6 +106,10 @@ function printFinding(finding: Finding): void {
   }
   console.log(chalk.gray(`    Category: ${finding.category}`));
   console.log(`    Action: ${finding.action}`);
+  if (finding.severity === 'SOFT_BLOCK' && finding.overrideToken && !finding.overridden) {
+    const file = finding.file ? ` --file ${finding.file}` : '';
+    console.log(chalk.yellow(`    Override: llll-guard override ${finding.id}@${finding.overrideToken} "<justification>"${file}`));
+  }
   console.log('');
 }
 

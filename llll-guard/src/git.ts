@@ -41,6 +41,28 @@ export function gitOk(args: string[], opts: { cwd?: string } = {}): boolean {
 }
 
 /**
+ * The content of the regular file `path` as it is in commit `rev`, or null if the commit has no
+ * such path. A directory, a symbolic link or a submodule at that path is an error: reading it
+ * as text would hand the guard a directory listing or a link target to treat as its policy.
+ * A real failure (not a repository, a bad object) throws instead of reading as "no file".
+ */
+export function gitShowFile(rev: string, path: string): string | null {
+  // --full-tree: paths are relative to the repository root, not to the directory we run in.
+  const entry = git(['ls-tree', '--full-tree', '-z', rev, '--', path]);
+  if (entry === '') return null;
+
+  const match = /^(\d+) (\w+) ([0-9a-f]+)\t/.exec(entry);
+  if (!match) throw new GitError(['ls-tree', rev, path], `unexpected output: ${JSON.stringify(entry.slice(0, 80))}`);
+  const [, mode, type, oid] = match;
+  if (type !== 'blob' || (mode !== '100644' && mode !== '100755')) {
+    const what = type === 'blob' ? 'a symbolic link' : `a ${type === 'tree' ? 'directory' : type}`;
+    throw new GuardError(`${path} at ${rev.slice(0, 12)} is ${what}, not a regular file. The guard will not read its policy from it.`);
+  }
+  // cat-file, not show: no text conversion is applied to a blob read this way.
+  return git(['cat-file', 'blob', oid]);
+}
+
+/**
  * True if the commit exists locally. `rev-parse --verify --quiet` exits 1 for a missing
  * object and something else (usually 128) for a real failure; only the first is an answer.
  */

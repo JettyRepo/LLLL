@@ -99,7 +99,7 @@ describe('parseLog', () => {
     expect(files(events)[0].path).toBe('café.js');
   });
 
-  it('skips a deleted file', async () => {
+  it('reports a deleted file by the name that was removed, with nothing to scan', async () => {
     const events = await parse([
       commit(C1),
       'diff --git a/.env b/.env',
@@ -111,10 +111,17 @@ describe('parseLog', () => {
       '-SECRET=1',
     ].join('\n'));
 
-    expect(files(events)).toHaveLength(0);
+    const [file] = files(events);
+    expect(file).toMatchObject({ path: '.env', deleted: true, added: [] });
   });
 
-  it('uses "rename to" for a rename without content changes', async () => {
+  it('reports the deleted file even when git prints no --- line', async () => {
+    const events = await parse([commit(C1), 'diff --git a/llll.policy.json b/llll.policy.json', 'deleted file mode 100644'].join('\n'));
+
+    expect(files(events)[0]).toMatchObject({ path: 'llll.policy.json', deleted: true });
+  });
+
+  it('uses "rename to" for a rename without content changes, and keeps the old name', async () => {
     const events = await parse([
       commit(C1),
       'diff --git a/old.pem b/new.pem',
@@ -125,7 +132,17 @@ describe('parseLog', () => {
 
     const [file] = files(events);
     expect(file.path).toBe('new.pem');
+    expect(file.oldPath).toBe('old.pem');
     expect(file.added).toEqual([]);
+    expect(file.deleted).toBe(false);
+  });
+
+  it('does not set an old name for an ordinary change', async () => {
+    const events = await parse(
+      [commit(C1), 'diff --git a/a.js b/a.js', '--- a/a.js', '+++ b/a.js', '@@ -0,0 +1 @@', '+x'].join('\n'),
+    );
+
+    expect(files(events)[0].oldPath).toBeUndefined();
   });
 
   it('reports an empty new file, which has no +++ line, by the path in the header', async () => {

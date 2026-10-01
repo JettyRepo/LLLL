@@ -12,9 +12,19 @@ export interface AddedLine {
   line: number;
 }
 
-export type LogEvent =
-  | { kind: 'commit'; commit: string }
-  | { kind: 'file'; commit: string; path: string; added: AddedLine[] };
+export interface FileEvent {
+  kind: 'file';
+  commit: string;
+  /** The path after the change. For a deleted file, the path that was removed. */
+  path: string;
+  added: AddedLine[];
+  /** The file was removed. It has no added lines and its content is not scanned. */
+  deleted: boolean;
+  /** For a rename or copy, the path it came from. */
+  oldPath?: string;
+}
+
+export type LogEvent = { kind: 'commit'; commit: string } | FileEvent;
 
 /** Marks the start of each commit. NUL never appears in a text diff. */
 export const COMMIT_MARKER = '\u0000COMMIT ';
@@ -26,7 +36,10 @@ interface Current {
   commit: string;
   headerPath: string | null;
   plusPath: string | null;
+  /** The `--- a/<path>` side, which is the only place a deleted file's name appears with certainty. */
+  minusPath: string | null;
   renameTo: string | null;
+  renameFrom: string | null;
   deleted: boolean;
   inHunk: boolean;
   /** Number of prefix columns before the content: 1, or parents count for a combined diff. */
@@ -81,9 +94,21 @@ function stripPrefix(path: string, prefix: string): string {
 }
 
 function finish(current: Current | null): LogEvent | null {
-  if (!current || current.deleted) return null;
+  if (!current) return null;
+  if (current.deleted) {
+    // A deletion is reported so that removing a policy file is seen; its content is not scanned.
+    const path = current.minusPath ?? current.headerPath ?? UNKNOWN_PATH;
+    return { kind: 'file', commit: current.commit, path, added: [], deleted: true };
+  }
   const path = current.plusPath ?? current.renameTo ?? current.headerPath ?? UNKNOWN_PATH;
-  return { kind: 'file', commit: current.commit, path, added: current.added };
+  return {
+    kind: 'file',
+    commit: current.commit,
+    path,
+    added: current.added,
+    deleted: false,
+    ...(current.renameFrom ? { oldPath: current.renameFrom } : {}),
+  };
 }
 
 export async function* parseLog(lines: AsyncIterable<string>): AsyncGenerator<LogEvent> {
@@ -109,7 +134,9 @@ export async function* parseLog(lines: AsyncIterable<string>): AsyncGenerator<Lo
         commit,
         headerPath: isGit ? pathFromGitHeader(rest) : unquoteGitPath(rest),
         plusPath: null,
+        minusPath: null,
         renameTo: null,
+        renameFrom: null,
         deleted: false,
         inHunk: false,
         prefixLen: 1,
@@ -134,6 +161,11 @@ export async function* parseLog(lines: AsyncIterable<string>): AsyncGenerator<Lo
     if (!current.inHunk) {
       if (line.startsWith('deleted file mode')) {
         current.deleted = true;
+      } else if (line.startsWith('--- ')) {
+        const name = line.slice(4).replace(/\t$/, '');
+        if (name !== '/dev/null') current.minusPath = stripPrefix(unquoteGitPath(name), 'a/');
+      } else if (line.startsWith('rename from ') || line.startsWith('copy from ')) {
+        current.renameFrom = unquoteGitPath(line.slice(line.indexOf(' from ') + 6));
       } else if (line.startsWith('+++ ')) {
         // Git appends a TAB after names that contain spaces.
         const name = line.slice(4).replace(/\t$/, '');

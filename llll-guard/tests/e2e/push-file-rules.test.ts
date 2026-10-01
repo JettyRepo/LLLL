@@ -181,7 +181,7 @@ describe('configured internal files (PG-H014)', () => {
   });
 
   it('blocks the patterns a project lists, even for markdown', () => {
-    sb.write('llll.policy.json', JSON.stringify({ internalFilePatterns: ['*Competitive_Analysis*', 'AGENT_PROMPT_*'] }));
+    sb.publish({ 'llll.policy.json': JSON.stringify({ internalFilePatterns: ['*Competitive_Analysis*', 'AGENT_PROMPT_*'] }) });
     sb.commit({ 'notes/LLLL_Competitive_Analysis_v2.md': 'internal notes\n' });
 
     const { code, findings } = verdictAndFindings();
@@ -191,7 +191,7 @@ describe('configured internal files (PG-H014)', () => {
   });
 
   it('rejects an internalFilePatterns value that is not an array of strings', () => {
-    sb.write('llll.policy.json', JSON.stringify({ internalFilePatterns: '*.md' }));
+    sb.publish({ 'llll.policy.json': JSON.stringify({ internalFilePatterns: '*.md' }) });
     sb.commit({ 'a.js': 'const a = 1;\n' });
 
     const res = sb.run(['push']);

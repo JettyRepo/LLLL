@@ -1,7 +1,9 @@
-# LLLL Guard's own source — contains detection patterns and test fixtures
-llll-guard/src/scanners/*.ts
+# LLLL Guard's own source — contains detection patterns and test fixtures.
+# `**` so that nested folders (tests/e2e, tests/helpers) are covered: in these patterns a
+# single `*` does not cross a directory boundary.
+llll-guard/src/scanners/**
 llll-guard/src/output/*.ts
-llll-guard/tests/*.ts
+llll-guard/tests/**
 
 # Guard detection pattern definitions
 guard-patterns.md

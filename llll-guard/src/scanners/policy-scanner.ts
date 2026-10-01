@@ -173,6 +173,28 @@ export function scanForPolicyIssues(
   return findings;
 }
 
+// The name itself, or anything below it: `.guardignore` can be replaced by a directory of that name.
+const POLICY_FILE = /^(?:llll\.policy\.json|llll\.whitelist\.json|\.guardignore)(?:\/|$)/;
+
+/**
+ * PG-S011: the files that decide what the guard checks were changed. They are read from the
+ * remote's version, so the change does not apply to the push that carries it; a person is
+ * asked to look at it, because loosening the rules and pushing a secret can happen together.
+ */
+export function scanPolicyFilePath(filePath: string): Finding | null {
+  if (!POLICY_FILE.test(filePath)) return null;
+  return {
+    id: 'PG-S011',
+    severity: 'SOFT_BLOCK',
+    title: 'Guard Policy Changed',
+    file: filePath,
+    category: 'policy',
+    description: 'The guard policy or ignore list changed in the outgoing commits',
+    action: 'Review the change: it takes effect from the next push, not this one',
+    mapsToDomain: '',
+  };
+}
+
 const MANIFEST = /(?:^|\/)(?:package\.json|requirements\.txt|Cargo\.toml|go\.mod)$/;
 
 /** PG-W003: a dependency manifest changed, so new dependencies may need a license and security look. */
