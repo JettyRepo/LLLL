@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'node:fs';
 import { Command } from 'commander';
 import { pushCommand } from './commands/push.js';
 import { hookCommand } from './commands/hook.js';
@@ -7,12 +8,15 @@ import { releaseCommand } from './commands/release.js';
 import { overrideCommand } from './commands/override.js';
 import { installHook, uninstallHook } from './hooks/install.js';
 
+// The version is read from package.json (one place), which sits next to dist/ in the package.
+const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf-8')) as { version: string };
+
 const program = new Command();
 
 program
   .name('llll-guard')
   .description('LLLL Guard — Push & Release Compliance Gate')
-  .version('0.1.0')
+  .version(version)
   .addHelpText(
     'after',
     '\nExit codes: 0 = pass (warnings allowed), 1 = blocked, 2 = the guard could not run (error).',
@@ -62,7 +66,7 @@ program
 
 program
   .command('uninstall-hook')
-  .description('Remove the LLLL Guard pre-push hook and restore the one it replaced')
+  .description('Remove the LLLL Guard pre-push hook and restore the hook it chained (one replaced with --force stays in its .bak file)')
   .action(uninstallHook);
 
 program.parseAsync().catch((error: unknown) => {

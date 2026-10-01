@@ -11,12 +11,12 @@
 git clone https://github.com/JettyRepo/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
 # Restart Claude Code → type /llll
 
-# Step 2 — Build the Guard engine (needs Node.js 20 or newer)
-~/.llll/guard doctor --fix
+# Step 2 — Install the Guard engine (needs Node.js 20 or newer)
+npm install -g @layrix/llll-guard
 
 # Step 3 — Auto-block on every git push (optional, per-project)
 # Runs without AI — complements /llll guard push
-cd /your/project && ~/.llll/guard install-hook
+cd /your/project && llll-guard install-hook
 
 # Opencode and Codex CLI: ./install-opencode.sh and ./install-codex.sh (see Installation)
 ```
@@ -117,16 +117,16 @@ Creates `~/.claude/skills/llll/` holding links to the skill files only (not the 
 
 Every installer backs up a file before changing it.
 
-### Step 2 — Build the Guard engine
+### Step 2 — Install the Guard engine
 
-LLLL Guard is a Node.js program (`llll-guard/`, needs **Node.js 20 or newer**). `guard` in this folder is a small launcher that finds Node and the engine.
+LLLL Guard is a Node.js program (needs **Node.js 20 or newer**), published as `@layrix/llll-guard`:
 
 ```bash
-~/.llll/guard doctor --fix     # npm ci && npm run build in ~/.llll/llll-guard
-~/.llll/guard doctor           # shows which node and engine it found
+npm install -g @layrix/llll-guard
+llll-guard --version
 ```
 
-An npm package (`@layrix/llll-guard`) is planned; until it is published, use the clone as above.
+Prefer to run it from the clone instead? `guard` in this folder is a small launcher that finds Node and the engine, and `~/.llll/guard doctor --fix` builds the engine in `~/.llll/llll-guard` (`npm ci && npm run build`). `~/.llll/guard doctor` shows which node and engine it found. Everything below works with either `llll-guard` or `~/.llll/guard`.
 
 ### Step 3 — Activate pre-push compliance gate (optional)
 
@@ -134,7 +134,7 @@ Run once in any project repo:
 
 ```bash
 cd /your/project
-~/.llll/guard install-hook
+llll-guard install-hook
 ```
 
 Every `git push` will now be scanned automatically. Secrets and policy-relevant changes are blocked before they leave the machine.
@@ -143,7 +143,7 @@ Every `git push` will now be scanned automatically. Secrets and policy-relevant 
 - Works in git worktrees and with `core.hooksPath`. If your hook lives inside the project (husky), `install-hook` prints the one line to add instead of editing a tracked file.
 - If the engine or Node cannot be found when you push, the hook says so loudly, leaves a note in `.llll/logs/guard-not-run.log` and lets the push through (for now). Set `LLLL_GUARD_STRICT=1` to stop the push instead; stopping becomes the default in 1.0.
 
-To uninstall: `~/.llll/guard uninstall-hook` (restores the hook it replaced, if any).
+To uninstall: `llll-guard uninstall-hook` (restores the hook it replaced, if any).
 
 ### Guard commands (available anywhere)
 

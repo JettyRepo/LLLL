@@ -1144,7 +1144,7 @@ If you manually archive LLLL analyses, the recommended path is `.llll/scratch/` 
 - Dropping in a `DO_NOT_UPLOAD.txt` marker so the directory's purpose is visible at a glance
 - Verifying your project root is NOT inside iCloud Drive / Dropbox / OneDrive / Google Drive / `~/Documents` (macOS with iCloud Desktop+Documents enabled), AND not automatically indexed by system backup tools (Time Machine, Backblaze, Arq, rsync.net) unless you explicitly want those backups
 - Enabling full-disk encryption on your machine (macOS FileVault, Linux LUKS, Windows BitLocker)
-- Redacting any sensitive content **before** saving — LLLL provides no runtime redaction in v5.0. For `/llll scan` and `/llll fix` outputs, check your content against the SEC-001..SEC-008 SEC-001..SEC-008 regex patterns defined in the `/llll scan` Scan Patterns subsection above (the same list LLLL uses for secret detection) before placing the file in `.llll/scratch/`
+- Redacting any sensitive content **before** saving — LLLL provides no runtime redaction in v5.0. For `/llll scan` and `/llll fix` outputs, check your content against the SEC-001..SEC-008 regex patterns defined in the `/llll scan` Scan Patterns subsection above (the same list LLLL uses for secret detection) before placing the file in `.llll/scratch/`
 - Cleaning up files you no longer need
 - **Treating files in `.llll/scratch/` as controlled personal data when applicable** — see the Personal Data subsection below
 
