@@ -15,6 +15,8 @@ export interface Finding {
   mapsToDomain?: string;
   overridden?: boolean;
   overrideJustification?: string;
+  /** The commit that introduced the finding (push gate). */
+  commit?: string;
 }
 
 export interface ScanResult {

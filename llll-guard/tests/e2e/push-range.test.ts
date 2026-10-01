@@ -1,12 +1,11 @@
+import { spawn } from 'node:child_process';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { FAKE } from '../helpers/fixtures.js';
-import { knownBug } from '../helpers/known-bug.js';
-import { Sandbox, parseJsonResult } from '../helpers/repo.js';
+import { CLI, Sandbox, parseJsonResult } from '../helpers/repo.js';
 
-// Audit findings covered here: C-5 (range resolution), H-5 (large diffs).
-//
-// `knownBug` marks a known defect: the test states the behaviour we want and
-// is expected to fail until the fix lands. The fixing phase flips it to `it`.
+// Audit findings covered here: C-5 (range resolution), H-5 (large diffs),
+// M-7 (exit codes). Manual mode: `llll-guard push` compares against the upstream.
+// Hook mode (pre-push stdin) is covered in hook-pre-push.test.ts.
 
 let sb: Sandbox;
 
@@ -20,7 +19,7 @@ afterEach(() => {
 
 const leak = (): string => `const key = "${FAKE.awsKey}";\n`;
 
-describe('push range: what gets scanned', () => {
+describe('push (manual mode): what gets scanned', () => {
   it('blocks a secret in commits that are ahead of the tracked branch', () => {
     sb.commit({ 'src/config.js': leak() }, 'add config');
 
@@ -30,7 +29,7 @@ describe('push range: what gets scanned', () => {
     expect(parseJsonResult(res.stdout)?.verdict).toBe('HARD_BLOCK');
   });
 
-  knownBug('never passes a secret on the first push of a new branch (audit C-5)', () => {
+  it('never passes a secret on the first push of a new branch (audit C-5)', () => {
     sb.switchNew('feature/new');
     sb.commit({ 'src/config.js': leak() }, 'add config');
 
@@ -40,7 +39,17 @@ describe('push range: what gets scanned', () => {
     expect(res.code).not.toBe(0);
   });
 
-  knownBug('blocks a secret that one commit adds and the next commit removes (audit C-5)', () => {
+  it('exits 2, not 0, when the branch has no upstream to compare against (audit C-5)', () => {
+    sb.switchNew('feature/new');
+    sb.commit({ 'src/config.js': leak() }, 'add config');
+
+    const res = sb.run(['push']);
+
+    expect(res.code).toBe(2);
+    expect(res.stderr).toMatch(/upstream/i);
+  });
+
+  it('blocks a secret that one commit adds and the next commit removes (audit C-5)', () => {
     sb.commit({ 'src/config.js': leak() }, 'add key');
     sb.commit({ 'src/config.js': 'const key = process.env.KEY;\n' }, 'remove key');
 
@@ -50,7 +59,7 @@ describe('push range: what gets scanned', () => {
     expect(res.code).toBe(1);
   });
 
-  knownBug('still scans the outgoing commits when the diff is larger than 1 MiB (audit H-5)', () => {
+  it('still scans the outgoing commits when the diff is larger than 1 MiB (audit H-5)', () => {
     const filler = `${'x'.repeat(79)}\n`.repeat(20_000);
     sb.commit({ 'vendor/blob.js': filler + leak() }, 'vendor blob');
 
@@ -59,15 +68,104 @@ describe('push range: what gets scanned', () => {
     expect(res.code).toBe(1);
   });
 
-  // The scenarios below need the `hook pre-push` subcommand and pre-push stdin
-  // parsing, which arrive in P2. They are listed so the spec is not lost.
-  it.todo('hook pre-push: new ref (remote sha all zeros) scans only merge-base..local, not the whole history');
-  it.todo('hook pre-push: push to a URL or to a remote that was never fetched does not scan the whole history');
-  it.todo('hook pre-push: first push to an empty remote scans merge-base..local');
-  it.todo('hook pre-push: force-push whose remote sha is missing locally does not error with "bad object"');
-  it.todo('hook pre-push: merge commit that introduces a secret while resolving a conflict is caught');
-  it.todo('hook pre-push: 1000+ commit initial import finishes within the time limit');
-  it.todo('manual push without an upstream exits 2 and never passes');
-  it.todo('manual push does not hang when stdin is not a TTY but stays open');
-  it.todo('blocked push explains that history must be rewritten and the key rotated');
+  it('accepts an explicit --range', () => {
+    const base = sb.git(['rev-parse', 'HEAD']);
+    sb.commit({ 'src/config.js': leak() }, 'add config');
+
+    const res = sb.run(['push', '--range', `${base}..HEAD`, '--json']);
+
+    expect(res.code).toBe(1);
+  });
+
+  it('passes when there is nothing outgoing', () => {
+    const res = sb.run(['push', '--json']);
+
+    expect(res.code).toBe(0);
+  });
+});
+
+describe('push (manual mode): errors and output', () => {
+  it('exits 2 for a --range git cannot resolve (audit M-7)', () => {
+    const res = sb.run(['push', '--range', 'no-such-ref..HEAD']);
+
+    expect(res.code).toBe(2);
+  });
+
+  it('refuses a --range that looks like a git option', () => {
+    const res = sb.run(['push', '--range', '--output=PWNED']);
+
+    expect(res.code).toBe(2);
+    expect(sb.exists('PWNED')).toBe(false);
+  });
+
+  it('exits 2 when llll.policy.json is not valid JSON (audit M-7)', () => {
+    sb.write('llll.policy.json', '{ not json');
+    sb.commit({ 'a.js': 'const a = 1;\n' });
+
+    const res = sb.run(['push']);
+
+    expect(res.code).toBe(2);
+    expect(res.stderr).toContain('llll.policy.json');
+  });
+
+  it('refuses a negated pattern in .guardignore instead of silently ignoring every other file', () => {
+    // minimatch reads "!keep.js" as "everything except keep.js".
+    sb.write('.guardignore', '!keep.js\n');
+    sb.commit({ 'src/config.js': leak() }, 'add config');
+
+    const res = sb.run(['push']);
+
+    expect(res.code).toBe(2);
+    expect(res.stderr).toContain('negated pattern');
+  });
+
+  it('refuses a negated pattern in llll.policy.json excludePatterns', () => {
+    sb.write('llll.policy.json', JSON.stringify({ excludePatterns: ['!keep.js'] }));
+    sb.commit({ 'src/config.js': leak() }, 'add config');
+
+    const res = sb.run(['push']);
+
+    expect(res.code).toBe(2);
+  });
+
+  it('tells the user a committed secret must be removed from history and rotated (audit M)', () => {
+    sb.commit({ 'src/config.js': leak() }, 'add config');
+
+    const res = sb.run(['push']);
+
+    expect(res.stdout).toMatch(/rotate/i);
+    expect(res.stdout).toMatch(/history/i);
+  });
+
+  it('records the commit that introduced each finding', () => {
+    const sha = sb.commit({ 'src/config.js': leak() }, 'add config');
+
+    const findings = parseJsonResult(sb.run(['push', '--json']).stdout)?.findings ?? [];
+
+    expect(findings.find(f => f.id === 'PG-H001')?.commit).toBe(sha);
+  });
+
+  it('does not wait for stdin in manual mode, even when stdin stays open (audit E)', async () => {
+    sb.commit({ 'a.js': 'const a = 1;\n' });
+    const child = spawn(process.execPath, [CLI, 'push', '--json'], {
+      cwd: sb.work,
+      env: sb.env,
+      stdio: ['pipe', 'pipe', 'pipe'],
+    });
+    child.stdout.resume();
+    child.stderr.resume();
+
+    const code = await new Promise<number | null>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        child.kill('SIGKILL');
+        reject(new Error('push hung waiting for stdin'));
+      }, 15_000);
+      child.on('close', exitCode => {
+        clearTimeout(timer);
+        resolve(exitCode);
+      });
+    });
+
+    expect(code).toBe(0);
+  });
 });

@@ -2,6 +2,7 @@
 
 import { Command } from 'commander';
 import { pushCommand } from './commands/push.js';
+import { hookCommand } from './commands/hook.js';
 import { releaseCommand } from './commands/release.js';
 import { overrideCommand } from './commands/override.js';
 import { installHook } from './hooks/install.js';
@@ -11,15 +12,29 @@ const program = new Command();
 program
   .name('llll-guard')
   .description('LLLL Guard — Push & Release Compliance Gate')
-  .version('0.1.0');
+  .version('0.1.0')
+  .addHelpText(
+    'after',
+    '\nExit codes: 0 = pass (warnings allowed), 1 = blocked, 2 = the guard could not run (error).',
+  );
 
 program
   .command('push')
   .description('Scan outgoing git changes before push')
   .option('--json', 'Output results as JSON')
-  .option('--remote <remote>', 'Remote to compare against', 'origin')
+  .option('--remote <remote>', 'Remote to compare against (default: the branch upstream)')
   .option('--branch <branch>', 'Branch to compare against')
+  .option('--range <range>', 'Scan an explicit git range, for example origin/main..HEAD')
+  .option('--stdin', 'Read the pushed refs from stdin, in the format git sends to a pre-push hook')
   .action(pushCommand);
+
+program
+  .command('hook')
+  .description('Run as a git hook (called by the installed hook, not by hand)')
+  .argument('<name>', 'Hook name (pre-push)')
+  .argument('[args...]', 'Arguments git passes to the hook (remote name and URL)')
+  .option('--json', 'Output results as JSON')
+  .action(hookCommand);
 
 program
   .command('release')
@@ -41,4 +56,8 @@ program
   .option('--force', 'Overwrite existing pre-push hook')
   .action(installHook);
 
-program.parse();
+program.parseAsync().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`llll-guard: ${message}`);
+  process.exit(2);
+});

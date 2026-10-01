@@ -129,9 +129,64 @@ export class Sandbox {
     this.git(['switch', '-c', branch], cwd);
   }
 
-  /** Runs the built TypeScript CLI. */
-  run(args: string[], opts: { cwd?: string; input?: string } = {}): RunResult {
-    return this.spawn(process.execPath, [CLI, ...args], opts);
+  /**
+   * Creates `count` tiny commits on `branch` on top of `from` in one step, using
+   * `git fast-import`, and returns the tip sha. Far faster than `count` real commits.
+   */
+  fastImportCommits(branch: string, count: number, from: string, cwd: string = this.work): string {
+    const parts: string[] = [];
+    for (let i = 1; i <= count; i++) {
+      const message = `bulk ${i}`;
+      const content = `${i}\n`;
+      parts.push(
+        `commit refs/heads/${branch}`,
+        `committer Test Author <author@example.com> ${1_700_000_000 + i} +0000`,
+        `data ${Buffer.byteLength(message)}`,
+        message,
+      );
+      if (i === 1) parts.push(`from ${from}`);
+      parts.push('M 100644 inline bulk.txt', `data ${Buffer.byteLength(content)}`, content);
+    }
+    const result = spawnSync('git', ['fast-import', '--quiet'], {
+      cwd,
+      env: this.env,
+      input: parts.join('\n') + '\n',
+      encoding: 'utf-8',
+      maxBuffer: 64 * 1024 * 1024,
+    });
+    if (result.status !== 0) {
+      throw new Error(`git fast-import failed: ${result.stderr}`);
+    }
+    return this.git(['rev-parse', branch], cwd);
+  }
+
+  /** Runs `llll-guard hook pre-push` the way git does: remote name and URL as arguments, refs on stdin. */
+  runPrePushHook(
+    lines: string[],
+    opts: {
+      cwd?: string;
+      remoteName?: string;
+      remoteUrl?: string;
+      json?: boolean;
+      env?: NodeJS.ProcessEnv;
+    } = {},
+  ): RunResult {
+    const args = ['hook', 'pre-push', opts.remoteName ?? 'origin', opts.remoteUrl ?? this.remote];
+    if (opts.json ?? true) args.push('--json');
+    return this.run(args, {
+      cwd: opts.cwd,
+      input: lines.length > 0 ? lines.join('\n') + '\n' : '',
+      env: opts.env,
+    });
+  }
+
+  /** Runs the built TypeScript CLI. `env` is merged over the isolated environment. */
+  run(args: string[], opts: { cwd?: string; input?: string; env?: NodeJS.ProcessEnv } = {}): RunResult {
+    return this.spawn(process.execPath, [CLI, ...args], {
+      cwd: opts.cwd,
+      input: opts.input,
+      env: opts.env ? { ...this.env, ...opts.env } : undefined,
+    });
   }
 
   spawn(
@@ -162,6 +217,7 @@ export interface JsonFinding {
   line?: number;
   match?: string;
   category?: string;
+  commit?: string;
 }
 
 export interface JsonResult {
@@ -169,6 +225,14 @@ export interface JsonResult {
   scannedFiles: number;
   scannedCommits?: number;
   findings: JsonFinding[];
+  notices?: string[];
+}
+
+export const ZERO_SHA = '0'.repeat(40);
+
+/** One line of the pre-push hook's stdin: `<local ref> <local sha> <remote ref> <remote sha>`. */
+export function prePushLine(localRef: string, localSha: string, remoteRef: string, remoteSha: string): string {
+  return `${localRef} ${localSha} ${remoteRef} ${remoteSha}`;
 }
 
 /** Extracts the JSON document printed by `--json`. Returns null if there is none. */
