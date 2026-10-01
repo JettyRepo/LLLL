@@ -1,5 +1,5 @@
 # Layrix Compliance Checklist Master
-Version: v2.0
+Version: v5.0
 
 This file is the master compliance rule library for LLLL.
 
@@ -47,7 +47,7 @@ Issues that are urgent AND important — not fixing them causes immediate seriou
 - consequential decisions being made without required human review
 - payment processing without required controls or disclosures
 
-Critical items generate P1 actions and are NEVER folded in Unregistered.
+Critical items generate P1 actions. In Unregistered they follow the half-visibility rule (`round(N/2)` rows per table by severity descending); a Critical item in the bottom half is folded by name, never dropped.
 
 ## High
 Issues that are important but not immediately urgent:
@@ -57,7 +57,7 @@ Issues that are important but not immediately urgent:
 - payment or AI governance gaps requiring attention
 - operational or reputational harm that accumulates over time
 
-High items generate P1 actions and are NEVER folded in Unregistered.
+High items generate P1 actions. In Unregistered they follow the half-visibility rule (`round(N/2)` rows per table by severity descending); a High item in the bottom half is folded by name, never dropped.
 
 ## Medium
 Issues that:
@@ -1279,8 +1279,8 @@ When triggered, LLLL should:
 
 Use this master checklist differently depending on the command.
 
-All commands are available at every registration level (Unregistered / Basic).
-Unregistered folds Medium/Low items (Critical + High always shown). Basic (registered) shows full content.
+All commands are available at every registration level (Unregistered / Basic); only submitting a `/llll review` request to a human expert needs registration.
+Unregistered shows `round(N/2)` rows of every finding table, by severity descending, and lists the folded rows by name. Basic (registered) shows full content.
 Deep (`/llll deep`) is a command mode, not a registration level.
 
 ## `/llll`

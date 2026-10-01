@@ -5,7 +5,7 @@
 - CIPT / AIGP 知识点重叠
 - 代码层扩展点
 
-**总计**：130+ 个独立检查项，分布于 15 个合规域 + 2 个 Guard 门控 + 1 个自动扫描层
+**总计**：147 个独立检查项，分布于 15 个合规域 + 2 个 Guard 门控 + 1 个自动扫描层
 
 ---
 
@@ -13,8 +13,8 @@
 
 1. [命令体系（子命令速查）](#1-命令体系子命令速查)
 2. [合规域 A–O（主合规框架，51 项）](#2-合规域-ao主合规框架51-项)
-3. [LLLL Guard — Push Gate（推送门控，27 项）](#3-llll-guard--push-gate推送门控27-项)
-4. [LLLL Guard — Release Gate（发布门控，13 项）](#4-llll-guard--release-gate发布门控13-项)
+3. [LLLL Guard — Push Gate（推送门控，28 项）](#3-llll-guard--push-gate推送门控28-项)
+4. [LLLL Guard — Release Gate（发布门控，15 项）](#4-llll-guard--release-gate发布门控15-项)
 5. [LLLL Scan — 自动扫描层（40+ 项）](#5-llll-scan--自动扫描层40-项)
 6. [严重级别 & 状态标签体系](#6-严重级别--状态标签体系)
 7. [领域激活逻辑](#7-领域激活逻辑)
@@ -271,7 +271,7 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 
 ---
 
-## 3. LLLL Guard — Push Gate（推送门控，27 项）
+## 3. LLLL Guard — Push Gate（推送门控，28 项）
 
 > 触发方式：`/llll guard push` 或 pre-push hook
 
@@ -280,10 +280,10 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | 模式 ID | 检测模式/正则 | 分类 | 说明 |
 |--------|------------|------|------|
 | **PG-H001** | `AKIA[0-9A-Z]{16}` | secret | AWS Access Key |
-| **PG-H002** | `sk-[a-zA-Z0-9]{20,}` | secret | OpenAI/Stripe 密钥 |
+| **PG-H002** | `\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}` | secret | OpenAI/Stripe 密钥 |
 | **PG-H003** | `ghp_[a-zA-Z0-9]{36}` | secret | GitHub Personal Access Token |
 | **PG-H004** | `gho_[a-zA-Z0-9]{36}` | secret | GitHub OAuth Token |
-| **PG-H005** | `-----BEGIN (RSA\|DSA\|EC\|OPENSSH) PRIVATE KEY-----` | secret | 私钥文件内容 |
+| **PG-H005** | `-----BEGIN (?:RSA \|DSA \|EC \|OPENSSH \|ENCRYPTED )?PRIVATE KEY-----` | secret | 私钥文件内容 |
 | **PG-H006** | `(?i)(api[_-]?key\|api[_-]?secret\|access[_-]?key)\s*[=:]\s*['"][A-Za-z0-9+/=]{16,}['"]` | secret | 硬编码 API Key |
 | **PG-H007** | `(?i)(password\|passwd\|pwd)\s*[=:]\s*['"][^'"]{8,}['"]` | secret | 硬编码密码 |
 | **PG-H008** | `(?i)(database_url\|db_password\|db_pass\|mongo_uri\|redis_url)\s*[=:]\s*['"][^'"]+['"]` | secret | 硬编码数据库凭证 |
@@ -294,7 +294,7 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | **PG-H013** | `\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}` | data | 信用卡号格式 |
 | **PG-H014** | `*Competitive_Analysis*`, `*Full_Analysis*`, `AGENT_PROMPT_*`, `MCP_analysis*` | internal | 内部分析文档泄漏 |
 
-### SOFT_BLOCK 触发（10 项）——可覆盖，需记录理由
+### SOFT_BLOCK 触发（11 项）——可覆盖，需记录理由
 
 | 模式 ID | 启发式检测目标 | 功能分类 | 映射合规域 |
 |--------|-------------|---------|---------|
@@ -308,6 +308,7 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | **PG-S008** | 画像/评分/排名、信用评分、资格判定逻辑 | 自动化决策 | J |
 | **PG-S009** | 新增 AGPL/GPL 依赖 | 许可证风险 | O |
 | **PG-S010** | 数据保留变更、`TTL`/`expiry`/`purge` | 数据生命周期 | D |
+| **PG-S011** | 仓库根目录的 `llll.policy.json`、`.guardignore`、`llll.whitelist.json` 被修改、删除、移走或换成目录 | Guard 策略变更（从下一次推送起生效） | — |
 
 ### WARN 触发（3 项）——不阻断，记录警告
 
@@ -319,11 +320,11 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 
 ---
 
-## 4. LLLL Guard — Release Gate（发布门控，13 项）
+## 4. LLLL Guard — Release Gate（发布门控，15 项）
 
 > 触发方式：`/llll guard release` 或发布前钩子
 
-### HARD_BLOCK 触发（6 项）——制品中不可包含
+### HARD_BLOCK 触发（7 项）——制品中不可包含
 
 | 模式 ID | 检测目标 | 分类 |
 |--------|---------|------|
@@ -333,8 +334,9 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | **RG-H004** | `*.map` 文件（Source Map）在制品中 | 源码泄漏 |
 | **RG-H005** | Source Map `sourcesContent` 字段有内容 | 源码泄漏 |
 | **RG-H006** | 私有存储引用（`s3://`, `gs://`, 内部 URL） | 内部信息泄漏 |
+| **RG-H007** | 命中策略 `internalFilePatterns` 的文件（默认无；被版本控制忽略的文件没有经过推送，这是最后一道检查） | 内部文件泄漏 |
 
-### SOFT_BLOCK 触发（7 项）——可覆盖，需记录理由
+### SOFT_BLOCK 触发（8 项）——可覆盖，需记录理由
 
 | 模式 ID | 检测目标 | 分类 |
 |--------|---------|------|
@@ -345,6 +347,7 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | **RG-S005** | `tools/`, `scripts/`, `Makefile`, `Taskfile*` | 内部工具泄漏 |
 | **RG-S006** | 无 `.npmignore` 且 package.json 无 `"files"` 字段 | 发布策略缺失 |
 | **RG-S007** | 发布制品 > 10MB | 制品体积异常 |
+| **RG-S008** | 闸门没有读到的文件：超过 `LLLL_GUARD_MAX_FILE_BYTES`（默认 64 MiB），或不是普通文件（符号链接、管道、设备） | 未检查文件 |
 
 ---
 
@@ -359,9 +362,9 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | **SEC-001** | `(?i)(api[_-]?key\|api[_-]?secret\|access[_-]?key)\s*[=:]\s*['"][A-Za-z0-9+/=]{16,}['"]` | 硬编码 API Key | Critical |
 | **SEC-002** | `(?i)password\s*[=:]\s*['"][^'"]{4,}['"]` | 硬编码密码 | Critical |
 | **SEC-003** | `AKIA[0-9A-Z]{16}` | AWS Access Key | Critical |
-| **SEC-004** | `sk-[a-zA-Z0-9]{20,}` | OpenAI/Stripe 密钥 | Critical |
+| **SEC-004** | `\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}` | OpenAI/Stripe 密钥 | Critical |
 | **SEC-005** | `ghp_[a-zA-Z0-9]{36}` | GitHub PAT | Critical |
-| **SEC-006** | `-----BEGIN (RSA\|DSA\|EC\|OPENSSH) PRIVATE KEY-----` | 私钥内容 | Critical |
+| **SEC-006** | `-----BEGIN (?:RSA \|DSA \|EC \|OPENSSH \|ENCRYPTED )?PRIVATE KEY-----` | 私钥内容 | Critical |
 | **SEC-007** | `(?i)(database_url\|db_password\|db_pass)\s*[=:]\s*['"][^'"]+['"]` | 数据库凭证 | Critical |
 | **SEC-008** | `(?i)bearer\s+[a-zA-Z0-9._\-]{20,}` | 硬编码 Bearer Token | High |
 
@@ -369,19 +372,19 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 
 | 模式 ID | 检测正则 | 语言 | 漏洞类型 | 严重级别 |
 |--------|---------|------|---------|---------|
-| **OWA-001** | `\beval\s*\(` | JS/Python | 代码注入 | Critical |
-| **OWA-002** | `\bexec\s*\(` | Python | 命令注入 | Critical |
+| **OWA-001** | `(?:^\|[^.\w])eval\s*\(` | JS/Python | 代码注入 | Critical |
+| **OWA-002** | `(?:^\|[^.\w])exec\s*\(` | Python | 命令注入 | Critical |
 | **OWA-003** | `child_process\.(exec\|execSync)\s*\(` | Node.js | 命令注入 | Critical |
 | **OWA-004** | `os\.system\s*\(` | Python | 命令注入 | Critical |
 | **OWA-005** | `subprocess\.(call\|run\|Popen)\s*\(.*shell\s*=\s*True` | Python | Shell 注入 | Critical |
 | **OWA-006** | `innerHTML\s*=` | JS | DOM XSS | High |
 | **OWA-007** | `dangerouslySetInnerHTML` | React | XSS 原始 HTML | High |
 | **OWA-008** | `v-html\s*=` | Vue | XSS 原始 HTML | High |
-| **OWA-009** | `\$\{.*\}.*(?:SELECT\|INSERT\|UPDATE\|DELETE\|DROP)` | JS/TS | SQL 注入（模板字符串） | Critical |
+| **OWA-009** | `(?i)\b(?:SELECT\|INSERT\|UPDATE\|DELETE\|DROP)\b[^`\n]*\$\{` | JS/TS | SQL 注入（模板字符串） | Critical |
 | **OWA-010** | `f".*(?:SELECT\|INSERT\|UPDATE\|DELETE\|DROP).*\{` | Python | SQL 注入（f-string） | Critical |
 | **OWA-011** | `".*(?:SELECT\|INSERT\|UPDATE\|DELETE).*"\s*%` | Python | SQL 注入（% 格式化） | Critical |
 | **OWA-012** | `(?i)document\.write\s*\(` | JS | DOM 操作 XSS | High |
-| **OWA-013** | `(?i)(md5\|sha1)\s*\(` | Any | 弱哈希算法 | High |
+| **OWA-013** | `(?i)(createHash\(\s*['"](md5\|sha1)['"]\|hashlib\.(md5\|sha1)\s*\()` | Any | 弱哈希算法 | High |
 | **OWA-014** | `(?i)DEBUG\s*=\s*(True\|true\|1\|"true")` | Any | 调试模式开启 | High |
 | **OWA-015** | `(?i)Access-Control-Allow-Origin.*\*` | Any | 宽松 CORS | Medium |
 
@@ -390,12 +393,12 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | 检查 ID | 检测方式 | 检查内容 | 严重级别 |
 |--------|---------|---------|---------|
 | **GIT-001** | `test -f .gitignore` | .gitignore 文件存在 | High |
-| **GIT-002** | `grep -q "\.env" .gitignore` | .env 在 .gitignore 中排除 | Critical |
-| **GIT-003** | `git log --all --diff-filter=A -- '*.env'` | .env 从未被提交 | Critical |
-| **GIT-004** | `git log --all --diff-filter=A -- '*.pem' '*.key'` | 私钥从未被提交 | Critical |
-| **GIT-005** | `gh api repos/{owner}/{repo}/branches/main/protection` | main 分支保护已开启 | High |
-| **GIT-006** | `test -f LICENSE` | LICENSE 文件存在 | High |
-| **GIT-007** | `test -f CODEOWNERS` | CODEOWNERS 文件存在 | Low |
+| **GIT-002** | `git check-ignore -q .env` | .env 在 .gitignore 中排除 | Critical |
+| **GIT-003** | `git log --all --diff-filter=A --name-only --format= -- '.env' '*.env' '.env.*' ':!*.example' ':!*.sample' ':!*.template'` | .env 从未被提交 | Critical |
+| **GIT-004** | `git log --all --diff-filter=A --name-only --format= -- '*.pem' '*.key' '*id_rsa*' ':!*.pub'` | 私钥从未被提交 | Critical |
+| **GIT-005** | `gh api repos/{owner}/{repo}/branches/{default_branch}/protection` | main 分支保护已开启 | High |
+| **GIT-006** | `test -f LICENSE \|\| test -f LICENSE.md \|\| test -f LICENSE.txt \|\| test -f COPYING` | LICENSE 文件存在 | High |
+| **GIT-007** | `test -f CODEOWNERS \|\| test -f .github/CODEOWNERS \|\| test -f docs/CODEOWNERS` | CODEOWNERS 文件存在 | Low |
 
 ### 5.4 依赖漏洞审计（9 种技术栈）
 
@@ -404,7 +407,7 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | npm | `npm audit --json` | package-lock.json |
 | yarn | `yarn audit --json` | yarn.lock |
 | pnpm | `pnpm audit --json` | pnpm-lock.yaml |
-| pip | `pip audit --format=json` | requirements.txt |
+| pip | `pip-audit -r requirements.txt -f json` | requirements.txt |
 | pipenv | `pipenv check --json` | Pipfile.lock |
 | poetry | `poetry audit` | poetry.lock |
 | cargo | `cargo audit --json` | Cargo.lock |
@@ -501,17 +504,17 @@ iOS/Android 原生应用  → L
 |------|------|
 | 合规域主检查项（A-O） | 51 |
 | Guard Push HARD_BLOCK 模式 | 14 |
-| Guard Push SOFT_BLOCK 模式 | 10 |
+| Guard Push SOFT_BLOCK 模式 | 11 |
 | Guard Push WARN 模式 | 3 |
-| Guard Release HARD_BLOCK 模式 | 6 |
-| Guard Release SOFT_BLOCK 模式 | 7 |
+| Guard Release HARD_BLOCK 模式 | 7 |
+| Guard Release SOFT_BLOCK 模式 | 8 |
 | Scan 秘密检测模式 | 8 |
 | Scan OWASP 代码模式 | 15 |
 | Scan Git 卫生检查 | 7 |
 | Scan 依赖审计（技术栈） | 9 |
 | Scan 许可证分级 | 9 |
 | Scan Dockerfile 检查 | 5 |
-| **合计** | **144** |
+| **合计** | **147** |
 
 ---
 

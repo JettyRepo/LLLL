@@ -150,7 +150,7 @@ To uninstall: `~/.llll/guard uninstall-hook` (restores the hook it replaced, if 
 ```bash
 ~/.llll/guard push              # scan outgoing commits
 ~/.llll/guard release           # scan what npm would publish
-~/.llll/guard override PG-S004 "justification"
+~/.llll/guard override PG-S004@<token> "justification"   # <token> is printed next to the finding
 ~/.llll/guard doctor            # check node and the engine
 ```
 

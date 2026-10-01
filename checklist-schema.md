@@ -1,4 +1,4 @@
-# Layrix Checklist Schema v4.0
+# Layrix Checklist Schema v5.0
 
 Aligned with the Embedded Compliance Layer architecture and compliance-checklist-master.md domains.
 
@@ -29,10 +29,10 @@ Gaps and findings are assigned one of four risk levels:
 
 | Level | Meaning | Folded in Unregistered? |
 |-------|---------|-----------------|
-| **Critical** | Urgent + important — not fixing this causes immediate serious consequences | Never |
-| **High** | Important but not urgent — significant risk if left unresolved | Never |
-| **Medium** | Weakens compliance posture — should be fixed but not immediately catastrophic | Yes |
-| **Low** | Improves maturity — useful but not urgent | Yes |
+| **Critical** | Urgent + important — not fixing this causes immediate serious consequences | Counts toward half-visibility (`round(N/2)` rows shown by severity descending) |
+| **High** | Important but not urgent — significant risk if left unresolved | Counts toward half-visibility |
+| **Medium** | Weakens compliance posture — should be fixed but not immediately catastrophic | Counts toward half-visibility |
+| **Low** | Improves maturity — useful but not urgent | Counts toward half-visibility |
 
 Critical vs High distinction: Critical means the issue is actively causing harm or violation RIGHT NOW. High means the issue is significant but consequences are not yet materializing.
 
