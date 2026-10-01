@@ -8,6 +8,7 @@
 llll-guard/node_modules/
 llll-guard/dist/
 llll-guard/.test-dist/
+llll-guard/coverage/
 
 # LLLL local persistence root (Guard logs + opt-in observation snapshots)
 .llll/
