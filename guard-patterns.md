@@ -22,20 +22,27 @@ These patterns in outgoing diffs trigger an automatic hard block. Scanned agains
 
 | Pattern ID | Regex / Heuristic | Description | Category |
 |-----------|-------------------|-------------|----------|
-| PG-H001 | `AKIA[0-9A-Z]{16}` | AWS Access Key ID | secret |
-| PG-H002 | `sk-[a-zA-Z0-9]{20,}` | OpenAI / Stripe secret key | secret |
-| PG-H003 | `ghp_[a-zA-Z0-9]{36}` | GitHub personal access token | secret |
-| PG-H004 | `gho_[a-zA-Z0-9]{36}` | GitHub OAuth access token | secret |
-| PG-H005 | `-----BEGIN (RSA\|DSA\|EC\|OPENSSH) PRIVATE KEY-----` | Private key material | secret |
+| PG-H001 | `\b(AKIA\|ASIA)[0-9A-Z]{16}\b` | AWS access key ID (long-term or temporary) | secret |
+| PG-H002 | `\bsk-[A-Za-z0-9_-]{20,}` (OpenAI, Anthropic), `\b(sk\|rk)_live_[A-Za-z0-9]{16,}` (Stripe live), `\bxox[abprs]-…` (Slack), `\bAIza[0-9A-Za-z_-]{35}` (Google) | API secret key | secret |
+| PG-H003 | `\bghp_[A-Za-z0-9]{36}\b`, `\bgithub_pat_[A-Za-z0-9_]{22,}` | GitHub personal access token (classic or fine-grained) | secret |
+| PG-H004 | `\bgho_[A-Za-z0-9]{36}\b` | GitHub OAuth access token | secret |
+| PG-H005 | `-----BEGIN (RSA \|DSA \|EC \|OPENSSH \|ENCRYPTED \|PGP )?PRIVATE KEY( BLOCK)?-----` | Private key material (including PKCS#8 and PGP) | secret |
 | PG-H006 | `(?i)(api[_-]?key\|api[_-]?secret\|access[_-]?key)\s*[=:]\s*['"][A-Za-z0-9+/=]{16,}['"]` | Hardcoded API key assignment | secret |
 | PG-H007 | `(?i)(password\|passwd\|pwd)\s*[=:]\s*['"][^'"]{8,}['"]` | Hardcoded password (>8 chars) | secret |
-| PG-H008 | `(?i)(database_url\|db_password\|db_pass\|mongo_uri\|redis_url)\s*[=:]\s*['"][^'"]+['"]` | Database credential | secret |
-| PG-H009 | `(?i)bearer\s+[A-Za-z0-9\-._~+/]+=*` | Hardcoded bearer token | secret |
-| PG-H010 | New or modified `.env` file (not `.env.example`, `.env.template`, `.env.sample`) | Environment file with potential secrets | secret |
-| PG-H011 | Files matching `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*` | Private key files | secret |
-| PG-H012 | `\d{3}-\d{2}-\d{4}` | Social Security Number pattern | data |
-| PG-H013 | `\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}` | Credit card number pattern | data |
-| PG-H014 | Files matching `*Competitive_Analysis*`, `*Full_Analysis*`, `AGENT_PROMPT_*`, `MCP_analysis*` | Internal/competitive analysis files — must never be committed | internal |
+| PG-H008 | `(?i)(database_url\|db_password\|db_pass\|mongo_uri\|redis_url)\s*[=:]\s*['"][^'"]+['"]`, or a password embedded in a URL (`scheme://user:password@host`) that is not a placeholder or a development default | Database credential | secret |
+| PG-H009 | `(?i)\bbearer\s+[A-Za-z0-9\-._~+/]{20,}=*`, and the token must contain a digit | Hardcoded bearer token | secret |
+| PG-H010 | New or modified `.env`, `.env.local`, `.env.production`, … at any depth (not `.env.example`, `.env.sample`, `.env.template`, `.env.defaults`, `.env.dist`) | Environment file with potential secrets | secret |
+| PG-H011 | Files matching `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*`, `id_ecdsa*`, `id_dsa*` (not `*.pub`) | Private key files | secret |
+| PG-H012 | `\b\d{3}-\d{2}-\d{4}\b` excluding impossible numbers (area `000`, `666`, `9xx`; group `00`; serial `0000`) | Social Security Number pattern | data |
+| PG-H013 | 13–19 digits, optionally separated by spaces or hyphens, that pass the Luhn check and start with a major issuer prefix | Credit card number pattern | data |
+| PG-H014 | Files matching the project's `internalFilePatterns` in `llll.policy.json` (none by default), for example `*Competitive_Analysis*`, `AGENT_PROMPT_*` | Internal files that must never be committed | leakage |
+
+**Secrets that are public by design.** The generic assignment rules (PG-H006 to PG-H009) can match a value that is published on purpose. Only these cases are downgraded to WARN, and only by comparing the matched value, never the variable name or the rest of the line: an API key assigned to a client-exposed variable (`NEXT_PUBLIC_`, `NUXT_PUBLIC_`, `EXPO_PUBLIC_`, `REACT_APP_`, `GATSBY_`, `VITE_`) whose name does not say secret, private, password or token; a placeholder value in an env template; a value that already exists in a template or README reachable from a remote-tracking branch. Provider-format keys (PG-H001 to PG-H005) and personal data are never downgraded. The providers' own documentation examples (for example `AKIAIOSFODNN7EXAMPLE`) are not reported.
+
+**Documentation and env templates.**
+- Prose (`*.md`, `*.txt`, `README*`, `CHANGELOG*`, `LICENSE*` and similar; not `requirements*.txt` or `CMakeLists.txt`) is still scanned. Provider-format credentials (PG-H001 to PG-H005), a password inside a connection string such as `postgres://user:pass@host` (PG-H008) and personal data (PG-H012, PG-H013) block. A credential-looking assignment (PG-H006 to PG-H009) is only a WARN, because prose is full of examples. Placeholders such as `sk-xxxxxxxx`, published provider examples and published test card numbers are allowed. Policy keywords (PG-S, PG-W) do not apply.
+- Env templates (`.env.example`, `.env.sample`, …) are scanned like code, except that placeholder values are downgraded and policy keywords do not apply (`OPENAI_API_KEY=` names a variable; it does not add an integration).
+- A value counts as a placeholder only when every word in it is a placeholder word (`your`, `key`, `example`, `changeme`, `xxxx`, …). `sk-<real key>_example` is not a placeholder.
 
 ---
 
@@ -102,11 +109,9 @@ Patterns in release artifacts (npm pack output, dist directory) that must never 
 Files and directories excluded from guard scanning by default:
 
 ### Push Gate Exclusions
-- `*.md` (documentation changes)
-- `*.txt` (plain text)
-- `*.lock`, `*.sum`, `yarn.lock`, `package-lock.json` (lock files)
-- `CHANGELOG*`, `CHANGES*`, `HISTORY*`
-- `LICENSE*`
+- Generated lock files, by exact name and at any depth: `package-lock.json`, `npm-shrinkwrap.json`, `pnpm-lock.yaml`, `yarn.lock`, `Cargo.lock`, `go.sum`, `poetry.lock`, `Pipfile.lock`, `composer.lock`, `Gemfile.lock`. A wildcard such as `*.lock` is not used: it would also hide any file somebody merely named that way.
+
+Documentation (`*.md`, `*.txt`, `CHANGELOG*`, `LICENSE*`, …) is no longer excluded; see "Documentation and env templates" above.
 
 ### Release Gate Exclusions
 - `node_modules/` (never scanned — should never be in release)

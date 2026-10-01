@@ -2,6 +2,7 @@ import type { Finding } from '../types.js';
 
 interface PolicyPattern {
   id: string;
+  /** Matched against the normalized line (see `normalize`), so it is written in lowercase words. */
   keywords: RegExp;
   title: string;
   description: string;
@@ -9,10 +10,24 @@ interface PolicyPattern {
   mapsToDomain: string;
 }
 
+/**
+ * Turns identifiers into plain lowercase words: `requireParentalConsent`, `PARENTAL_CONSENT`
+ * and `parental-consent` all become "parental consent". Keywords can then be anchored to word
+ * boundaries without missing camelCase or snake_case names, and without matching inside
+ * unrelated words (`little` is not `ttl`, `isMinority` is not a minor).
+ */
+export function normalize(line: string): string {
+  return line
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+    .replace(/[_\-./]+/g, ' ')
+    .toLowerCase();
+}
+
 const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   {
     id: 'PG-S001',
-    keywords: /multer|formidable|busboy|multipart|file[_-]?upload|dropzone/i,
+    keywords: /\b(?:multer|formidable|busboy|multipart|dropzone)\b|\bfile upload\b/,
     title: 'Upload Capability Added',
     description: 'File upload feature detected without policy review',
     action: 'Review content ownership terms and moderation requirements',
@@ -20,7 +35,7 @@ const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   },
   {
     id: 'PG-S002',
-    keywords: /stripe|paypal|braintree|checkout|billing|subscription|payment[_-]?intent|price[_-]?id/i,
+    keywords: /\b(?:stripe|pay ?pal|braintree|billing)\b|\bpayment intent\b|\bprice id\b|\bcheckout session\b|(?<!\bgit )\bcheckout\b/,
     title: 'Payment Feature Added',
     description: 'Payment/billing code detected without compliance review',
     action: 'Review pricing terms, refund policy, and PCI scope',
@@ -28,7 +43,8 @@ const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   },
   {
     id: 'PG-S003',
-    keywords: /coppa|age[_-]?gate|parental[_-]?consent|minor|child[_-]?safety|under[_-]?13|under[_-]?16/i,
+    keywords:
+      /\b(?:coppa|age gate|parental consent|child safety|under 1[36])\b|\bminors?\b(?! (?:version|release|update|bump|change|issue|patch|axis|tick|fix))/,
     title: 'Minors-Related Feature',
     description: 'Age/minor-related code detected',
     action: 'Review COPPA, children privacy requirements, and age verification',
@@ -36,7 +52,8 @@ const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   },
   {
     id: 'PG-S004',
-    keywords: /openai|anthropic|langchain|llama|model[_-]?inference|ai[_-]?response|generate[_-]?text|chat[_-]?completion/i,
+    keywords:
+      /\b(?:open ?ai|anthropic|lang ?chain|llama ?index|ollama|llama)\b|\b(?:model inference|ai response|generate text|chat completions?)\b/,
     title: 'AI Feature Added',
     description: 'AI/ML model integration detected without transparency review',
     action: 'Add AI disclosure, review output handling and guardrails',
@@ -44,7 +61,7 @@ const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   },
   {
     id: 'PG-S005',
-    keywords: /mixpanel|segment|amplitude|ga4|gtag|analytics[_-]?track|pixel|beacon/i,
+    keywords: /\b(?:mixpanel|amplitude|ga4|gtag|analytics track|tracking pixel)\b|\bsegment (?:io|com|analytics)\b/,
     title: 'User Tracking Added',
     description: 'Analytics/tracking code detected without privacy review',
     action: 'Review privacy notice, consent mechanism, and cookie policy',
@@ -52,7 +69,7 @@ const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   },
   {
     id: 'PG-S006',
-    keywords: /navigator\.geolocation|getCurrentPosition|watchPosition|location[_-]?permission/i,
+    keywords: /\b(?:navigator geolocation|get current position|watch position|location permission)\b/,
     title: 'Location Access Added',
     description: 'Geolocation access detected without privacy review',
     action: 'Review location data handling and consent requirements',
@@ -60,7 +77,7 @@ const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   },
   {
     id: 'PG-S007',
-    keywords: /faceapi|fingerprint[_-]?js|biometric|facial[_-]?recognition|face[_-]?detect/i,
+    keywords: /\b(?:face ?api|fingerprint ?js|biometric\w*|facial recognition|face detect\w*)\b/,
     title: 'Biometric Feature Added',
     description: 'Biometric processing detected without policy review',
     action: 'Review biometric data regulations (BIPA, GDPR Art. 9)',
@@ -68,7 +85,7 @@ const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   },
   {
     id: 'PG-S008',
-    keywords: /credit[_-]?score|risk[_-]?assessment|eligibility|profiling|scoring[_-]?algorithm/i,
+    keywords: /\b(?:credit score|risk assessment|eligibility (?:score|check)|profiling|scoring algorithm)\b/,
     title: 'Automated Decision Feature',
     description: 'Profiling/scoring algorithm detected without review',
     action: 'Review automated decision-making requirements and human review process',
@@ -76,7 +93,7 @@ const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   },
   {
     id: 'PG-S010',
-    keywords: /ttl|expiry|retention|purge|delete[_-]?after|data[_-]?lifecycle/i,
+    keywords: /\b(?:ttl|retention|delete after|purge|data lifecycle)\b/,
     title: 'Data Retention Change',
     description: 'Data lifecycle changes detected without privacy review',
     action: 'Review data retention policy and privacy notice',
@@ -84,22 +101,21 @@ const SOFT_BLOCK_PATTERNS: PolicyPattern[] = [
   },
 ];
 
-const WARN_PATTERNS: PolicyPattern[] = [
+// WARN rules look at the raw line: they match code syntax, not identifiers.
+const WARN_PATTERNS: { id: string; keywords: RegExp; title: string; description: string; action: string }[] = [
   {
     id: 'PG-W001',
     keywords: /\b(TODO|FIXME|HACK|XXX|TEMP)\b/,
     title: 'Unresolved Marker',
     description: 'Unresolved TODO/FIXME marker in outgoing code',
     action: 'Resolve or remove before pushing',
-    mapsToDomain: '',
   },
   {
     id: 'PG-W002',
-    keywords: /console\.log|console\.debug|debugger;|print\(/,
+    keywords: /\bconsole\.(?:log|debug)\b|\bdebugger;|\bprint\(/,
     title: 'Debug Output',
     description: 'Debug output detected in outgoing code',
     action: 'Remove debug statements before pushing',
-    mapsToDomain: '',
   },
 ];
 
@@ -115,9 +131,10 @@ export function scanForPolicyIssues(
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    const words = normalize(line);
 
     for (const pattern of SOFT_BLOCK_PATTERNS) {
-      if (pattern.keywords.test(line)) {
+      if (pattern.keywords.test(words)) {
         // Avoid duplicate findings for the same pattern in the same file
         if (!findings.some(f => f.id === pattern.id && f.file === filePath)) {
           findings.push({
@@ -154,6 +171,22 @@ export function scanForPolicyIssues(
   }
 
   return findings;
+}
+
+const MANIFEST = /(?:^|\/)(?:package\.json|requirements\.txt|Cargo\.toml|go\.mod)$/;
+
+/** PG-W003: a dependency manifest changed, so new dependencies may need a license and security look. */
+export function scanManifestPath(filePath: string): Finding | null {
+  if (!MANIFEST.test(filePath)) return null;
+  return {
+    id: 'PG-W003',
+    severity: 'WARN',
+    title: 'Dependency Manifest Changed',
+    file: filePath,
+    category: 'dependency',
+    description: 'A dependency manifest changed in the outgoing commits',
+    action: 'Review new dependencies for license and security',
+  };
 }
 
 export function scanForCopyleftDeps(

@@ -31,7 +31,7 @@ describe('override', () => {
   });
 
   it('blocks a payment feature until it is overridden (baseline for H-1)', () => {
-    sb.commit({ 'pay.js': 'const billingEnabled = true;\n' });
+    sb.commit({ 'pay.js': "import Stripe from 'stripe';\n" });
 
     const res = sb.run(['push', '--json']);
 
@@ -40,7 +40,7 @@ describe('override', () => {
   });
 
   knownBug('lets the push through after the finding is overridden (audit H-1)', () => {
-    sb.commit({ 'pay.js': 'const billingEnabled = true;\n' });
+    sb.commit({ 'pay.js': "import Stripe from 'stripe';\n" });
     expect(sb.run(['push', '--json']).code).toBe(1);
 
     sb.run(['override', 'PG-S002', 'payments reviewed by legal']);

@@ -21,8 +21,8 @@ export const FAKE = {
   pemRsa: j('-----', 'BEGIN RSA PRIVATE', ' KEY-----'),
   pemPkcs8: j('-----', 'BEGIN PRIVATE', ' KEY-----'),
   pemEncrypted: j('-----', 'BEGIN ENCRYPTED PRIVATE', ' KEY-----'),
-  /** Passes the Luhn check. */
-  cardNumberLuhnValid: j('4111', '1111', '1111', '1111'),
+  /** Passes the Luhn check and has a major issuer prefix, but is not a published test number. */
+  cardNumberLuhnValid: j('5500', '0000', '0000', '0004'),
   /** Sixteen digits that fail the Luhn check (for example a timestamp). */
   sixteenDigitsNotACard: j('1234', '5678', '9012', '3456'),
 };

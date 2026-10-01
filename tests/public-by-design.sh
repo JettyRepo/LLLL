@@ -39,11 +39,12 @@ expect downgrade "value sits in an env template" \
   'packages/api/.env.example' PG-H006
 
 # Real leaks — must still block.
+# The values are built from two pieces so that no secret-looking literal lives in the repository.
 expect block "AWS key in application source" \
-  'const key = "AKIAQQQQQQQQQQQQQQQQ";' \
+  'const key = "AKIA''QQQQQQQQQQQQQQQQ";' \
   'src/config.js' PG-H001
 expect block "private key material, even in a template" \
-  '-----BEGIN RSA PRIVATE KEY-----' \
+  '-----BEGIN RSA PRIVATE ''KEY-----' \
   'packages/api/.env.example' PG-H005
 
 printf '\n%d passed, %d failed\n' "$pass" "$fail"
