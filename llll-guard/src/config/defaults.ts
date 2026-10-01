@@ -14,15 +14,23 @@ export const DEFAULT_CONFIG: GuardConfig = {
     warn: true,
     disabledRules: [],
   },
+  // Machine-generated lock files, by exact name (matched at any depth). A wildcard such as
+  // `*.lock` or `*.sum` would also hide a file somebody merely named that way.
+  // Documentation (*.md, *.txt, CHANGELOG*, LICENSE*) is not excluded: it is still scanned.
   excludePatterns: [
-    '*.md',
-    '*.txt',
-    '*.lock',
-    'yarn.lock',
     'package-lock.json',
-    'CHANGELOG*',
-    'LICENSE*',
+    'npm-shrinkwrap.json',
+    'pnpm-lock.yaml',
+    'yarn.lock',
+    'Cargo.lock',
+    'go.sum',
+    'poetry.lock',
+    'Pipfile.lock',
+    'composer.lock',
+    'Gemfile.lock',
   ],
+  // PG-H014. None by default; a project lists the file names that must never be committed.
+  internalFilePatterns: [],
 };
 
 export const DEFAULT_WHITELIST: WhitelistConfig = {

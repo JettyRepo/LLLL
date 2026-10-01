@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { FAKE } from '../helpers/fixtures.js';
-import { knownBug } from '../helpers/known-bug.js';
 import { Sandbox, parseJsonResult } from '../helpers/repo.js';
 
 // Audit finding covered here: C-3. The bash guard downgrades "public by design"
 // credentials to WARN, but it matches the whole line and every token on it, so
-// real secrets slip through. The TypeScript engine has no downgrade at all.
+// real secrets slip through. The TypeScript engine now has the downgrade, with
+// stricter rules (src/scanners/public-by-design.ts). More cases: push-file-rules.test.ts.
 //
-// Target behaviour once the rule is ported (P3):
+// Behaviour:
 //   - only the matched secret value is compared, never the variable name or the line;
 //   - a client prefix counts only when it is on the variable being assigned;
 //   - provider-format keys (AKIA, sk-, ghp_, PEM) are never downgraded;
@@ -76,7 +76,7 @@ describe('public-by-design downgrade', () => {
     expect(parseJsonResult(res.stdout)?.verdict).toBe('HARD_BLOCK');
   });
 
-  knownBug('downgrades a non-provider key in a client-prefixed variable to WARN (audit C-3)', () => {
+  it('downgrades a non-provider key in a client-prefixed variable to WARN (audit C-3)', () => {
     sb.commit({
       'app.js': `const NEXT_PUBLIC_MAPS_API_KEY = "${FAKE.genericApiKeyValue}";\n`,
     });
@@ -88,7 +88,4 @@ describe('public-by-design downgrade', () => {
     expect(res.code).toBe(0);
   });
 
-  it.todo('downgrades only placeholder values inside .env.example (changeme, your-..., xxx, empty)');
-  it.todo('downgrade by "value already published" needs an exact value match against committed files, never a variable name');
-  it.todo('the official documented example values (for example the AWS docs key) are allowed by exact value');
 });

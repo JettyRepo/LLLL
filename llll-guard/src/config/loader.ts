@@ -28,6 +28,52 @@ function rejectNegatedPatterns(patterns: unknown[], source: string): void {
   }
 }
 
+function fail(path: string, message: string): never {
+  throw new GuardError(`${path}: ${message}`);
+}
+
+function expectStringArray(value: unknown, path: string, where: string): void {
+  if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) {
+    fail(path, `"${where}" must be an array of strings.`);
+  }
+}
+
+function validateRules(value: unknown, path: string, where: string): void {
+  if (value === undefined) return;
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+    fail(path, `"${where}" must be an object.`);
+  }
+  const rules = value as Record<string, unknown>;
+  for (const flag of ['hardBlock', 'softBlock', 'warn']) {
+    // `null` or `0` from a typo would otherwise switch a whole class of rules off without a word.
+    if (rules[flag] !== undefined && typeof rules[flag] !== 'boolean') {
+      fail(path, `"${where}.${flag}" must be true or false.`);
+    }
+  }
+  if (rules.disabledRules !== undefined) {
+    expectStringArray(rules.disabledRules, path, `${where}.disabledRules`);
+  }
+}
+
+/**
+ * A config that is wrong in a way that would quietly weaken the guard is an error, not a
+ * default: `hardBlock: null` must not turn secret scanning off, and `disabledRules: "PG-H0"`
+ * must not be read as a substring that disables every PG-H0xx rule.
+ */
+function validateConfig(raw: Partial<GuardConfig>, path: string): void {
+  if (raw.enabled !== undefined && typeof raw.enabled !== 'boolean') {
+    fail(path, '"enabled" must be true or false.');
+  }
+  validateRules(raw.pushRules, path, 'pushRules');
+  validateRules(raw.releaseRules, path, 'releaseRules');
+  for (const key of ['excludePatterns', 'internalFilePatterns'] as const) {
+    const value: unknown = raw[key];
+    if (value === undefined) continue;
+    expectStringArray(value, path, key);
+    rejectNegatedPatterns(value as string[], `${path} ${key}`);
+  }
+}
+
 export function loadConfig(cwd: string = process.cwd()): GuardConfig {
   const configPath = resolve(cwd, 'llll.policy.json');
   if (!existsSync(configPath)) {
@@ -35,9 +81,7 @@ export function loadConfig(cwd: string = process.cwd()): GuardConfig {
   }
 
   const raw = readJson(configPath) as Partial<GuardConfig>;
-  if (Array.isArray(raw.excludePatterns)) {
-    rejectNegatedPatterns(raw.excludePatterns, `${configPath} excludePatterns`);
-  }
+  validateConfig(raw, configPath);
   return {
     ...DEFAULT_CONFIG,
     ...raw,

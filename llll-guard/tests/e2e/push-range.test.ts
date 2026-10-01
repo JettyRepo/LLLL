@@ -128,6 +128,32 @@ describe('push (manual mode): errors and output', () => {
     expect(res.code).toBe(2);
   });
 
+  it.each([
+    ['hardBlock set to null', { pushRules: { hardBlock: null } }],
+    ['hardBlock set to 0', { pushRules: { hardBlock: 0 } }],
+    ['softBlock given as a string', { pushRules: { softBlock: 'no' } }],
+    ['disabledRules given as a string, which would match as a substring', { pushRules: { disabledRules: 'PG-H0' } }],
+    ['disabledRules holding a non-string', { pushRules: { disabledRules: [1] } }],
+    ['pushRules given as an array', { pushRules: [] }],
+    ['enabled given as a string', { enabled: 'no' }],
+    ['excludePatterns given as a string', { excludePatterns: '*.md' }],
+  ])('refuses a policy file with %s, instead of weakening the guard', (_label, policy) => {
+    sb.write('llll.policy.json', JSON.stringify(policy));
+    sb.commit({ 'src/config.js': leak() }, 'add config');
+
+    const res = sb.run(['push']);
+
+    expect(res.code).toBe(2);
+    expect(res.stderr).toContain('llll.policy.json');
+  });
+
+  it('still accepts an explicit false, which is a deliberate choice', () => {
+    sb.write('llll.policy.json', JSON.stringify({ pushRules: { hardBlock: false } }));
+    sb.commit({ 'src/config.js': leak() }, 'add config');
+
+    expect(sb.run(['push']).code).toBe(0);
+  });
+
   it('tells the user a committed secret must be removed from history and rotated (audit M)', () => {
     sb.commit({ 'src/config.js': leak() }, 'add config');
 

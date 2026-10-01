@@ -42,7 +42,7 @@ describe('rule catalogue', () => {
   knownBug('implements every rule documented in guard-patterns.md (audit DOC-4)', () => {
     const missing = [...documented].filter(id => !implemented.has(id)).sort();
 
-    // Today: PG-H014, PG-W003 and RG-H003.
+    // Today: RG-H003 (release gate content scan, P5). PG-H014 and PG-W003 arrived in P3.
     expect(missing).toEqual([]);
   });
 

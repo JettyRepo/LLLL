@@ -44,7 +44,10 @@ export interface GuardConfig {
   enabled: boolean;
   pushRules: RuleConfig;
   releaseRules: RuleConfig;
+  /** Files skipped entirely (lock files and other generated output). */
   excludePatterns: string[];
+  /** Glob patterns for files that must never be committed (PG-H014). */
+  internalFilePatterns: string[];
 }
 
 export interface RuleConfig {

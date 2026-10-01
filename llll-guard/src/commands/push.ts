@@ -1,6 +1,6 @@
 import { minimatch } from 'minimatch';
-import { scanForSecrets, scanFilePathForSecrets } from '../scanners/secret-scanner.js';
-import { scanForPolicyIssues, scanForCopyleftDeps } from '../scanners/policy-scanner.js';
+import { scanFileChange } from '../scanners/file-scan.js';
+import { createPublishedValueCheck } from '../scanners/published-values.js';
 import { loadConfig, loadGuardIgnore } from '../config/loader.js';
 import { printResult } from '../output/terminal.js';
 import { printJsonResult } from '../output/json.js';
@@ -87,6 +87,7 @@ export async function scanRanges(
   options: { json?: boolean },
 ): Promise<void> {
   const ignorePatterns = loadGuardIgnore();
+  const isPublishedValue = createPublishedValueCheck();
   const allFindings: Finding[] = [];
   const seenCommits = new Set<string>();
   let scannedFiles = 0;
@@ -120,20 +121,9 @@ export async function scanRanges(
       if (shouldIgnore(event.path, config.excludePatterns, ignorePatterns)) continue;
       scannedFiles++;
 
-      const fileFindings: Finding[] = [];
-      const pathFinding = scanFilePathForSecrets(event.path);
-      if (pathFinding) fileFindings.push(pathFinding);
-
-      const content = event.added.map(l => l.text).join('\n');
-      if (content) {
-        if (config.pushRules.hardBlock) {
-          fileFindings.push(...scanForSecrets(content, event.path));
-        }
-        if (config.pushRules.softBlock) {
-          fileFindings.push(...scanForPolicyIssues(content, event.path));
-          fileFindings.push(...scanForCopyleftDeps(content, event.path));
-        }
-      }
+      const fileFindings = scanFileChange({ path: event.path, added: event.added }, config, {
+        isPublishedValue,
+      });
 
       for (const finding of fileFindings) {
         allFindings.push({
@@ -187,7 +177,8 @@ function realLineNumber(position: number | undefined, added: AddedLine[]): numbe
 
 function shouldIgnore(filePath: string, excludePatterns: string[], ignorePatterns: string[]): boolean {
   const allPatterns = [...excludePatterns, ...ignorePatterns];
-  return allPatterns.some(pattern => minimatch(filePath, pattern));
+  // matchBase: a pattern without "/" such as package-lock.json matches at any depth.
+  return allPatterns.some(pattern => minimatch(filePath, pattern, { matchBase: true, dot: true }));
 }
 
 function determineVerdict(findings: Finding[]): Verdict {
