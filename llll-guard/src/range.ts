@@ -14,6 +14,11 @@ export interface ResolvedRange {
   revArgs: string[];
   /** Human readable, for error messages. */
   label: string;
+  /**
+   * A commit that stands for "what the remote already has". The policy that judges this
+   * range is read from it. Null when there is no such commit (an empty remote).
+   */
+  base: string | null;
 }
 
 const SHA = /^[0-9a-f]{40}([0-9a-f]{24})?$/;
@@ -79,19 +84,57 @@ export function resolveRemoteName(remote: string | undefined): string | null {
 export function rangeForPushedRef(ref: PushedRef, remote: string | undefined): ResolvedRange | null {
   if (isZero(ref.localSha)) return null;
 
+  // Only a configured remote name is ever turned into a pattern.
+  const name = resolveRemoteName(remote);
+  const tip = defaultBranchTip(name);
+
   if (!isZero(ref.remoteSha) && commitExists(ref.remoteSha)) {
+    // The policy for a branch is the default branch's, so a branch cannot keep a loosened policy
+    // of its own. Pushing the default branch itself is judged by the exact commit it replaces.
+    const pushingDefault = tip?.branch !== null && tip?.branch !== undefined && ref.remoteRef === `refs/heads/${tip.branch}`;
     return {
       revArgs: [`${ref.remoteSha}..${ref.localSha}`],
       label: ref.localRef,
+      base: tip && !pushingDefault ? tip.sha : ref.remoteSha,
     };
   }
 
-  // Only a configured remote name is ever turned into a pattern.
-  const name = resolveRemoteName(remote);
   return {
     revArgs: name ? [ref.localSha, '--not', `--remotes=${name}`] : [ref.localSha],
     label: ref.localRef,
+    base: tip?.sha ?? null,
   };
+}
+
+interface DefaultBranchTip {
+  sha: string;
+  /** The branch name on the remote, if it is known. */
+  branch: string | null;
+}
+
+/**
+ * The tip of the remote's default branch as the local clone knows it: `<remote>/HEAD` if that is
+ * set, else `main` or `master`, else the first remote-tracking branch. This, not a merge base with
+ * whatever the pushed branch grew from, is what "the policy the remote has" means: a branch cut
+ * from an old commit, or an orphan branch, is judged by the policy as it is now.
+ */
+function defaultBranchTip(remoteName: string | null): DefaultBranchTip | null {
+  const pattern = remoteName ? `refs/remotes/${remoteName}` : 'refs/remotes';
+  const rank = (ref: string): number => (/\/HEAD$/.test(ref) ? 0 : /\/(?:main|master)$/.test(ref) ? 1 : 2);
+  const [top] = git(['for-each-ref', '--format=%(refname) %(objectname)', pattern])
+    .split('\n')
+    .filter(Boolean)
+    .map(line => line.split(' '))
+    .sort((a, b) => rank(a[0]) - rank(b[0]));
+  if (!top) return null;
+
+  const [refname, sha] = top;
+  let branch: string | null = refname.replace(/^refs\/remotes\/[^/]+\//, '');
+  if (branch === 'HEAD') {
+    const target = gitTry(['symbolic-ref', '--short', refname]);
+    branch = target ? target.replace(/^[^/]+\//, '') : null;
+  }
+  return { sha, branch };
 }
 
 function refuseOptionLike(value: string, what: string): void {
@@ -117,7 +160,22 @@ export function resolveManualRange(options: ManualRangeOptions): ResolvedRange {
     if (!gitOk(['rev-list', '--max-count=1', options.range, '--'])) {
       throw new GuardError(`git cannot resolve the range "${options.range}".`);
     }
-    return { revArgs: [options.range], label: options.range };
+    if (options.range.includes('...')) {
+      throw new GuardError(`The symmetric range "${options.range}" is not supported. Use <a>..<b>.`);
+    }
+    let base: string | null;
+    if (options.range.includes('..')) {
+      // For `a..b` the policy comes from `a`; `..b` means from HEAD.
+      const left = options.range.split('..')[0] || 'HEAD';
+      base = gitTry(['rev-parse', '--verify', '--quiet', `${left}^{commit}`]);
+      if (base === null) {
+        throw new GuardError(`Cannot resolve the start of the range "${options.range}" to a commit.`);
+      }
+    } else {
+      // A single revision has no start. Judge it by the remote's default branch, never by itself.
+      base = defaultBranchTip(null)?.sha ?? null;
+    }
+    return { revArgs: [options.range], label: options.range, base };
   }
 
   if (options.branch !== undefined || options.remote !== undefined) {
@@ -129,7 +187,11 @@ export function resolveManualRange(options: ManualRangeOptions): ResolvedRange {
     if (!gitOk(['rev-parse', '--verify', '--quiet', tracking])) {
       throw new GuardError(`No remote branch ${remote}/${branch} to compare against. Fetch it, or pass --range.`);
     }
-    return { revArgs: [`${tracking}..HEAD`], label: `${remote}/${branch}..HEAD` };
+    return {
+      revArgs: [`${tracking}..HEAD`],
+      label: `${remote}/${branch}..HEAD`,
+      base: git(['rev-parse', '--verify', `${tracking}^{commit}`]),
+    };
   }
 
   const upstream = gitTry(['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upstream}']);
@@ -139,5 +201,9 @@ export function resolveManualRange(options: ManualRangeOptions): ResolvedRange {
       `Branch "${branch}" has no upstream to compare against. Pass --range <a>..<b>, or run the gate from the pre-push hook, which knows what is being pushed.`,
     );
   }
-  return { revArgs: ['@{upstream}..HEAD'], label: `${upstream}..HEAD` };
+  return {
+    revArgs: ['@{upstream}..HEAD'],
+    label: `${upstream}..HEAD`,
+    base: git(['rev-parse', '--verify', '@{upstream}^{commit}']),
+  };
 }

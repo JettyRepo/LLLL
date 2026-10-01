@@ -45,9 +45,12 @@ program
 
 program
   .command('override')
-  .description('Override a SOFT_BLOCK finding')
-  .argument('<findingId>', 'Finding ID to override (e.g., PG-S002)')
-  .argument('<justification>', 'Reason for overriding')
+  .description('Accept one SOFT_BLOCK finding (HARD_BLOCK findings cannot be overridden)')
+  .argument('<finding>', 'Finding reference from the blocked push output, e.g. PG-S002@0123456789ab')
+  .argument('<justification>', 'Reason for overriding, kept in the audit log')
+  .option('--file <path>', 'The file the finding is in (recorded in the audit log)')
+  .option('--days <n>', 'How long the override lasts, 1 to 90 (default 14)')
+  .option('--yes', 'Confirm without a terminal prompt, for automation (the log records it)')
   .action(overrideCommand);
 
 program

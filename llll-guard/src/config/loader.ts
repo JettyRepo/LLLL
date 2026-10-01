@@ -4,16 +4,26 @@ import { GuardError } from '../errors.js';
 import type { GuardConfig, WhitelistConfig } from '../types.js';
 import { DEFAULT_CONFIG, DEFAULT_WHITELIST } from './defaults.js';
 
-function readJson(path: string): Record<string, unknown> {
+function parseJson(text: string, label: string): Record<string, unknown> {
   try {
-    const parsed: unknown = JSON.parse(readFileSync(path, 'utf-8'));
+    const parsed: unknown = JSON.parse(text);
     if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
       throw new Error('expected a JSON object');
     }
     return parsed as Record<string, unknown>;
   } catch (error) {
+    throw new GuardError(`Cannot read ${label}: ${(error as Error).message}`);
+  }
+}
+
+function readJson(path: string): Record<string, unknown> {
+  let text: string;
+  try {
+    text = readFileSync(path, 'utf-8');
+  } catch (error) {
     throw new GuardError(`Cannot read ${path}: ${(error as Error).message}`);
   }
+  return parseJson(text, path);
 }
 
 /**
@@ -52,6 +62,11 @@ function validateRules(value: unknown, path: string, where: string): void {
   }
   if (rules.disabledRules !== undefined) {
     expectStringArray(rules.disabledRules, path, `${where}.disabledRules`);
+    // PG-S011 is the alarm for changing this very file. A policy that mutes it would exempt every
+    // later change to the policy from review.
+    if ((rules.disabledRules as string[]).includes('PG-S011')) {
+      fail(path, `"${where}.disabledRules" cannot include PG-S011, the review of changes to the policy.`);
+    }
   }
 }
 
@@ -74,20 +89,24 @@ function validateConfig(raw: Partial<GuardConfig>, path: string): void {
   }
 }
 
-export function loadConfig(cwd: string = process.cwd()): GuardConfig {
-  const configPath = resolve(cwd, 'llll.policy.json');
-  if (!existsSync(configPath)) {
-    return DEFAULT_CONFIG;
-  }
-
-  const raw = readJson(configPath) as Partial<GuardConfig>;
-  validateConfig(raw, configPath);
+/** Parses and validates the text of an llll.policy.json. `label` names it in error messages. */
+export function parseConfig(text: string, label: string): GuardConfig {
+  const raw = parseJson(text, label) as Partial<GuardConfig>;
+  validateConfig(raw, label);
   return {
     ...DEFAULT_CONFIG,
     ...raw,
     pushRules: { ...DEFAULT_CONFIG.pushRules, ...raw.pushRules },
     releaseRules: { ...DEFAULT_CONFIG.releaseRules, ...raw.releaseRules },
   };
+}
+
+export function loadConfig(cwd: string = process.cwd()): GuardConfig {
+  const configPath = resolve(cwd, 'llll.policy.json');
+  if (!existsSync(configPath)) {
+    return DEFAULT_CONFIG;
+  }
+  return parseConfig(readFileSync(configPath, 'utf-8'), configPath);
 }
 
 export function loadWhitelist(cwd: string = process.cwd()): WhitelistConfig {
@@ -100,16 +119,20 @@ export function loadWhitelist(cwd: string = process.cwd()): WhitelistConfig {
   return { ...DEFAULT_WHITELIST, ...raw };
 }
 
+/** Parses the text of a .guardignore. Negated patterns are refused, see rejectNegatedPatterns. */
+export function parseGuardIgnore(text: string, label: string): string[] {
+  const patterns = text
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line && !line.startsWith('#'));
+  rejectNegatedPatterns(patterns, label);
+  return patterns;
+}
+
 export function loadGuardIgnore(cwd: string = process.cwd()): string[] {
   const ignorePath = resolve(cwd, '.guardignore');
   if (!existsSync(ignorePath)) {
     return [];
   }
-
-  const patterns = readFileSync(ignorePath, 'utf-8')
-    .split('\n')
-    .map(line => line.trim())
-    .filter(line => line && !line.startsWith('#'));
-  rejectNegatedPatterns(patterns, ignorePath);
-  return patterns;
+  return parseGuardIgnore(readFileSync(ignorePath, 'utf-8'), ignorePath);
 }

@@ -125,6 +125,17 @@ export class Sandbox {
     return this.git(['rev-parse', 'HEAD'], cwd);
   }
 
+  /**
+   * Commits the files and pushes them to `origin/main` without any hook, so the remote already has
+   * them. The guard reads its policy from what the remote has, so a test that wants a policy in
+   * force publishes it first.
+   */
+  publish(files: Record<string, string>, message = 'publish', cwd: string = this.work): string {
+    const sha = this.commit(files, message, cwd);
+    this.git(['push', 'origin', 'main'], cwd);
+    return sha;
+  }
+
   switchNew(branch: string, cwd: string = this.work): void {
     this.git(['switch', '-c', branch], cwd);
   }
@@ -218,6 +229,9 @@ export interface JsonFinding {
   match?: string;
   category?: string;
   commit?: string;
+  overrideToken?: string;
+  overridden?: boolean;
+  overrideJustification?: string;
 }
 
 export interface JsonResult {
@@ -225,7 +239,8 @@ export interface JsonResult {
   scannedFiles: number;
   scannedCommits?: number;
   findings: JsonFinding[];
-  notices?: string[];
+  overrides?: unknown[];
+  suppressedByPolicy?: Record<string, number>;
 }
 
 export const ZERO_SHA = '0'.repeat(40);

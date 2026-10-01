@@ -1,4 +1,3 @@
-import { loadConfig } from '../config/loader.js';
 import { GuardError } from '../errors.js';
 import { readStdin } from '../stdin.js';
 import { rangesFromPrePushInput, scanRanges } from './push.js';
@@ -19,12 +18,5 @@ export async function hookCommand(name: string, args: string[], options: HookOpt
   // Read stdin before anything can fail or return, so git never writes into a closed pipe.
   const input = await readStdin();
 
-  const config = loadConfig();
-  if (!config.enabled) {
-    console.log('LLLL Guard is disabled. Skipping scan.');
-    return;
-  }
-
-  const ranges = rangesFromPrePushInput(input, args[0]);
-  await scanRanges(ranges, config, options);
+  await scanRanges(rangesFromPrePushInput(input, args[0]), options);
 }

@@ -61,7 +61,10 @@ These patterns suggest compliance-relevant changes that should be reviewed befor
 | PG-S007 | Biometric/facial recognition/fingerprint, `faceapi`, `fingerprint`, biometric auth | Biometric feature without policy review | feature | M |
 | PG-S008 | Profiling/scoring/ranking algorithm, credit scoring, risk assessment, eligibility logic | Automated decision without review | feature | J |
 | PG-S009 | New AGPL/GPL dependency added to package.json, requirements.txt, Cargo.toml, go.mod | Copyleft license risk introduced | license | O |
-| PG-S010 | Data retention changes, `TTL`, `expiry`, `retention`, `purge`, `delete_after` | Data lifecycle change without privacy review | feature | D |
+| PG-S010 | Data retention changes, `TTL`, `retention`, `purge`, `delete_after` | Data lifecycle change without privacy review | feature | D |
+| PG-S011 | `llll.policy.json`, `.guardignore` or `llll.whitelist.json` at the repository root changed | Guard policy changed. The change applies from the next push, not the push that carries it | policy | — |
+
+Heuristics are matched against a normalized line: identifiers are split into words (`requireParentalConsent`, `PARENTAL_CONSENT` and `parental-consent` are all "parental consent") and anchored to word boundaries, so `little` is not `ttl` and `git checkout` is not a payment.
 
 ---
 
@@ -149,13 +152,28 @@ When LLLL Guard identifies SOFT_BLOCK findings, it maps them to LLLL compliance 
 - User must fix the finding before retrying
 
 ### SOFT_BLOCK
-- Can be overridden with `/llll override`
+- Can be overridden with `llll-guard override <ID>@<token> "<justification>"`
+- The token is printed with each SOFT_BLOCK finding in the blocked push output (and as `overrideToken` in the JSON). It identifies one rule on one file as it is in the commit that introduced the finding. It covers that finding and nothing else: another file, or new code that triggers the rule in a later commit, needs its own override. A bare rule id is refused.
 - Override requires:
-  - Finding ID(s)
-  - Justification text
-  - Actor (auto-detected from git config or config.json)
+  - The finding reference with its token
+  - Justification text (at least five characters)
+  - A confirmation: a person types `yes` at a terminal, or automation passes `--yes`. The log records which.
+  - Actor (the Layrix account email, else the git identity)
   - Timestamp (auto-generated)
-- Override is logged to `.llll/logs/guard-log.jsonl`
+- An override expires: 14 days by default, `--days` up to 90.
+- Override is logged to `.llll/logs/guard-log.jsonl` at the repository root. The log is local to the clone; a damaged or expired entry never overrides anything.
+- Agents must not run `override --yes` on their own: an override is a person's decision.
+
+### Policy comes from the remote
+
+`llll.policy.json` and `.guardignore` are read from what the remote already has, never from the working tree or from the commits being pushed. A push cannot loosen the rules that judge it.
+
+- **Which version.** The remote's default branch as the local clone knows it (`<remote>/HEAD`, else `main` or `master`). A branch is therefore judged by the policy as it is now, not as it was when the branch was cut, and cannot keep a loosened policy of its own. Pushing the default branch itself is judged by the exact commit it replaces. For `--range a..b` the policy comes from `a`; a single revision is judged by the default branch; `a...b` is refused.
+- **No policy to read.** Only when the remote has no branch at all (the first push to an empty remote) do the built-in defaults apply, and the output says so.
+- **Unreadable policy.** A policy that cannot be parsed, or a policy file that is a directory, a symbolic link or a submodule, stops the push (exit 2). Because that is the version the remote already has, the fix has to be pushed past the guard once (`git push --no-verify`).
+- **Changing the policy.** A change to `llll.policy.json`, `.guardignore` or `llll.whitelist.json` at the repository root, including deleting it, moving it away, or replacing it with a directory, raises PG-S011. The check runs before any ignore pattern. The change takes effect from the next push, once it is on the default branch.
+- **What a policy cannot do.** `disabledRules` cannot include PG-S011. It may include other rules, including HARD ones, and the output then reports how many findings were hidden. A policy that turns off `hardBlock` or `softBlock`, disables the guard, or ignores every file is reported in the output as well.
+- **Several refs in one push.** A commit is scanned under each policy that judges it, so the stricter policy always gets its say.
 
 ### Override Log Format
 
@@ -163,14 +181,19 @@ When LLLL Guard identifies SOFT_BLOCK findings, it maps them to LLLL compliance 
 {
   "timestamp": "2026-04-01T12:00:00Z",
   "action": "override",
-  "finding_ids": ["PG-S002"],
+  "findingIds": ["PG-S002"],
+  "findingToken": "0123456789ab",
   "actor": "user@example.com",
   "justification": "Payment feature reviewed by compliance team in ticket COMP-123",
-  "files_affected": ["src/billing/checkout.ts"],
-  "verdict_before": "SOFT_BLOCK",
-  "verdict_after": "PASS (overridden)"
+  "filesAffected": ["src/billing/checkout.ts"],
+  "confirmation": "tty",
+  "expiresAt": "2026-04-15T12:00:00Z",
+  "verdictBefore": "SOFT_BLOCK",
+  "verdictAfter": "PASS (overridden)"
 }
 ```
+
+The JSON output of the gates uses camelCase keys too (`scannedCommits`, `scannedFiles`, `overrideToken`).
 
 ---
 
