@@ -128,7 +128,7 @@ describe('the policy the remote already has', () => {
     sb.publish({ 'llll.policy.json': JSON.stringify({ pushRules: { disabledRules: ['PG-W002'] } }) });
     sb.commit({ 'src/app.js': 'console.log("debug");\n' });
 
-    expect(sb.run(['push']).stdout).toContain('Hidden by disabledRules in the policy: PG-W002 x1');
+    expect(sb.run(['push']).stdout).toContain('Hidden by the policy: PG-W002 x1');
   });
 
   it('skips the scan when the published policy disables the guard', () => {

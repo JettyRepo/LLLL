@@ -62,5 +62,9 @@ program
 program.parseAsync().catch((error: unknown) => {
   const message = error instanceof Error ? error.message : String(error);
   console.error(`llll-guard: ${message}`);
+  // With --json a consumer reads stdout. Empty output must never look like a clean result.
+  if (process.argv.includes('--json')) {
+    console.log(JSON.stringify({ verdict: 'ERROR', error: message }, null, 2));
+  }
   process.exit(2);
 });

@@ -34,15 +34,5 @@ export const DEFAULT_CONFIG: GuardConfig = {
 };
 
 export const DEFAULT_WHITELIST: WhitelistConfig = {
-  allowedPatterns: [
-    'package.json',
-    'README*',
-    'LICENSE*',
-    'CHANGELOG*',
-    'dist/**',
-    'lib/**',
-    'build/**',
-    'bin/**',
-  ],
   maxPackageSize: 10 * 1024 * 1024,
 };

@@ -119,6 +119,7 @@ export async function scanRanges(ranges: ResolvedRange[], options: { json?: bool
     }
     if (!config.pushRules.hardBlock) note('Secret scanning (hardBlock) is turned off by the policy on the remote.');
     if (!config.pushRules.softBlock) note('Policy review (softBlock) is turned off by the policy on the remote.');
+    if (!config.pushRules.warn) note('Warnings (warn) are turned off by the policy on the remote.');
     if (policy.ignorePatterns.some(pattern => /^\*{1,2}(?:\/\*{1,2})?$/.test(pattern))) {
       note('The .guardignore on the remote ignores every file.');
     }
@@ -173,7 +174,10 @@ export async function scanRanges(ranges: ResolvedRange[], options: { json?: bool
       }
 
       for (const finding of fileFindings) {
-        if (config.pushRules.disabledRules.includes(finding.id)) {
+        if (
+          config.pushRules.disabledRules.includes(finding.id) ||
+          (finding.severity === 'WARN' && !config.pushRules.warn)
+        ) {
           suppressedByPolicy[finding.id] = (suppressedByPolicy[finding.id] ?? 0) + 1;
           continue;
         }

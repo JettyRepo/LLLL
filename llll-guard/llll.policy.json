@@ -13,12 +13,16 @@
     "disabledRules": []
   },
   "excludePatterns": [
-    "*.md",
-    "*.txt",
-    "*.lock",
-    "yarn.lock",
     "package-lock.json",
-    "CHANGELOG*",
-    "LICENSE*"
-  ]
+    "npm-shrinkwrap.json",
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "Cargo.lock",
+    "go.sum",
+    "poetry.lock",
+    "Pipfile.lock",
+    "composer.lock",
+    "Gemfile.lock"
+  ],
+  "internalFilePatterns": []
 }

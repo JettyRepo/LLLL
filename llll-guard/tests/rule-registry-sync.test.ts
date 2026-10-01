@@ -2,7 +2,6 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PKG_ROOT, REPO_ROOT } from './helpers/repo.js';
-import { knownBug } from './helpers/known-bug.js';
 
 // Audit findings covered here: H-2, DOC-4. The rule catalogue in guard-patterns.md
 // and the rules the engine actually implements have drifted apart. Until a rule
@@ -39,10 +38,9 @@ describe('rule catalogue', () => {
     expect(implemented.size).toBeGreaterThan(30);
   });
 
-  knownBug('implements every rule documented in guard-patterns.md (audit DOC-4)', () => {
+  it('implements every rule documented in guard-patterns.md (audit DOC-4)', () => {
     const missing = [...documented].filter(id => !implemented.has(id)).sort();
 
-    // Today: RG-H003 (release gate content scan, P5). PG-H014 and PG-W003 arrived in P3.
     expect(missing).toEqual([]);
   });
 

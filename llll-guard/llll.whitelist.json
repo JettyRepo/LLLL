@@ -1,13 +1,3 @@
 {
-  "allowedPatterns": [
-    "package.json",
-    "README*",
-    "LICENSE*",
-    "CHANGELOG*",
-    "dist/**",
-    "lib/**",
-    "build/**",
-    "bin/**"
-  ],
   "maxPackageSize": 10485760
 }

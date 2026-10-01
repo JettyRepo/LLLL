@@ -84,12 +84,25 @@ Patterns in release artifacts (npm pack output, dist directory) that must never 
 
 | Pattern ID | Pattern | Description | Category |
 |-----------|---------|-------------|----------|
-| RG-H001 | `.env` file in release artifact | Secrets in release package | secret |
-| RG-H002 | `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*` in release | Private keys in release package | secret |
-| RG-H003 | Files matching secret patterns (PG-H001 through PG-H009) in release content | Embedded secrets in release artifacts | secret |
+| RG-H001 | `.env`, `.env.local`, `.env.production`, … at any depth, any case (not `.env.example` and the other templates) | Secrets in release package | secret |
+| RG-H002 | `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*`, `id_ecdsa*`, `id_dsa*` in release (not `*.pub`) | Private keys in release package | secret |
+| RG-H003 | The content of a published file matches a secret rule (PG-H001 to PG-H009), reported with the underlying rule id in the title | Embedded secrets in release artifacts | secret |
 | RG-H004 | `*.map` files in release artifact | Source maps expose original source code | leakage |
 | RG-H005 | Source map files with `sourcesContent` field populated | Full source code embedded in source maps | leakage |
-| RG-H006 | References to private archives, internal buckets (`s3://`, `gs://`, internal URLs) in release | Internal infrastructure references exposed | leakage |
+| RG-H006 | A `sourceMappingURL` that points at `s3://`, `gs://`, `file://`, `localhost`, a private IPv4 range, or an internal host (`.internal`, `.local`, `.corp`, `.lan`, `.intranet`), in a `.js`, `.mjs`, `.cjs`, `.css` or `.map` file | Internal infrastructure references exposed | leakage |
+| RG-H007 | A file matching `internalFilePatterns` from the policy (none by default). Files ignored by version control never went through a push, so this is the last check | Internal file in release package | leakage |
+
+An inline source map (`sourceMappingURL=data:...`) is a source map without a `.map` name: it is RG-H004, and RG-H005 as well when the decoded map carries `sourcesContent`. Credential files by name (`.netrc`, `.git-credentials`, `.htpasswd`, `*.keystore`, `*.jks`) are RG-H002.
+
+### How the release gate looks at the package
+
+- **What is published.** `npm pack --dry-run --json --ignore-scripts` with the user's own npm configuration, or every file under `--dir` (nothing skipped: not `node_modules`, not `.git`). `--ignore-scripts` keeps the gate from running the package's own `prepack` and `prepare` scripts: it runs on code that has not been reviewed yet. Build the package first. If npm lists more than one package, or one other than the `package.json` in this directory (a workspace set in `.npmrc` or the environment), the file list is not for what is here and the gate stops (exit 2).
+- **Paths.** Rules match paths inside the package (`src/a.ts`), with `/` separators, also for a `--dir` scan. RG-S006 looks at the `package.json` and `.npmignore` of the scanned directory, and applies to a `--dir` scan only if that directory is a package.
+- **What is read.** Every published file is read, as bytes decoded as Latin-1 with NUL bytes removed, so UTF-8, UTF-16 (with or without a byte order mark) and NUL-padded text are all read. No file is skipped for looking binary. A file above `LLLL_GUARD_MAX_FILE_BYTES`, or one that is not a regular file, is RG-S008: a finding, never a pass. Raising the limit is the way out for a large text file; lowering it can only make the gate stricter.
+- **RG-H003 differs from the push gate** in two ways: personal-data patterns (PG-H012, PG-H013) are not applied, since a bundle is full of numbers; and a client-exposed API key is a WARN, as on push. Documentation files are scanned for provider-format keys only, with placeholders allowed.
+- **It never passes because it could not look.** `npm pack` failing, no `package.json` and no `--dir`, a `--dir` that is missing or empty, a published file that cannot be read, a malformed `llll.whitelist.json`: all exit 2.
+- **Policy.** As for a push, the policy is read from the remote's default branch, not from the package being released: `llll.policy.json` (`enabled`, `releaseRules`: `hardBlock`, `softBlock`, `warn`, `disabledRules`; `internalFilePatterns`) and `llll.whitelist.json` (`maxPackageSize`). Only when there is no repository or no remote branch to read from does the working tree stand in, and the output says so. What the policy turns off is reported, and a result that depends on it is not called "safe".
+- **`--json` and errors.** An error (exit 2) prints `{"verdict":"ERROR","error":"..."}` on stdout as well as the message on stderr, so that a consumer that reads only stdout never mistakes empty output for success.
 
 ---
 
@@ -103,7 +116,8 @@ Patterns in release artifacts (npm pack output, dist directory) that must never 
 | RG-S004 | `prompts/`, `*.prompt`, `SKILL.md`, `system-prompt*` in release | Prompt files or skill definitions in release | leakage |
 | RG-S005 | `tools/`, `scripts/`, `Makefile`, `Taskfile*` in release | Development tooling in release package | leakage |
 | RG-S006 | No `.npmignore` AND no `"files"` field in package.json | No release whitelist policy — everything included by default | policy |
-| RG-S007 | Release artifact total size > 10MB without justification | Unusually large package — may include unintended files | policy |
+| RG-S007 | Release artifact total size > `maxPackageSize` in `llll.whitelist.json` (10 MiB by default) | Unusually large package — may include unintended files | policy |
+| RG-S008 | A file the gate did not read: larger than `LLLL_GUARD_MAX_FILE_BYTES` (64 MiB by default), or not a regular file (a symbolic link, pipe, socket or device in a `--dir` scan) | File not scanned: what is in it is unknown | policy |
 
 ---
 

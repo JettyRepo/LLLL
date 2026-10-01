@@ -35,12 +35,19 @@ export function printResult(result: ScanResult): void {
     const hidden = Object.entries(result.suppressedByPolicy)
       .map(([id, count]) => `${id} x${count}`)
       .join(', ');
-    console.log(chalk.yellow(`  Hidden by disabledRules in the policy: ${hidden}`));
+    console.log(chalk.yellow(`  Hidden by the policy: ${hidden}`));
     console.log('');
   }
 
   if (result.findings.length === 0) {
-    console.log(chalk.green('  No issues found. Safe to proceed.'));
+    // "Safe" is only said of a scan that was done as usual. With notes, or with findings hidden by
+    // the policy, the result depends on how the scan was judged, and that is not for this line to hide.
+    const plain = (result.notes ?? []).length === 0 && !result.suppressedByPolicy;
+    console.log(
+      plain
+        ? chalk.green('  No issues found. Safe to proceed.')
+        : chalk.yellow('  No issues found, but see above for how this was judged. This is not a plain clean scan.'),
+    );
     console.log('');
     return;
   }

@@ -109,14 +109,21 @@ export function loadConfig(cwd: string = process.cwd()): GuardConfig {
   return parseConfig(readFileSync(configPath, 'utf-8'), configPath);
 }
 
+/** Parses and validates the text of an llll.whitelist.json. `label` names it in error messages. */
+export function parseWhitelist(text: string, label: string): WhitelistConfig {
+  const raw = parseJson(text, label) as Partial<WhitelistConfig>;
+  if (raw.maxPackageSize !== undefined && (typeof raw.maxPackageSize !== 'number' || !(raw.maxPackageSize > 0))) {
+    fail(label, '"maxPackageSize" must be a positive number of bytes.');
+  }
+  return { ...DEFAULT_WHITELIST, ...raw };
+}
+
 export function loadWhitelist(cwd: string = process.cwd()): WhitelistConfig {
   const whitelistPath = resolve(cwd, 'llll.whitelist.json');
   if (!existsSync(whitelistPath)) {
     return DEFAULT_WHITELIST;
   }
-
-  const raw = readJson(whitelistPath) as Partial<WhitelistConfig>;
-  return { ...DEFAULT_WHITELIST, ...raw };
+  return parseWhitelist(readFileSync(whitelistPath, 'utf-8'), whitelistPath);
 }
 
 /** Parses the text of a .guardignore. Negated patterns are refused, see rejectNegatedPatterns. */
