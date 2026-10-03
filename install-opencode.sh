@@ -62,6 +62,10 @@ cp "$INSTALL_DIR/SKILL.md"                       "$DATA_DIR/SKILL.md"
 cp "$INSTALL_DIR/compliance-checklist-master.md" "$DATA_DIR/checklist.md"
 cp "$INSTALL_DIR/scan-patterns.md"               "$DATA_DIR/scan-patterns.md"
 cp "$INSTALL_DIR/guard-patterns.md"              "$DATA_DIR/guard-patterns.md"
+# The skill's reference files keep their names: SKILL.md names them, and the model reads them from here.
+for f in mode-scan.md mode-guard-review.md menus.md output-standards.md observation-storage.md; do
+  cp "$INSTALL_DIR/$f" "$DATA_DIR/$f"
+done
 echo "✓ Data files copied to $DATA_DIR"
 
 AGENT_BLOCK=$(cat << EOF
@@ -77,7 +81,7 @@ EOF
 COMMAND_BLOCK=$(cat << EOF
 {
   "description": "LLLL — /llll [deep|checklist|brief|diff|scan|fix|grc|review|guard push|guard release]",
-  "template": "{file:${DATA_DIR}/SKILL.md}\n\nActivate LLLL. User invoked: /llll \$ARGUMENTS\n\nDispatch to the correct mode based on the first word of the arguments:\n- (empty) → Diagnosis\n- deep → Deep Analysis\n- checklist → Checklist\n- brief → Expert Handoff Brief\n- diff → Feature vs Policy Coverage\n- scan → Automated Security Scan\n- fix [ID] → Fix mode\n- grc → GRC Dashboard\n- review → Human Expert Escalation\n- guard push → Pre-push compliance gate\n- guard release → Pre-release artifact scan\n- override [ID] [justification] → Override SOFT_BLOCK\n\nCompliance data:\n- Checklist: ${DATA_DIR}/checklist.md\n- Scan patterns: ${DATA_DIR}/scan-patterns.md\n- Guard patterns: ${DATA_DIR}/guard-patterns.md",
+  "template": "{file:${DATA_DIR}/SKILL.md}\n\nActivate LLLL. User invoked: /llll \$ARGUMENTS\n\nDispatch to the correct mode based on the first word of the arguments:\n- (empty) → Diagnosis\n- deep → Deep Analysis\n- checklist → Checklist\n- brief → Expert Handoff Brief\n- diff → Feature vs Policy Coverage\n- scan → Automated Security Scan\n- fix [ID] → Fix mode\n- grc → GRC Dashboard\n- review → Human Expert Escalation\n- guard push → Pre-push compliance gate\n- guard release → Pre-release artifact scan\n- override [ID] [justification] → Override SOFT_BLOCK\n\nCompliance data:\n- Checklist: ${DATA_DIR}/checklist.md\n- Scan patterns: ${DATA_DIR}/scan-patterns.md\n- Guard patterns: ${DATA_DIR}/guard-patterns.md\n- Reference files named in SKILL.md (read them from this folder): ${DATA_DIR}/mode-scan.md, mode-guard-review.md, menus.md, output-standards.md, observation-storage.md",
   "agent": "llll",
   "subtask": true
 }

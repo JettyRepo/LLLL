@@ -23,6 +23,11 @@ SKILL_FILES=(
   output-templates.md
   examples.md
   checklist-schema.md
+  mode-scan.md
+  mode-guard-review.md
+  menus.md
+  output-standards.md
+  observation-storage.md
 )
 
 # The older installer linked the whole clone as the skill directory.

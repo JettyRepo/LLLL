@@ -71,7 +71,7 @@ Next:
 
 When the user types any \`/llll\` command:
 
-1. Read \`${INSTALL_DIR}/SKILL.md\` — your complete LLLL operating spec.
+1. Read \`${INSTALL_DIR}/SKILL.md\` — the core LLLL operating spec. It names reference files (listed below) to read for specific modes.
 2. Read \`${INSTALL_DIR}/compliance-checklist-master.md\` — the compliance domain framework.
 3. Execute the requested mode exactly as specified in SKILL.md.
 
@@ -95,6 +95,7 @@ Supported commands:
 Additional data (read when the mode requires it):
 - Scan patterns: \`${INSTALL_DIR}/scan-patterns.md\`
 - Guard patterns: \`${INSTALL_DIR}/guard-patterns.md\`
+- Reference files that SKILL.md names (read the one a mode needs, in full, from \`${INSTALL_DIR}/\`): \`mode-scan.md\`, \`mode-guard-review.md\`, \`menus.md\`, \`output-standards.md\`, \`observation-storage.md\`
 
 ---
 

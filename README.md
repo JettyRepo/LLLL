@@ -159,7 +159,12 @@ Exit codes: `0` passed, `1` blocked, `2` the guard could not run (never a pass).
 ## File Structure
 
 ```
-SKILL.md                        — Core skill definition, mode system, visibility model, all /llll commands
+SKILL.md                        — Core skill: operating flow, visibility and folding rules, simple modes, output tail, registration detection
+mode-scan.md                    — /llll scan, fix, grc (read on demand)
+mode-guard-review.md            — /llll guard, override, review and the Guard rule tables (read on demand)
+menus.md                        — Next steps menus per mode (read on demand)
+output-standards.md             — Expert escalation and Coverage Confidence rules (read on demand)
+observation-storage.md          — Why nothing is saved, the .llll/scratch/ workflow (read on demand)
 compliance-checklist-master.md  — Master compliance rule library (domains A-O, 15 domains)
 checklist-schema.md             — Intake schema aligned with master domains
 output-templates.md             — Output templates for all modes and visibility levels

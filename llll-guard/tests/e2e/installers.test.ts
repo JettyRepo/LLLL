@@ -36,6 +36,9 @@ suite('install-claude-code.sh', () => {
     const names = readdirSync(dest());
     expect(names).toContain('SKILL.md');
     expect(names).toContain('compliance-checklist-master.md');
+    for (const f of ['mode-scan.md', 'mode-guard-review.md', 'menus.md', 'output-standards.md', 'observation-storage.md']) {
+      expect(names).toContain(f);
+    }
     expect(names).not.toContain('llll-guard');
     expect(names).not.toContain('tests');
     expect(names).not.toContain('install-codex.sh');
@@ -108,6 +111,9 @@ suite('install-claude-code.sh', () => {
     expect(parsed.agent.llll.tools).toMatchObject({ write: false, edit: false });
     expect(parsed.command.llll.template).toContain(data());
     expect(existsSync(join(data(), 'SKILL.md'))).toBe(true);
+    expect(existsSync(join(data(), 'mode-scan.md'))).toBe(true);
+    expect(existsSync(join(data(), 'menus.md'))).toBe(true);
+    expect(parsed.command.llll.template).toContain('mode-guard-review.md');
     expect(data().startsWith(REPO_ROOT)).toBe(false);
   });
 
@@ -219,6 +225,7 @@ suite('install-codex.sh', () => {
     expect(text).toContain(`v${version}**`);
     expect(text).toContain('round(N/2)');
     expect(text).not.toContain('fold Medium/Low');
+    expect(text).toContain('mode-scan.md');
   });
 
   it('keeps what was in the file and adds one section', () => {

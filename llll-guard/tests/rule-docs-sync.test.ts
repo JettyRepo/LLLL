@@ -6,6 +6,13 @@ import { PKG_ROOT, REPO_ROOT } from './helpers/repo.js';
 // The rule catalogue (guard-patterns.md) and the engine must name the same rules. Before this
 // test they drifted: rules were documented that nothing implemented, and the reverse.
 
+// The skill is SKILL.md plus the reference files it sends the model to; rule tables live in the latter.
+const SKILL_FILES = ['SKILL.md', 'mode-scan.md', 'mode-guard-review.md', 'menus.md', 'output-standards.md', 'observation-storage.md'];
+
+function read(file: string): string {
+  return file === 'SKILL' ? SKILL_FILES.map(f => readFileSync(join(REPO_ROOT, f), 'utf-8')).join('\n') : readFileSync(join(REPO_ROOT, file), 'utf-8');
+}
+
 const RULE_ID = /\b(?:PG|RG)-[HSW]\d{3}\b/g;
 
 function sourceFiles(dir: string): string[] {
@@ -50,8 +57,8 @@ describe('rule ids: guard-patterns.md and the engine', () => {
 });
 
 describe('rule ids: other documents', () => {
-  it.each(['llll-check-taxonomy.md', 'SKILL.md'])('%s lists every rule in the catalogue', file => {
-    const listed = ids(readFileSync(join(REPO_ROOT, file), 'utf-8'));
+  it.each(['llll-check-taxonomy.md', 'SKILL'])('%s lists every rule in the catalogue', file => {
+    const listed = ids(read(file));
     const missing = [...catalogue()].filter(id => !listed.has(id)).sort();
 
     expect(missing).toEqual([]);
@@ -59,16 +66,29 @@ describe('rule ids: other documents', () => {
 
   it('no document shows the engine command `override` with a bare rule id (the engine refuses it)', () => {
     // `/llll override PG-S002 "..."` is the skill's own syntax and is fine; the engine needs <id>@<token>.
-    for (const file of ['SKILL.md', 'examples.md', 'README.md']) {
-      const text = readFileSync(join(REPO_ROOT, file), 'utf-8');
+    for (const file of ['SKILL', 'examples.md', 'README.md']) {
+      const text = read(file);
       expect(text, file).not.toMatch(/guard\s+override\s+(?:PG|RG)-[HSW]\d{3}\s+["']/);
     }
   });
 
-  it.each(['SKILL.md', 'llll-check-taxonomy.md'])('%s only names rules that exist', file => {
+  it.each(['SKILL', 'llll-check-taxonomy.md'])('%s only names rules that exist', file => {
     const known = new Set([...engine(), ...catalogue()]);
-    const unknown = [...ids(readFileSync(join(REPO_ROOT, file), 'utf-8'))].filter(id => !known.has(id)).sort();
+    const unknown = [...ids(read(file))].filter(id => !known.has(id)).sort();
 
     expect(unknown).toEqual([]);
+  });
+});
+
+describe('skill files', () => {
+  it('SKILL.md names every reference file, so none is never read', () => {
+    const core = readFileSync(join(REPO_ROOT, 'SKILL.md'), 'utf-8');
+    const unnamed = SKILL_FILES.slice(1).filter(file => !core.includes(`\`${file}\``));
+
+    expect(unnamed).toEqual([]);
+  });
+
+  it('SKILL.md stays a core file (under 1000 lines)', () => {
+    expect(readFileSync(join(REPO_ROOT, 'SKILL.md'), 'utf-8').split('\n').length).toBeLessThan(1000);
   });
 });
