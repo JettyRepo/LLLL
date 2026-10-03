@@ -128,7 +128,7 @@ doctor() {
     [ -n "$node" ] && version=$("$node" "$ENGINE" --version 2>/dev/null)
     echo "  engine:   $ENGINE (${version:-version unknown})"
   else
-    echo "  engine:   NOT FOUND (run '$SELF doctor --fix' in a clone, or: npm install -g @layrix/llll-guard)"
+    echo "  engine:   NOT FOUND (run '$SELF doctor --fix' in a clone, or: npm install -g @layrix.ai/llll-guard)"
     rc=2
   fi
   echo "  strict:   ${LLLL_GUARD_STRICT:-0} (1 = a push is stopped when the guard cannot run)"

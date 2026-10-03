@@ -1,5 +1,5 @@
 {
-  "name": "@layrix/llll-guard",
+  "name": "@layrix.ai/llll-guard",
   "version": "0.2.0",
   "description": "LLLL Guard — Push & Release Compliance Gate. Local-first leakage prevention for development workflows.",
   "type": "module",
