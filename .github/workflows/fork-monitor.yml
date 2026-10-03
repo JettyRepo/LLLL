@@ -1,5 +1,9 @@
 name: Fork Monitor
 
+# Forks are allowed: the license is MIT and the README says "free to use, fork, and build on".
+# This job only reports them, so that a derivative project presented as an official Layrix
+# product (which the README asks people not to do) can be noticed. It never fails the run.
+
 on:
   schedule:
     - cron: '0 */6 * * *'  # every 6 hours
@@ -9,22 +13,24 @@ permissions:
   contents: read
 
 jobs:
-  check-forks:
+  list-forks:
     runs-on: ubuntu-latest
     steps:
-      - name: Check for forks
+      - name: List forks
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
-          FORKS=$(gh api repos/${{ github.repository }}/forks --jq 'length')
-          if [ "$FORKS" -gt 0 ]; then
-            echo "::error::UNAUTHORIZED FORKS DETECTED: $FORKS fork(s) found"
-            echo ""
-            echo "Fork details:"
-            gh api repos/${{ github.repository }}/forks --jq '.[] | "  - \(.full_name) by \(.owner.login) (\(.created_at))"'
-            echo ""
-            echo "Action required: File DMCA takedown at https://support.github.com/contact/dmca-takedown"
-            exit 1
-          else
-            echo "No forks detected."
+          FORKS=$(gh api --paginate "repos/$REPO/forks" --jq '.[].full_name' || true)
+          if [ -z "$FORKS" ]; then
+            echo "No forks."
+            exit 0
           fi
+          for FORK in $FORKS; do
+            if gh api "repos/$FORK/contents/LICENSE" >/dev/null 2>&1; then
+              echo "::notice::Fork $FORK keeps a LICENSE file."
+            else
+              echo "::notice::Fork $FORK has no LICENSE file at its root. MIT asks that the copyright notice is kept; look at it if you want to."
+            fi
+          done
+          exit 0
