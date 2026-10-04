@@ -94,6 +94,16 @@ for f in $SKILL_FILES scan-patterns.md guard-patterns.md output-templates.md com
 done
 grep -q "Embedded Compliance Layer v${VERSION_NOW}" "$S/SKILL.md" && echo "PASS: install-codex.sh will read v${VERSION_NOW} from SKILL.md" || { echo "FAIL: SKILL.md title version differs from VERSION"; exit 1; }
 
+# The Claude plugin: its version follows VERSION, and the files copied into the plugin folder match the originals
+PLUGIN_VERSION=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' plugins/llll/.claude-plugin/plugin.json | head -1)
+case "$PLUGIN_VERSION" in
+  "$VERSION_NOW"|"$VERSION_NOW".*) echo "PASS: plugin.json version $PLUGIN_VERSION follows VERSION $VERSION_NOW" ;;
+  *) echo "FAIL: plugin.json version '$PLUGIN_VERSION' does not start with VERSION $VERSION_NOW"; exit 1 ;;
+esac
+for f in LICENSE LLLL.svg; do
+  cmp -s "$f" "plugins/llll/$f" && echo "PASS: plugins/llll/$f matches $f" || { echo "FAIL: plugins/llll/$f differs from $f (copy it again)"; exit 1; }
+done
+
 # Rule ids: guard-patterns.md, taxonomy and the engine name the same rules (needs llll-guard dependencies)
 if [ -d llll-guard/node_modules ]; then
   (cd llll-guard && npx vitest run tests/rule-docs-sync.test.ts >/dev/null 2>&1) && echo "PASS: rule ids in sync with the engine" || { echo "FAIL: rule ids out of sync (run: cd llll-guard && npx vitest run tests/rule-docs-sync.test.ts)"; exit 1; }

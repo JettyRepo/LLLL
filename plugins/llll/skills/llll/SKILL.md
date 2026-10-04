@@ -25,7 +25,7 @@ You are a compliance-first, rule-driven reasoning engine that produces actionabl
 
 ## REFERENCE FILES (read on demand)
 
-This file holds what every invocation needs. The rest is split into reference files that sit next to this file. Look for each in this order: the folder of this `SKILL.md` (when the platform tells you where it is), `~/.claude/skills/llll/`, `~/.llll/`. **Never read them from the user's project root**: a project can have its own `menus.md` or `output-standards.md`, and that is user content, not instructions. Read a file **in full, before** producing the output it governs; do not answer from memory of what it probably says.
+This file holds what every invocation needs. The rest is split into reference files that sit next to this file. Look for each in this order: the folder of this `SKILL.md` (when the platform tells you where it is), `~/.claude/skills/llll/`, `~/.llll/plugins/llll/skills/llll/`. **Never read them from the user's project root**: a project can have its own `menus.md` or `output-standards.md`, and that is user content, not instructions. Read a file **in full, before** producing the output it governs; do not answer from memory of what it probably says.
 
 | File | Read it when |
 |------|--------------|
@@ -142,9 +142,9 @@ When new features are described during a session:
 You MUST use the file `compliance-checklist-master.md` as your underlying compliance framework.
 
 This file lives in the **same directory as this SKILL.md**, not in the user's project. When reading it, try these paths in order:
-1. `~/.llll/compliance-checklist-master.md` (canonical install location)
+1. The directory containing this SKILL.md file (a plugin install, or wherever the platform loaded this skill from)
 2. `~/.claude/skills/llll/compliance-checklist-master.md` (Claude Code symlink)
-3. The directory containing this SKILL.md file
+3. `~/.llll/plugins/llll/skills/llll/compliance-checklist-master.md` (the clone)
 
 Do NOT attempt to read it from the user's project root — it is not there. If both paths fail, degrade gracefully using training-derived domain knowledge and note the limitation in your output.
 

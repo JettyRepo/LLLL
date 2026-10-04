@@ -112,6 +112,8 @@ git clone https://github.com/layrix-ai/LLLL.git ~/.llll && ~/.llll/install-claud
 
 Creates `~/.claude/skills/llll/` holding links to the skill files only (not the rest of the clone), so Claude Code auto-discovers LLLL and `git pull` in `~/.llll` updates it. Restart Claude Code, then use `/llll` immediately. Remove with `~/.llll/install-claude-code.sh --uninstall`.
 
+**Upgrading from an install made before the skill files moved into `plugins/llll/skills/llll/`:** the links the old installer made point at the old location, so after `git pull` run `~/.llll/install-claude-code.sh` once more. Until you do, `/llll` will not load in Claude Code. The same goes for Codex (`~/.llll/install-codex.sh`, whose `AGENTS.md` section names the old paths). opencode keeps working from the files it copied, and `~/.llll/install-opencode.sh` refreshes them.
+
 **Opencode:** `~/.llll/install-opencode.sh` (add `--merge` to merge into an existing config with jq; `--uninstall` removes it).
 **Codex CLI:** `~/.llll/install-codex.sh` (adds a marked section to `~/.codex/AGENTS.md`; run it again after `git pull` to upgrade, `--uninstall` removes it).
 
