@@ -163,7 +163,7 @@ These patterns in outgoing diffs trigger an automatic hard block. Scanned agains
 | Pattern ID | Regex / Heuristic | Description | Category |
 |-----------|-------------------|-------------|----------|
 | PG-H001 | `\b(AKIA\|ASIA)[0-9A-Z]{16}\b` | AWS access key ID (long-term or temporary) | secret |
-| PG-H002 | `\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}` | OpenAI / Stripe secret key | secret |
+| PG-H002 | `\bsk-[A-Za-z0-9_-]{20,}` (OpenAI, Anthropic), `\b(sk\|rk)_live_[A-Za-z0-9]{16,}` (Stripe live), `\bxox[abprs]-…` (Slack), `\bAIza[0-9A-Za-z_-]{35}` (Google) | API secret key | secret |
 | PG-H003 | `ghp_[a-zA-Z0-9]{36}` | GitHub personal access token | secret |
 | PG-H004 | `gho_[a-zA-Z0-9]{36}` | GitHub OAuth access token | secret |
 | PG-H005 | `-----BEGIN (RSA \|DSA \|EC \|OPENSSH \|ENCRYPTED \|PGP )?PRIVATE KEY( BLOCK)?-----` | Private key material (including PKCS#8 and PGP) | secret |
