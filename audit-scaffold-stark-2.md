@@ -54,7 +54,7 @@ Output Mode: LLLL Basic
 
 ### Inferred Signals
 
-- **Next.js 15.2.8** was released in response to the Next.js middleware auth-bypass CVE (CVE-2025-29927) which affected 15.2.3 and earlier — the upgrade to 15.2.8 suggests patch awareness, but downstream forks pinned to older versions inherit the vulnerability
+- **Next.js 15.2.8** is past the fix for the Next.js middleware auth-bypass CVE (CVE-2025-29927: affected 15.0.0 to 15.2.2, fixed in 15.2.3) — the pin suggests patch awareness, but downstream forks pinned to older versions inherit the vulnerability
 - Scaffold-Stark is the Starknet analog of Scaffold-ETH-2; governance patterns likely mirror upstream (MIT, similar structure)
 - Burner wallets and prefunded accounts are **dev-only** — not a prod security concern for the template itself, but forks must understand the boundary
 - Smart contracts in `packages/snfoundry/contracts` are sample code; fork operators bear responsibility for audit before mainnet
@@ -106,7 +106,7 @@ Output Mode: LLLL Basic
 | 5 | **N** | N4 | Test gate tolerates empty suites: `vitest run --passWithNoTests`. Forks that delete all tests still get a green build. | 🟡 **Medium** |
 | 6 | **A** | A1 | No `CODE_OF_CONDUCT.md` for an active community repo with 170 forks and active issue tracking. | 🟡 **Medium** |
 | 7 | **A** | A2 | No `CODEOWNERS` file. Review routing is implicit. | 🟡 **Medium** |
-| 8 | **O** | O2 | No dependency-license audit in CI. Transient deps could introduce GPL/AGPL without detection. | 🟡 **Medium** |
+| 8 | **O** | O2 | No dependency-license audit in CI. Transitive deps could introduce GPL/AGPL without detection. | 🟡 **Medium** |
 | 9 | **N** | N3 | No `CHANGELOG.md` in repo. Version 3.0.1 exists but the release narrative is not in-repo. | 🟢 **Low** |
 | 10 | **E** | E1 | No accessibility testing in CI for public demo (axe, pa11y). Radix primitives help but don't guarantee page-level conformance. | 🟢 **Low** |
 
@@ -121,7 +121,7 @@ Output Mode: LLLL Basic
 | 3 | **P1** | Add `.github/dependabot.yml` for npm (weekly) + GitHub Actions (weekly). Add CodeQL workflow for JavaScript/TypeScript. Add `npm audit --audit-level=high` or `yarn npm audit` as a required check in `main.yml`. | Engineering | Gap 3 |
 | 4 | **P1** | Either rename `vercel:yolo` to `vercel:experimental` with a script-level banner, or remove it. At minimum, document it in README as "not for production forks." Consider removing `NEXT_PUBLIC_IGNORE_BUILD_ERROR=true` entirely — a template should model safe defaults. | Engineering + Product | Gap 4 |
 | 5 | **P2** | Remove `--passWithNoTests` from the root test script, or add a test-count floor check. | Engineering | Gap 5 |
-| 6 | **P2** | Add `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1 is the community standard). | Product | Gap 6 |
+| 6 | **P2** | Add `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1 is a widely used community standard). | Product | Gap 6 |
 | 7 | **P2** | Add `CODEOWNERS` file routing `packages/snfoundry/**` to Cairo reviewers and `packages/nextjs/**` to frontend reviewers. | Engineering | Gap 7 |
 | 8 | **P2** | Add `license-checker` or `@license-check` to CI with an allow-list of permissive licenses (MIT, Apache-2.0, BSD-*, ISC). | Engineering | Gap 8 |
 | 9 | **P3** | Generate `CHANGELOG.md` with [Keep a Changelog](https://keepachangelog.com/) format, backfill from git tags. | Engineering | Gap 9 |

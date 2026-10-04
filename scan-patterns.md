@@ -15,7 +15,7 @@ Scan source code files (excluding node_modules, .git, vendor, dist, build direct
 | SEC-001 | `(?i)(api[_-]?key\|api[_-]?secret\|access[_-]?key)\s*[=:]\s*['"][A-Za-z0-9+/=]{16,}['"]` | Hardcoded API key assignment | Critical |
 | SEC-002 | `(?i)password\s*[=:]\s*['"][^'"]{4,}['"]` | Hardcoded password (excluding test files) | Critical |
 | SEC-003 | `AKIA[0-9A-Z]{16}` | AWS Access Key ID | Critical |
-| SEC-004 | `\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}` | OpenAI / Stripe secret key pattern | Critical |
+| SEC-004 | `\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}` | OpenAI / Anthropic-style secret key (`sk-`; Stripe live keys use `sk_live_`) | Critical |
 | SEC-005 | `ghp_[a-zA-Z0-9]{36}` | GitHub personal access token | Critical |
 | SEC-006 | `-----BEGIN (?:RSA \|DSA \|EC \|OPENSSH \|ENCRYPTED )?PRIVATE KEY-----` | Private key in source | Critical |
 | SEC-007 | `(?i)(database_url\|db_password\|db_pass)\s*[=:]\s*['"][^'"]+['"]` | Database credential | Critical |
@@ -55,7 +55,7 @@ These checks use git and GitHub CLI commands.
 | GIT-002 | `git check-ignore -q .env` | .env excluded from tracking | Critical |
 | GIT-003 | `git log --all --diff-filter=A --name-only --format= -- '.env' '*.env' '.env.*' ':!*.example' ':!*.sample' ':!*.template'` | .env files never committed to history | Critical |
 | GIT-004 | `git log --all --diff-filter=A --name-only --format= -- '*.pem' '*.key' '*id_rsa*' ':!*.pub'` | Private keys never committed | Critical |
-| GIT-005 | `gh api repos/{owner}/{repo}/branches/{default_branch}/protection 2>/dev/null` (needs `gh` and admin access; otherwise NEEDS TECHNICAL CONFIRMATION) | Branch protection on main | High |
+| GIT-005 | `gh api repos/{owner}/{repo}/branches/{default_branch}/protection 2>/dev/null` (needs `gh` and admin access; otherwise NEEDS TECHNICAL CONFIRMATION. Rulesets use a different API, so a 404 here is not proof that the branch is unprotected) | Branch protection on main | High |
 | GIT-006 | `test -f LICENSE \|\| test -f LICENSE.md \|\| test -f LICENSE.txt \|\| test -f COPYING` | LICENSE file exists | High |
 | GIT-007 | `test -f CODEOWNERS \|\| test -f .github/CODEOWNERS \|\| test -f docs/CODEOWNERS` | CODEOWNERS file exists | Low |
 
@@ -70,7 +70,7 @@ Run the appropriate command based on detected tech stack.
 | Node.js (pnpm) | `pnpm audit --json 2>/dev/null` | `pnpm-lock.yaml` |
 | Python (pip) | `pip-audit -r requirements.txt -f json 2>/dev/null` | `requirements.txt` |
 | Python (pipenv) | `pipenv check --json 2>/dev/null` | `Pipfile.lock` |
-| Python (poetry) | `poetry audit 2>/dev/null` | `poetry.lock` |
+| Python (poetry) | no built-in audit command: a third-party audit plugin, or `pip-audit` on exported requirements; if neither is installed, NEEDS TECHNICAL CONFIRMATION | `poetry.lock` |
 | Rust | `cargo audit --json 2>/dev/null` | `Cargo.lock` |
 | Go | `govulncheck ./... 2>/dev/null` | `go.sum` |
 | Ruby | `bundle audit check --format=json 2>/dev/null` | `Gemfile.lock` |
@@ -162,7 +162,7 @@ Tech stack: [detected technologies]
 - Secret scanning: GitHub Secret Scanning, GitLeaks, TruffleHog
 - SAST: SonarQube, Semgrep, CodeQL
 - Container scanning: Trivy, Grype
-- License compliance: FOSSA, Snyk License, WhiteSource
+- License compliance: FOSSA, Snyk License, Mend (formerly WhiteSource)
 
 ### Coverage Confidence
 [Standard LLLL coverage confidence section]

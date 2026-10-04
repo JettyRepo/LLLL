@@ -13,9 +13,9 @@ Output Mode: LLLL Basic — Deep Analysis
 **Sensitivity level: HIGH** (escalated from Medium in `/llll` baseline)
 
 Reasoning:
-1. ~~**Live secret exposure** — Sepolia Alchemy API key found embedded in `packages/snfoundry/contracts/Scarb.toml`. Pattern: `https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_10/_hKu4IgnPgrF8O82GLuYU`. Trailing path segment is the API token (Alchemy uses path-based auth). This is a public repo — the key is exfiltrable by anyone, including the entire fork tree.~~ **[FALSE POSITIVE — see correction at top of document.]** This is the scaffold's intentional public default RPC key, also shipped in both `.env.example` files and documented in the README; not a leaked credential.
+1. ~~**Live secret exposure** — Sepolia Alchemy API key found embedded in `packages/snfoundry/contracts/Scarb.toml`. Pattern: `https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_10/<redacted>`. Trailing path segment is the API token (Alchemy uses path-based auth). This is a public repo — the key is exfiltrable by anyone, including the entire fork tree.~~ **[FALSE POSITIVE — see correction at top of document.]** This is the scaffold's intentional public default RPC key, also shipped in both `.env.example` files and documented in the README; not a leaked credential.
 2. **Financial-infrastructure tooling** — though the template itself is dev tooling, every fork inevitably crosses into Domain M (Sensitive Sector) by deploying user-fund-handling contracts. The template is the upstream node of an ecosystem of regulated activity.
-3. **Supply-chain attack surface** — the CI uses an unpinned action (`actions/checkout@master`), no `permissions:` restriction (defaults to write), and sync workflows that push to other repos using `ORG_GITHUB_TOKEN`. A compromise here would propagate across the Scaffold-Stark org.
+3. **Supply-chain attack surface** — the CI uses an unpinned action (`actions/checkout@master`), no `permissions:` restriction (the token's default depends on the repository or organization setting; read-only is the default for newer repositories), and sync workflows that push to other repos using `ORG_GITHUB_TOKEN`. A compromise here would propagate across the Scaffold-Stark org.
 4. **Wallet defaults** — `scaffold.config.ts` sets `walletAutoConnect: true` and `onlyLocalBurnerWallet: false`, meaning burner wallets are wired up on whatever network is configured (devnet today, but a fork's first config change is `targetNetworks`).
 5. **Fork multiplier** — 170 forks means the audit blast radius for any defect is large.
 
@@ -26,10 +26,10 @@ Reasoning:
 | Pressure | Status |
 |----------|--------|
 | **Active fork ecosystem** | 170 forks already exist; every defect found today is replicated 170× |
-| **CVE-2025-29927 (Next.js middleware bypass)** | The template runs Next.js 15.2.8 (patched), but downstream forks may pin earlier 15.2.x versions |
+| **CVE-2025-29927 (Next.js middleware bypass)** | The template runs Next.js 15.2.8 (past the 15.2.3 fix), but downstream forks pinned to 15.2.0 to 15.2.2 are affected |
 | **Starknet mainnet maturity** | Starknet is in production with billions in TVL; templates that ship there carry real money |
 | **EU AI Act + DORA enforcement** (2025) | DORA's ICT third-party risk rules apply to financial entities — many of which use Starknet. A "trusted upstream template" is now a third-party risk in EU compliance terms |
-| **OpenSSF Scorecard pressure** | Major Web3 projects are being scored publicly. A scorecard run today on this repo would fail on: License, Security-Policy, Pinned-Dependencies, Token-Permissions, SAST, Dependency-Update-Tool. That's 6/18 metrics failing. |
+| **OpenSSF Scorecard pressure** | Major Web3 projects are being scored publicly. A scorecard run on this repo (none was run for this report) would likely score low on: License, Security-Policy, Pinned-Dependencies, Token-Permissions, SAST, Dependency-Update-Tool. That is 6 of Scorecard's 20 checks, an estimate and not a result. |
 
 *(Row removed 2026-08-12: "GitHub's secret-scanning push notifications" — premised on the Alchemy key being leaked, which was a false positive; see correction at top of document.)*
 
@@ -81,8 +81,8 @@ A reviewer's instinct should be: fix cluster 1 today, draft cluster 2 this week,
 |--------|--------|------|
 | ~~🚨 Live Alchemy Sepolia API key~~ **FALSE POSITIVE** | `packages/snfoundry/contracts/Scarb.toml` line ~25 | Same value is the scaffold's intentional public default, also in both `.env.example` files and the README — not a leaked secret |
 | 🚨 `actions/checkout@master` floating reference | `.github/workflows/main.yml:23` | Resolves dynamically; supply-chain compromise vector |
-| 🚨 No `permissions:` block in `main.yml` | workflow inspection | Defaults to write permissions on the GitHub token |
-| `actions/setup-node@v3` (deprecated) | `main.yml:26` | v3 EOL'd; v4+ required |
+| 🚨 No `permissions:` block in `main.yml` | workflow inspection | The token's default permission depends on the repository or organization setting (read-only by default for newer repositories); to confirm |
+| `actions/setup-node@v3` (deprecated) | `main.yml:26` | v3 is an older major version (Node 16 runtime); use a current major version |
 | `LICENSE` file absent | `curl …/LICENSE` → 404 | Despite `package.json` declaring MIT |
 | No `SECURITY.md` | top-level listing | No disclosure path |
 | No `CODE_OF_CONDUCT.md` | top-level listing | |
@@ -119,7 +119,7 @@ A reviewer's instinct should be: fix cluster 1 today, draft cluster 2 this week,
 | Privacy notice on demo deployment | EU users may visit | GDPR Art. 13 violation if analytics fire without notice |
 | Threat model document | High-leverage template needs one | Unknown which threats are in/out of scope |
 | Supply-chain transparency log (SBOM) | Required by EU CRA (Cyber Resilience Act) for products marketed in EU after 2027 | Not blocking today; blocking by 2027-12-11 |
-| Cosign signatures on `create-stark` npm releases | Cosign signing prevents tampered template distribution | Tampered package can be served to npx users |
+| Cosign signatures on `create-stark` npm releases | Cosign signing lets users detect a tampered template distribution | Tampered package can be served to npx users |
 
 ---
 
@@ -158,18 +158,18 @@ A reviewer's instinct should be: fix cluster 1 today, draft cluster 2 this week,
 
 | # | Domain | Check | Gap | Risk | Label |
 |---|--------|-------|-----|------|-------|
-| 1 | **B / N** | B9 / N6 | ~~**Live Sepolia Alchemy API key embedded in `packages/snfoundry/contracts/Scarb.toml`**. The trailing path segment of the RPC URL (`_hKu4IgnPgrF8O82GLuYU`) is an Alchemy auth token. Public, in git history, exposed to all 170 forks.~~ **FALSE POSITIVE, confirmed 2026-08-12:** same key is the scaffold's intentional public default RPC endpoint, also shipped in `packages/snfoundry/.env.example` and `packages/nextjs/.env.example` and documented in README:250. No rotation or disclosure required. | ~~🔴🔴 Critical~~ **N/A — false positive** | RESOLVED — verified false positive, no action needed |
-| 2 | **C / B** | C5 / B6 | `actions/checkout@master` in `main.yml:23` is a **floating reference** to the upstream action's `master` branch. Any compromise of `actions/checkout` (or a successful PR-merge attack against it) executes immediately in this CI on every PR. Combined with **no `permissions:` block** in the workflow, the GitHub token defaults to write permissions, meaning a compromise has commit access to the repo. | 🔴🔴 **Critical** | NEEDS TECHNICAL CONFIRMATION |
+| 1 | **B / N** | B9 / N6 | ~~**Live Sepolia Alchemy API key embedded in `packages/snfoundry/contracts/Scarb.toml`**. The trailing path segment of the RPC URL (`<redacted>`) is an Alchemy auth token. Public, in git history, exposed to all 170 forks.~~ **FALSE POSITIVE, confirmed 2026-08-12:** same key is the scaffold's intentional public default RPC endpoint, also shipped in `packages/snfoundry/.env.example` and `packages/nextjs/.env.example` and documented in README:250. No rotation or disclosure required. | ~~🔴🔴 Critical~~ **N/A — false positive** | RESOLVED — verified false positive, no action needed |
+| 2 | **C / B** | C5 / B6 | `actions/checkout@master` in `main.yml:23` is a **floating reference** to the upstream action's `master` branch. Any compromise of `actions/checkout` (or a successful PR-merge attack against it) executes immediately in this CI on every PR. Combined with **no `permissions:` block** in the workflow, the GitHub token's default permission depends on the repository or organization setting; if it is write, a compromise has commit access to the repo. | 🔴🔴 **Critical** | NEEDS TECHNICAL CONFIRMATION |
 | 3 | **O** | O1 | `LICENSE` file missing despite `package.json` declaring MIT. 170 forks inherit ambiguous provenance. SBOM/SCA tools and enterprise procurement teams flag as "unlicensed." | 🔴🔴 **Critical** | NEEDS BUSINESS DECISION (which copyright entity) |
 | 4 | **A / N** | A3 / N5 | No `SECURITY.md`. No documented private disclosure path for a template that propagates to 170 forks. A researcher who finds a Cairo contract vulnerability has no responsible channel. | 🔴 **High** | NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT |
 | 5 | **B / C** | B2 / C4 | No automated dependency vulnerability scanning. No Dependabot, no CodeQL, no `npm audit` in CI. With Next.js 15.x, starknet.js 9.x, and OpenZeppelin Cairo 2.x all on fast release cadences, vulns will land silently. | 🔴 **High** | — |
-| 6 | **C** | C1 / C5 | OpenZeppelin Cairo deps are unbounded: `openzeppelin_access = ">=2.0.0"`, `openzeppelin_token = ">=2.0.0"`, `starknet = ">=2.16.0"`. New major releases will be pulled automatically. **Cairo dependency resolution does not have a `Scarb.lock`-equivalent for transitive constraints with this kind of range.** Builds are non-reproducible across time. | 🔴 **High** | NEEDS TECHNICAL CONFIRMATION |
+| 6 | **C** | C1 / C5 | OpenZeppelin Cairo deps are unbounded: `openzeppelin_access = ">=2.0.0"`, `openzeppelin_token = ">=2.0.0"`, `starknet = ">=2.16.0"`. New major releases will be pulled automatically. **Open-ended ranges make builds drift unless the lockfile (`Scarb.lock`, see the evidence note) is committed and respected.** Whether it pins transitive versions here is to be confirmed. | 🔴 **High** | NEEDS TECHNICAL CONFIRMATION |
 | 7 | **N** | N6 | `vercel:yolo` script suppresses build errors via `NEXT_PUBLIC_IGNORE_BUILD_ERROR=true`. As a template default, this normalizes deploy-without-validation. | 🔴 **High** | — |
 | 8 | **B** | B6 / C6 | Six sync workflows use `secrets.ORG_GITHUB_TOKEN` to push to sibling repos (`basecamp`, `bulletproof-contracts`, `rn-repo`, `speedrun-repo`). The token's scope is undocumented; if it has org-wide `repo` scope, a compromise of any sync workflow becomes a Scaffold-Stark-org-wide write event. | 🔴 **High** | NEEDS TECHNICAL CONFIRMATION |
 | 9 | **B** | B-app-defaults | `scaffold.config.ts` ships with `walletAutoConnect: true` and `onlyLocalBurnerWallet: false`. The README comment says "Only show the Burner Wallet when running on devnet" but the flag is set to `false`, meaning the burner wallet is **not restricted to local**. A fork that flips `targetNetworks` to mainnet inherits a wallet that auto-connects on mainnet by default. | 🔴 **High** | NEEDS BUSINESS DECISION |
 | 10 | **A** | A2 / N1 | Branch protection on `main` could not be confirmed (404 from authenticated query — endpoint requires repo admin). For a 109-star template, the absence of branch protection would be a critical control gap. | 🔴 **High** | NEEDS TECHNICAL CONFIRMATION |
 | 11 | **D** | D1 / D2 | Public demo at `scaffold-stark-demo.vercel.app` connects wallets and likely loads Vercel Analytics. Wallet addresses are linkable identifiers and may qualify as personal data under GDPR (EDPB guidance, Recital 30). No privacy notice visible. | 🔴 **High** | NEEDS COMPLIANCE EXPERT OR LEGAL PROFESSIONAL INPUT |
-| 12 | **C** | C5 | `actions/setup-node@v3` is end-of-life (uses Node 16 runner, deprecated by GitHub). Will start failing CI when GitHub removes the runner. | 🟡 **Medium** | — |
+| 12 | **C** | C5 | `actions/setup-node@v3` is an older major version that targets the deprecated Node 16 runtime; GitHub has been moving such actions to newer runtimes. Update to a current major version. | 🟡 **Medium** | — |
 | 13 | **N** | N4 | `--passWithNoTests` tolerates empty test suites. Forks deleting all tests still get green CI. | 🟡 **Medium** | — |
 | 14 | **A** | A1 | `CONTRIBUTING.md` is a docusaurus fragment (`sidebar_position: 7`, `:::caution`) — was copied from the docs site rather than authored for the repo. Contains rendering directives that won't render on GitHub. | 🟡 **Medium** | — |
 | 15 | **A** | A1 | No `CODE_OF_CONDUCT.md` for an active community repo with 170 forks and open issues. | 🟡 **Medium** | — |
@@ -188,7 +188,7 @@ A reviewer's instinct should be: fix cluster 1 today, draft cluster 2 this week,
 | 1 | ~~P1 — TODAY~~ **RESOLVED** | ~~Rotate the exposed Alchemy API key…~~ **No action needed — Gap 1 was a false positive.** The key is the scaffold's intentional public default (also in both `.env.example` files, documented in README:250); rotating it would break the scaffold's out-of-the-box behavior for all 170 forks. | Engineering | Gap 1 |
 | 2 | **P1 — TODAY** | Pin `actions/checkout@master` to a SHA: `actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1`. Add `permissions: contents: read` (or per-job minimum) at the top of every workflow. Run this fix on `main.yml` AND all six `sync-*.yaml` workflows. | Engineering | Gap 2 |
 | 3 | **P1** | Add `LICENSE` file at repo root with MIT text and "Copyright (c) 2024 Q3 Labs". Verify `gh repo view` returns `licenseInfo.name = "MIT License"`. | Engineering + Legal | Gap 3 |
-| 4 | **P1** | Add `SECURITY.md` with: supported versions table, private disclosure channel (security@q3labs.io or GitHub Security Advisory), 5-business-day initial response SLA, and explicit scope statement covering downstream-fork inheritance. | Engineering + Compliance | Gap 4 |
+| 4 | **P1** | Add `SECURITY.md` with: supported versions table, private disclosure channel (a monitored security contact, or GitHub private vulnerability reporting), an initial-response target set by the maintainers, and explicit scope statement covering downstream-fork inheritance. | Engineering + Compliance | Gap 4 |
 | 5 | **P1** | Add `.github/dependabot.yml` (npm weekly, GitHub Actions weekly), CodeQL workflow for JS/TS, and `npm audit --audit-level=high` as a required check. For Cairo: add `scarb metadata` based vuln scanning if available, or pin transitive deps explicitly. | Engineering | Gap 5 |
 | 6 | **P1** | Pin OpenZeppelin Cairo deps to exact minor: `openzeppelin_access = "2.0.0"` (or whatever the audited version is). Document upgrade cadence. | Engineering + Smart-Contract Lead | Gap 6 |
 | 7 | **P1** | Either remove `vercel:yolo` entirely or add a banner script + README note: "DO NOT use this in production forks." | Engineering + Product | Gap 7 |

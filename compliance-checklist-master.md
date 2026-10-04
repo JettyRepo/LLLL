@@ -282,6 +282,8 @@ Priority:
 Applicability:
 - all applications processing user input
 
+(OWASP ids in this file use the Top 10:2021 numbering. A 2025 edition exists and renumbers categories, so map by category name when updating.)
+
 OWASP mapping: A03:2021 Injection
 
 ### B6. Cross-site scripting (XSS) and output encoding
@@ -308,7 +310,7 @@ OWASP mapping: A03:2021 Injection (XSS subcategory)
 
 ### B7. Sensitive data exposure and cryptographic failures
 Check:
-- whether passwords are hashed with a strong algorithm (bcrypt, argon2, scrypt — NOT MD5, SHA1, plain SHA256)
+- whether passwords are hashed with a strong algorithm (bcrypt, argon2, scrypt, or PBKDF2 with a high work factor — NOT MD5, SHA1, plain SHA256)
 - whether HTTPS is enforced for all endpoints (HSTS headers, HTTP redirect)
 - whether sensitive data at rest is encrypted (database fields, file storage)
 - whether error messages avoid exposing stack traces, internal paths, or database details to users

@@ -880,7 +880,7 @@ Output Mode: LLLL Unregistered
 | SEC-004: OpenAI API key hardcoded in src/config.js:15 | 🔴🔴 **Critical** | B9 | Yes |
 | OWA-007: dangerouslySetInnerHTML in src/components/Preview.jsx:42 | 🔴 **High** | B6 | No |
 | DEP-001: 3 high-severity npm audit findings | 🔴 **High** | C1 | Yes |
-| LIC-001: AGPL-3.0 dependency (mongodb-client@4.2.0) | 🔴🔴 **Critical** | O2 | No |
+| LIC-001: AGPL-3.0 dependency (example-db-client@4.2.0) | 🔴🔴 **Critical** | O2 | No |
 
 🔴 (+3 hidden: Permissive CORS config, Missing CSP header, Missing CODEOWNERS) 🔴
 🟢 Register free at layrix.ai to see all findings → 🟢
@@ -899,10 +899,10 @@ Output Mode: LLLL Unregistered
 #### LIC-001: AGPL-3.0 Dependency
 - **Severity:** 🔴🔴 **Critical**
 - **Domain:** O2 — Copyleft Contamination
-- **Location:** `package.json` → `mongodb-client@4.2.0`
-- **Description:** mongodb-client is licensed under AGPL-3.0. For SaaS/API usage, AGPL requires disclosure of the complete source code of the service.
+- **Location:** `package.json` → `example-db-client@4.2.0`
+- **Description:** example-db-client is licensed under AGPL-3.0 (an illustrative package). For SaaS/API usage, AGPL requires disclosure of the complete source code of the service.
 - **Risk:** If this is a commercial SaaS product, AGPL may require open-sourcing the entire codebase or the network-facing portions.
-- **Fix:** Evaluate alternatives (e.g., official `mongodb` driver under Apache 2.0) or obtain a commercial license.
+- **Fix:** Evaluate alternatives (e.g., a permissively licensed alternative) or obtain a commercial license.
 - **Auto-fixable:** No — requires business decision on alternative dependency or license procurement
 
 [Additional findings follow same pattern]
@@ -926,7 +926,7 @@ Output Mode: LLLL Unregistered
 **Overall: High**
 
 ### Education Insight
-- Compliance: Hardcoded secrets in source code are the number one cause of credential leakage. Once a secret is committed to git, it exists in the repository history permanently — even deleting the file does not remove it. The AGPL license finding is equally urgent for commercial projects, as AGPL's network clause means even SaaS usage (not just distribution) triggers the source code disclosure obligation.
+- Compliance: Hardcoded secrets in source code are a common cause of credential leakage. Once a secret is committed to git, it stays in the repository history until the history is rewritten, and copies may already exist — even deleting the file does not remove it. The AGPL license finding is equally urgent for commercial projects, as AGPL's network clause means even SaaS usage (not just distribution) triggers the source code disclosure obligation.
 - Business: A leaked API key can result in thousands of dollars of unauthorized usage within hours. AGPL contamination in a commercial codebase, if discovered during due diligence, can block acquisition or investment deals.
 
 ---
@@ -1096,7 +1096,7 @@ Preventive design suggestions:
 - Set up basic CI to run tests before deploy
 
 Education insight:
-- Compliance: Adding payments without secrets management is the single most common cause of financial API key leakage in solo-developer projects. Stripe's documentation explicitly warns against hardcoded keys.
+- Compliance: Adding payments without secrets management is a common way for financial API keys to leak, especially in small projects. Payment providers advise keeping secret keys out of source code.
 - Business: A leaked Stripe key can result in fraudulent charges to your account within minutes.
 
 ---
@@ -1145,7 +1145,7 @@ LLLL runs `llll-guard push --json` and reads the result. It does not re-scan the
 PG-H001 is a HARD_BLOCK and cannot be overridden. Remove the key from the commit history (not only the latest file), then rotate it: a key that reached a commit may already be copied.
 
 ### Education Insight
-- Compliance: A secret in a commit is a disclosure even if the push never happens, because commits are copied by backups, forks and CI caches.
+- Compliance: A secret that is only committed locally has not been exposed to anyone else yet, but the commit can be pushed or copied later; once pushed, forks, clones and CI caches may keep it, so treat it as compromised.
 - Business: Rotating a key costs minutes today and an incident review later.
 
 ---

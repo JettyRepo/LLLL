@@ -280,7 +280,7 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | 模式 ID | 检测模式/正则 | 分类 | 说明 |
 |--------|------------|------|------|
 | **PG-H001** | `AKIA[0-9A-Z]{16}` | secret | AWS Access Key |
-| **PG-H002** | `\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}` | secret | OpenAI/Stripe 密钥 |
+| **PG-H002** | `\bsk-[A-Za-z0-9_-]{20,}`、`\b(sk\|rk)_live_…`、`\bxox[abprs]-…`、`\bAIza…` | secret | API 密钥（OpenAI/Anthropic `sk-`、Stripe `sk_live_`、Slack、Google） |
 | **PG-H003** | `ghp_[a-zA-Z0-9]{36}` | secret | GitHub Personal Access Token |
 | **PG-H004** | `gho_[a-zA-Z0-9]{36}` | secret | GitHub OAuth Token |
 | **PG-H005** | `-----BEGIN (?:RSA \|DSA \|EC \|OPENSSH \|ENCRYPTED )?PRIVATE KEY-----` | secret | 私钥文件内容 |
@@ -362,7 +362,7 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | **SEC-001** | `(?i)(api[_-]?key\|api[_-]?secret\|access[_-]?key)\s*[=:]\s*['"][A-Za-z0-9+/=]{16,}['"]` | 硬编码 API Key | Critical |
 | **SEC-002** | `(?i)password\s*[=:]\s*['"][^'"]{4,}['"]` | 硬编码密码 | Critical |
 | **SEC-003** | `AKIA[0-9A-Z]{16}` | AWS Access Key | Critical |
-| **SEC-004** | `\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}` | OpenAI/Stripe 密钥 | Critical |
+| **SEC-004** | `\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}` | OpenAI/Anthropic 风格密钥（`sk-`；Stripe 线上密钥是 `sk_live_`） | Critical |
 | **SEC-005** | `ghp_[a-zA-Z0-9]{36}` | GitHub PAT | Critical |
 | **SEC-006** | `-----BEGIN (?:RSA \|DSA \|EC \|OPENSSH \|ENCRYPTED )?PRIVATE KEY-----` | 私钥内容 | Critical |
 | **SEC-007** | `(?i)(database_url\|db_password\|db_pass)\s*[=:]\s*['"][^'"]+['"]` | 数据库凭证 | Critical |
@@ -409,7 +409,7 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | pnpm | `pnpm audit --json` | pnpm-lock.yaml |
 | pip | `pip-audit -r requirements.txt -f json` | requirements.txt |
 | pipenv | `pipenv check --json` | Pipfile.lock |
-| poetry | `poetry audit` | poetry.lock |
+| poetry | 无内置审计命令（需第三方插件，或对导出的依赖运行 `pip-audit`） | poetry.lock |
 | cargo | `cargo audit --json` | Cargo.lock |
 | Go | `govulncheck ./...` | go.sum |
 | Ruby | `bundle audit check --format=json` | Gemfile.lock |
