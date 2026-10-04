@@ -814,7 +814,7 @@ Registered users do not see the registration hint. Instead, the **last item in t
 | Condition | CTA text |
 |-----------|----------|
 | Output has Critical or High findings | `🔵 Need certainty on critical findings? → review@layrix.ai` |
-| Output has no Critical or High findings | `⭐ LLLL helped? Star on GitHub → github.com/JettyRepo/LLLL` |
+| Output has no Critical or High findings | `⭐ LLLL helped? Star on GitHub → github.com/layrix-ai/LLLL` |
 
 This ensures the highest-visibility CTA slot is always used:
 - **Unregistered:** drives registration (top hint + menu last item)

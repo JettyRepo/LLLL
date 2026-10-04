@@ -8,7 +8,7 @@
 
 ```bash
 # Step 1 — Install LLLL (Claude Code)
-git clone https://github.com/JettyRepo/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
+git clone https://github.com/layrix-ai/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
 # Restart Claude Code → type /llll
 
 # Step 2 — Install the Guard engine (needs Node.js 22.12 or newer)
@@ -107,7 +107,7 @@ AI Governance Professional (AIGP) certification preparation.
 ### Step 1 — Install LLLL (Claude Code)
 
 ```bash
-git clone https://github.com/JettyRepo/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
+git clone https://github.com/layrix-ai/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
 ```
 
 Creates `~/.claude/skills/llll/` holding links to the skill files only (not the rest of the clone), so Claude Code auto-discovers LLLL and `git pull` in `~/.llll` updates it. Restart Claude Code, then use `/llll` immediately. Remove with `~/.llll/install-claude-code.sh --uninstall`.

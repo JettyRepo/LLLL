@@ -149,7 +149,7 @@ The last menu item for registered users is a **context-sensitive business CTA**.
 | Condition | CTA |
 |-----------|-----|
 | Output contains any Critical or High finding | `🔵 Need certainty on critical findings? → review@layrix.ai` |
-| Output contains no Critical or High finding | `⭐ LLLL helped? Star on GitHub → github.com/JettyRepo/LLLL` |
+| Output contains no Critical or High finding | `⭐ LLLL helped? Star on GitHub → github.com/layrix-ai/LLLL` |
 
 This CTA always appears as the **last numbered item** in the menu.
 

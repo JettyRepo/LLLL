@@ -7,7 +7,7 @@ LLLL Guard is a tool that decides whether code may leave a machine, so a bug tha
 Please **do not open a public issue** for a vulnerability.
 
 Report it privately through GitHub: open the **Security** tab of this repository and choose **Report a vulnerability**
-(<https://github.com/JettyRepo/LLLL/security/advisories/new>).
+(<https://github.com/layrix-ai/LLLL/security/advisories/new>).
 
 Useful in a report: the version (`llll-guard --version`), the command, a minimal repository or input that shows the problem, what you expected and what happened (exit code and output). Use obviously fake secrets in examples.
 
