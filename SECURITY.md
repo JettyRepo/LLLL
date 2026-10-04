@@ -23,7 +23,8 @@ Useful in a report: the version (`llll-guard --version`), the command, a minimal
 
 | Version | Supported |
 |---------|-----------|
-| 0.2.x   | Yes |
+| 0.3.x   | Yes (requires Node.js 22.12 or newer) |
+| 0.2.x   | No: upgrade to 0.3.x (0.2.x runs on Node.js 20, which is end of life) |
 | < 0.2   | No (the bash-only Guard has known fail-open bugs; upgrade) |
 
 ## What to expect
