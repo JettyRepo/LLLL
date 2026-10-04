@@ -124,10 +124,10 @@ suite('bash guard: Node or engine missing', () => {
     const res = guard(['push'], { LLLL_NODE: join(sb.root, 'no-node') });
 
     expect(res.code).toBe(2);
-    expect(res.stderr).toContain('Node.js 20');
+    expect(res.stderr).toContain('Node.js 22.12');
   });
 
-  it('a node older than 20 is refused', () => {
+  it('a node older than 22.12 is refused', () => {
     const bin = binWithoutNode();
     const old = join(bin, 'node');
     sb.write('node', '#!/bin/sh\nexit 1\n', bin);

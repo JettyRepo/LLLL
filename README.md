@@ -11,7 +11,7 @@
 git clone https://github.com/JettyRepo/LLLL.git ~/.llll && ~/.llll/install-claude-code.sh
 # Restart Claude Code → type /llll
 
-# Step 2 — Install the Guard engine (needs Node.js 20 or newer)
+# Step 2 — Install the Guard engine (needs Node.js 22.12 or newer)
 npm install -g @layrix.ai/llll-guard
 
 # Step 3 — Auto-block on every git push (optional, per-project)
@@ -119,7 +119,7 @@ Every installer backs up a file before changing it.
 
 ### Step 2 — Install the Guard engine
 
-LLLL Guard is a Node.js program (needs **Node.js 20 or newer**), published as `@layrix.ai/llll-guard`:
+LLLL Guard is a Node.js program (needs **Node.js 22.12 or newer**), published as `@layrix.ai/llll-guard`:
 
 ```bash
 npm install -g @layrix.ai/llll-guard

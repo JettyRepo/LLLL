@@ -20,7 +20,7 @@ npm test         # unit and end-to-end tests (they run real git and the real CLI
 npm run build
 ```
 
-- Needs Node.js 20 or newer. The end-to-end tests also run the launcher under the system `/bin/bash` (3.2 on macOS), so keep `guard` bash 3.2 safe: no associative arrays.
+- Needs Node.js 22.12 or newer. The end-to-end tests also run the launcher under the system `/bin/bash` (3.2 on macOS), so keep `guard` bash 3.2 safe: no associative arrays.
 - Write the test first. A bug fix needs a test that fails without it.
 - Contract to keep: exit `0` passed, `1` blocked, `2` the guard could not run. "Could not run" is never a pass.
 - Rules live in the engine; `guard-patterns.md` documents them and a test checks that the rule ids match. Adding or changing a rule means updating both.
