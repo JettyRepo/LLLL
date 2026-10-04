@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# LLLL-GUARD-SHIM — launcher for the LLLL Guard engine (llll-guard/, TypeScript, Node >= 20).
+# LLLL-GUARD-SHIM — launcher for the LLLL Guard engine (llll-guard/, TypeScript, Node >= 22.12).
 #
 # This file holds no rules. It finds Node and the engine and hands over. Written for bash 3.2
 # (stock macOS): no associative arrays, no `set -u` with empty arrays.
@@ -27,7 +27,7 @@ SELF_DIR=$(cd "$(dirname "$SELF")" 2>/dev/null && pwd -P)
 SELF="$SELF_DIR/$(basename "$SELF")"
 
 node_ok() {
-  [ -n "$1" ] && [ -x "$1" ] && "$1" -e 'process.exit(parseInt(process.versions.node, 10) >= 20 ? 0 : 1)' >/dev/null 2>&1
+  [ -n "$1" ] && [ -x "$1" ] && "$1" -e 'const [a, b] = process.versions.node.split(".").map(Number); process.exit(a > 22 || (a === 22 && b >= 12) ? 0 : 1)' >/dev/null 2>&1
 }
 
 find_node() {
@@ -111,7 +111,7 @@ doctor() {
   if [ -n "$node" ]; then
     echo "  node:     $node ($("$node" --version 2>/dev/null))"
   else
-    echo "  node:     NOT FOUND (version 20 or newer is needed; set LLLL_NODE to a node binary)"
+    echo "  node:     NOT FOUND (version 22.12 or newer is needed; set LLLL_NODE to a node binary)"
     rc=2
   fi
   find_engine
@@ -177,7 +177,7 @@ if [ -z "$ENGINE" ]; then
   cannot_run "the engine (llll-guard) was not found." "$IS_HOOK"
 fi
 if [ -z "$NODE" ]; then
-  cannot_run "Node.js 20 or newer was not found." "$IS_HOOK"
+  cannot_run "Node.js 22.12 or newer was not found." "$IS_HOOK"
 fi
 
 if [ -n "$LEGACY" ]; then

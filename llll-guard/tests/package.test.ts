@@ -76,6 +76,6 @@ describe('the published package', () => {
   it('requires a node version the code was written for', () => {
     const pkg = JSON.parse(readFileSync(join(PKG_ROOT, 'package.json'), 'utf-8')) as { engines: { node: string } };
 
-    expect(pkg.engines.node).toBe('>=20.0.0');
+    expect(pkg.engines.node).toBe('>=22.12.0');
   });
 });
