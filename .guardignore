@@ -6,8 +6,8 @@ llll-guard/src/output/*.ts
 llll-guard/tests/**
 
 # Guard detection pattern definitions
-guard-patterns.md
-scan-patterns.md
+plugins/llll/skills/llll/guard-patterns.md
+plugins/llll/skills/llll/scan-patterns.md
 
 # Installer scripts — reference AI tool names as config strings, not API integrations
 install-opencode.sh

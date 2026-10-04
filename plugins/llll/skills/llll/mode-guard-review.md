@@ -75,7 +75,7 @@ Scans outgoing git changes before push.
 
 **Engine first.** The gate is the `llll-guard` engine, not this document. If `llll-guard` (or `~/.llll/guard`) is installed, run `llll-guard push --json` (add `--range <a>..<b>` when the user names a range), then interpret its output: verdict, findings, override tokens. Exit code 0 is a pass, 1 is a block, 2 means the guard could not run, and **2 is never a pass**: report it as "not checked" with the error text. Do not re-scan or second-guess the engine's findings with the rules below.
 
-**Fallback (no engine installed).** Apply the rules below by reading the diff yourself, and label the result clearly: "Advisory only, not the Guard gate. Install the engine (`~/.llll/guard doctor --fix`) for the real check." The fallback cannot be a gate: it does not read the pushed refs, honour the policy on the remote branch, or write the override log.
+**Fallback (no engine installed).** Apply the rules below by reading the diff yourself, and label the result clearly: "Advisory only, not the Guard gate. Install the engine (`npm install -g @layrix.ai/llll-guard`, or `~/.llll/guard doctor --fix` from a clone) for the real check." The fallback cannot be a gate: it does not read the pushed refs, honour the policy on the remote branch, or write the override log.
 
 In the fallback, MUST:
 1. Identify commits being pushed (not yet on remote)

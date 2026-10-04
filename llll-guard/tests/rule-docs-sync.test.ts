@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { PKG_ROOT, REPO_ROOT } from './helpers/repo.js';
+import { PKG_ROOT, REPO_ROOT, SKILL_DIR } from './helpers/repo.js';
 
 // The rule catalogue (guard-patterns.md) and the engine must name the same rules. Before this
 // test they drifted: rules were documented that nothing implemented, and the reverse.
@@ -10,7 +10,9 @@ import { PKG_ROOT, REPO_ROOT } from './helpers/repo.js';
 const SKILL_FILES = ['SKILL.md', 'mode-scan.md', 'mode-guard-review.md', 'menus.md', 'output-standards.md', 'observation-storage.md'];
 
 function read(file: string): string {
-  return file === 'SKILL' ? SKILL_FILES.map(f => readFileSync(join(REPO_ROOT, f), 'utf-8')).join('\n') : readFileSync(join(REPO_ROOT, file), 'utf-8');
+  if (file === 'SKILL') return SKILL_FILES.map(f => readFileSync(join(SKILL_DIR, f), 'utf-8')).join('\n');
+  // README.md is the repository's own; every other document here is part of the skill.
+  return readFileSync(join(file === 'README.md' ? REPO_ROOT : SKILL_DIR, file), 'utf-8');
 }
 
 const RULE_ID = /\b(?:PG|RG)-[HSW]\d{3}\b/g;
@@ -28,7 +30,7 @@ function ids(text: string): Set<string> {
 
 function catalogue(): Set<string> {
   // Only rows that define a rule: "| PG-H001 | ...". Prose may mention a rule id in passing.
-  const rows = readFileSync(join(REPO_ROOT, 'guard-patterns.md'), 'utf-8')
+  const rows = readFileSync(join(SKILL_DIR, 'guard-patterns.md'), 'utf-8')
     .split('\n')
     .filter(line => /^\|\s*(?:PG|RG)-[HSW]\d{3}\s*\|/.test(line));
   return ids(rows.join('\n'));
@@ -82,13 +84,13 @@ describe('rule ids: other documents', () => {
 
 describe('skill files', () => {
   it('SKILL.md names every reference file, so none is never read', () => {
-    const core = readFileSync(join(REPO_ROOT, 'SKILL.md'), 'utf-8');
+    const core = readFileSync(join(SKILL_DIR, 'SKILL.md'), 'utf-8');
     const unnamed = SKILL_FILES.slice(1).filter(file => !core.includes(`\`${file}\``));
 
     expect(unnamed).toEqual([]);
   });
 
   it('SKILL.md stays a core file (under 1000 lines)', () => {
-    expect(readFileSync(join(REPO_ROOT, 'SKILL.md'), 'utf-8').split('\n').length).toBeLessThan(1000);
+    expect(readFileSync(join(SKILL_DIR, 'SKILL.md'), 'utf-8').split('\n').length).toBeLessThan(1000);
   });
 });

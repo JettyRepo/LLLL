@@ -12,7 +12,8 @@
 
 set -euo pipefail
 
-INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+# The skill files (SKILL.md and its reference documents) live in the Claude plugin folder.
+INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/plugins/llll/skills/llll" && pwd -P)"
 DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/llll/opencode"
 CONFIG="$HOME/.config/opencode/config.json"
 MODE="install"

@@ -159,18 +159,21 @@ Exit codes: `0` passed, `1` blocked, `2` the guard could not run (never a pass).
 ## File Structure
 
 ```
-SKILL.md                        — Core skill: operating flow, visibility and folding rules, simple modes, output tail, registration detection
-mode-scan.md                    — /llll scan, fix, grc (read on demand)
-mode-guard-review.md            — /llll guard, override, review and the Guard rule tables (read on demand)
-menus.md                        — Next steps menus per mode (read on demand)
-output-standards.md             — Expert escalation and Coverage Confidence rules (read on demand)
-observation-storage.md          — Why nothing is saved, the .llll/scratch/ workflow (read on demand)
-compliance-checklist-master.md  — Master compliance rule library (domains A-O, 15 domains)
-checklist-schema.md             — Intake schema aligned with master domains
-output-templates.md             — Output templates for all modes and visibility levels
-examples.md                     — Usage examples including passive activation and continuous compliance
-scan-patterns.md                — Reference data for /llll scan
-guard-patterns.md               — Detection rules for guard push and release
+plugins/llll/                   — The Claude Code plugin (manifest, plugin README, and the skill below)
+  .claude-plugin/plugin.json    — Plugin manifest
+  skills/llll/SKILL.md                        — Core skill: operating flow, visibility and folding rules, simple modes, output tail, registration detection
+  skills/llll/mode-scan.md                    — /llll scan, fix, grc (read on demand)
+  skills/llll/mode-guard-review.md            — /llll guard, override, review and the Guard rule tables (read on demand)
+  skills/llll/menus.md                        — Next steps menus per mode (read on demand)
+  skills/llll/output-standards.md             — Expert escalation and Coverage Confidence rules (read on demand)
+  skills/llll/observation-storage.md          — Why nothing is saved, the .llll/scratch/ workflow (read on demand)
+  skills/llll/compliance-checklist-master.md  — Master compliance rule library (domains A-O, 15 domains)
+  skills/llll/checklist-schema.md             — Intake schema aligned with master domains
+  skills/llll/output-templates.md             — Output templates for all modes and visibility levels
+  skills/llll/examples.md                     — Usage examples including passive activation and continuous compliance
+  skills/llll/scan-patterns.md                — Reference data for /llll scan
+  skills/llll/guard-patterns.md               — Detection rules for guard push and release
+  skills/llll/llll-check-taxonomy.md          — Check taxonomy
 guard                           — Launcher for the Guard engine (finds Node and llll-guard/, holds no rules)
 llll-guard/                     — LLLL Guard engine (TypeScript): push gate, release gate, override log
 llll.policy.json                — This repository's own Guard policy

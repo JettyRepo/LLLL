@@ -10,6 +10,7 @@
 set -euo pipefail
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+SKILL_SRC="$SRC/plugins/llll/skills/llll"
 SKILLS_DIR="$HOME/.claude/skills"
 DEST="$SKILLS_DIR/llll"
 MARKER=".llll-managed"
@@ -64,8 +65,8 @@ if [[ -n "${1:-}" ]]; then
 fi
 
 for f in "${SKILL_FILES[@]}"; do
-  if [[ ! -f "$SRC/$f" ]]; then
-    echo "Error: $SRC/$f is missing. Is this a complete clone of LLLL?" >&2
+  if [[ ! -f "$SKILL_SRC/$f" ]]; then
+    echo "Error: $SKILL_SRC/$f is missing. Is this a complete clone of LLLL?" >&2
     exit 1
   fi
 done
@@ -87,8 +88,8 @@ mkdir "$DEST"
 # The marker goes first: if a link below fails, a rerun or --uninstall still recognises the directory.
 echo "Created by $SRC/install-claude-code.sh. Remove with --uninstall." > "$DEST/$MARKER"
 for f in "${SKILL_FILES[@]}"; do
-  ln -s "$SRC/$f" "$DEST/$f"
+  ln -s "$SKILL_SRC/$f" "$DEST/$f"
 done
 
-echo "✓ Installed: $DEST (${#SKILL_FILES[@]} files, linked to $SRC)"
+echo "✓ Installed: $DEST (${#SKILL_FILES[@]} files, linked to $SKILL_SRC)"
 echo "  Restart Claude Code and type /llll to activate."

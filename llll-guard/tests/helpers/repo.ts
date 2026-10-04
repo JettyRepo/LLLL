@@ -16,6 +16,8 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 
 export const PKG_ROOT = resolve(HERE, '..', '..');
 export const REPO_ROOT = resolve(PKG_ROOT, '..');
+/** The skill files (SKILL.md and its reference documents), inside the Claude plugin folder. */
+export const SKILL_DIR = join(REPO_ROOT, 'plugins', 'llll', 'skills', 'llll');
 /** The CLI built by tests/helpers/global-setup.ts. */
 export const CLI = join(PKG_ROOT, '.test-dist', 'index.js');
 /** The bash guard script at the repository root. */

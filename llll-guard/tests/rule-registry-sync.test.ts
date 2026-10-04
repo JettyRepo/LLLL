@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { PKG_ROOT, REPO_ROOT } from './helpers/repo.js';
+import { PKG_ROOT, SKILL_DIR } from './helpers/repo.js';
 
 // Audit findings covered here: H-2, DOC-4. The rule catalogue in guard-patterns.md
 // and the rules the engine actually implements have drifted apart. Until a rule
@@ -29,7 +29,7 @@ function implementedIds(): Set<string> {
   return all;
 }
 
-const documented = idsIn(readFileSync(join(REPO_ROOT, 'guard-patterns.md'), 'utf-8'));
+const documented = idsIn(readFileSync(join(SKILL_DIR, 'guard-patterns.md'), 'utf-8'));
 const implemented = implementedIds();
 
 describe('rule catalogue', () => {
