@@ -101,7 +101,7 @@ case "$PLUGIN_VERSION" in
   *) echo "FAIL: plugin.json version '$PLUGIN_VERSION' does not start with VERSION $VERSION_NOW"; exit 1 ;;
 esac
 cmp -s LICENSE plugins/llll/LICENSE && echo "PASS: plugins/llll/LICENSE matches LICENSE" || { echo "FAIL: plugins/llll/LICENSE differs from LICENSE (copy it again)"; exit 1; }
-test -f plugins/llll/icon.svg && echo "PASS: plugins/llll/icon.svg exists" || { echo "FAIL: plugins/llll/icon.svg missing (plugin.json names it as the icon)"; exit 1; }
+cmp -s LLLL.svg plugins/llll/icon.svg && echo "PASS: plugins/llll/icon.svg matches LLLL.svg" || { echo "FAIL: plugins/llll/icon.svg differs from LLLL.svg (plugin.json names it as the icon; copy it again)"; exit 1; }
 
 # The command prefix rule for plugin installs is present, so menus stay correct when invoked as /llll:llll
 grep -q "/llll:llll" plugins/llll/skills/llll/menus.md && grep -q "/llll:llll" plugins/llll/skills/llll/SKILL.md && echo "PASS: command prefix rule (/llll:llll) is in SKILL.md and menus.md" || { echo "FAIL: command prefix rule for plugin installs is missing"; exit 1; }
