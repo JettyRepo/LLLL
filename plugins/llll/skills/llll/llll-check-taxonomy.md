@@ -407,9 +407,9 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 | npm | `npm audit --json` | package-lock.json |
 | yarn | `yarn audit --json` | yarn.lock |
 | pnpm | `pnpm audit --json` | pnpm-lock.yaml |
-| pip | `pip-audit -r requirements.txt -f json` | requirements.txt |
+| pip | `pip-audit --no-deps -r requirements.txt -f json` | requirements.txt |
 | pipenv | `pipenv check --json` | Pipfile.lock |
-| poetry | 无内置审计命令（需第三方插件，或对导出的依赖运行 `pip-audit`） | poetry.lock |
+| poetry | 无内置审计命令（需第三方插件，或对导出的依赖运行 `pip-audit --no-deps`） | poetry.lock |
 | cargo | `cargo audit --json` | Cargo.lock |
 | Go | `govulncheck ./...` | go.sum |
 | Ruby | `bundle audit check --format=json` | Gemfile.lock |

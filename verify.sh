@@ -94,15 +94,21 @@ for f in $SKILL_FILES scan-patterns.md guard-patterns.md output-templates.md com
 done
 grep -q "Embedded Compliance Layer v${VERSION_NOW}" "$S/SKILL.md" && echo "PASS: install-codex.sh will read v${VERSION_NOW} from SKILL.md" || { echo "FAIL: SKILL.md title version differs from VERSION"; exit 1; }
 
-# The Claude plugin: its version follows VERSION, and the files copied into the plugin folder match the originals
+# The Claude plugin: its version follows VERSION, the copied LICENSE matches the original, and the icon exists
 PLUGIN_VERSION=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' plugins/llll/.claude-plugin/plugin.json | head -1)
 case "$PLUGIN_VERSION" in
   "$VERSION_NOW"|"$VERSION_NOW".*) echo "PASS: plugin.json version $PLUGIN_VERSION follows VERSION $VERSION_NOW" ;;
   *) echo "FAIL: plugin.json version '$PLUGIN_VERSION' does not start with VERSION $VERSION_NOW"; exit 1 ;;
 esac
-for f in LICENSE LLLL.svg; do
-  cmp -s "$f" "plugins/llll/$f" && echo "PASS: plugins/llll/$f matches $f" || { echo "FAIL: plugins/llll/$f differs from $f (copy it again)"; exit 1; }
-done
+cmp -s LICENSE plugins/llll/LICENSE && echo "PASS: plugins/llll/LICENSE matches LICENSE" || { echo "FAIL: plugins/llll/LICENSE differs from LICENSE (copy it again)"; exit 1; }
+test -f plugins/llll/icon.svg && echo "PASS: plugins/llll/icon.svg exists" || { echo "FAIL: plugins/llll/icon.svg missing (plugin.json names it as the icon)"; exit 1; }
+
+# The command prefix rule for plugin installs is present, so menus stay correct when invoked as /llll:llll
+grep -q "/llll:llll" plugins/llll/skills/llll/menus.md && grep -q "/llll:llll" plugins/llll/skills/llll/SKILL.md && echo "PASS: command prefix rule (/llll:llll) is in SKILL.md and menus.md" || { echo "FAIL: command prefix rule for plugin installs is missing"; exit 1; }
+
+# pip-audit may only run without installing anything
+grep -q "pip-audit --no-deps" plugins/llll/skills/llll/mode-scan.md && grep -q "Bash(pip-audit --no-deps -r:\*)" plugins/llll/skills/llll/SKILL.md && echo "PASS: pip-audit is pre-approved only with --no-deps" || { echo "FAIL: pip-audit must be pre-approved only as 'pip-audit --no-deps -r'"; exit 1; }
+if grep -q "Bash(pip-audit -r:" plugins/llll/skills/llll/SKILL.md; then echo "FAIL: allowed-tools still pre-approves pip-audit without --no-deps"; exit 1; fi
 
 # Rule ids: guard-patterns.md, taxonomy and the engine name the same rules (needs llll-guard dependencies)
 if [ -d llll-guard/node_modules ]; then

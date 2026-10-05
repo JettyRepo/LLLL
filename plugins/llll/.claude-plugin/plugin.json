@@ -11,7 +11,7 @@
   "repository": "https://github.com/layrix-ai/LLLL",
   "license": "MIT",
   "keywords": ["compliance", "security", "governance", "git", "ai-governance"],
-  "icon": "./LLLL.svg",
+  "icon": "./icon.svg",
   "documentationUrl": "https://github.com/layrix-ai/LLLL#readme",
   "supportUrl": "https://github.com/layrix-ai/LLLL/issues",
   "privacyPolicyUrl": "https://layrix.ai/privacy",
