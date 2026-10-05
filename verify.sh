@@ -81,6 +81,13 @@ case "$TOOLS" in
   "allowed-tools: Read, Grep, Glob, "*"Bash(llll-guard push:*)"*"Bash(llll-guard release:*)"*) echo "PASS: allowed-tools has no Write/Edit, Bash is restricted, the guard engine push and release are reachable" ;;
   *) echo "FAIL: allowed-tools must start 'Read, Grep, Glob' and include Bash(llll-guard push:*) and Bash(llll-guard release:*)"; exit 1 ;;
 esac
+# find and test with a ':*' tail accept extra arguments such as -exec or -delete, so they are not pre-approved (the directory review flags them)
+case "$TOOLS" in
+  *"Bash(find"*|*"Bash(test"*) echo "FAIL: allowed-tools pre-approves find or test; use the Glob tool for file checks"; exit 1 ;;
+  *) echo "PASS: allowed-tools does not pre-approve find or test" ;;
+esac
+# the skill must not read ~/.layrix/config.json: it can hold a license key, and Read output goes to the model
+grep -q "without reading the config file" "$S/SKILL.md" && ! grep -q "Attempt to read \`~/.layrix/config.json\`" "$S/SKILL.md" && echo "PASS: registration is detected without reading the config file" || { echo "FAIL: SKILL.md must detect registration with a count-only Grep, not by reading ~/.layrix/config.json"; exit 1; }
 grep -q "data controller" "$SKILL_ALL" && echo "PASS: Personal data / data-controller warning (H1)" || { echo "FAIL: H1 personal data warning missing"; exit 1; }
 grep -q "GDPR Art" "$SKILL_ALL" && echo "PASS: GDPR articles cited (H1)" || { echo "FAIL: H1 GDPR citations missing"; exit 1; }
 grep -q "Gitignore integrity check" "$SKILL_ALL" && echo "PASS: Runtime gitignore check documented (H2)" || { echo "FAIL: H2 gitignore check missing"; exit 1; }

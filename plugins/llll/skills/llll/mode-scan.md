@@ -68,13 +68,13 @@ An OWA match is a **lead**, not a finding. Before assigning Critical or High, re
 
 | Check ID | Command | What It Checks | Severity |
 |----------|---------|----------------|----------|
-| GIT-001 | `test -f .gitignore` | .gitignore file exists | High |
+| GIT-001 | Glob `.gitignore` (a match means it exists) | .gitignore file exists | High |
 | GIT-002 | `git check-ignore -q .env` | .env excluded from tracking | Critical |
 | GIT-003 | `git log --all --diff-filter=A --name-only --format= -- '.env' '*.env' '.env.*' ':!*.example' ':!*.sample' ':!*.template'` | .env files never committed to history | Critical |
 | GIT-004 | `git log --all --diff-filter=A --name-only --format= -- '*.pem' '*.key' '*id_rsa*' ':!*.pub'` | Private keys never committed | Critical |
 | GIT-005 | `gh api repos/{owner}/{repo}/branches/{default_branch}/protection 2>/dev/null` (needs `gh` and admin access; otherwise NEEDS TECHNICAL CONFIRMATION. Rulesets use a different API, so a 404 here is not proof that the branch is unprotected) | Branch protection on main | High |
-| GIT-006 | `test -f LICENSE \|\| test -f LICENSE.md \|\| test -f LICENSE.txt \|\| test -f COPYING` | LICENSE file exists | High |
-| GIT-007 | `test -f CODEOWNERS \|\| test -f .github/CODEOWNERS \|\| test -f docs/CODEOWNERS` | CODEOWNERS file exists | Low |
+| GIT-006 | Glob `LICENSE`, `LICENSE.md`, `LICENSE.txt`, `COPYING` (any match means it exists) | LICENSE file exists | High |
+| GIT-007 | Glob `CODEOWNERS`, `.github/CODEOWNERS`, `docs/CODEOWNERS` (any match means it exists) | CODEOWNERS file exists | Low |
 
 ##### 4. Dependency Audit Commands
 
