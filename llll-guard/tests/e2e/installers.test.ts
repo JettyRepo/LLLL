@@ -1,7 +1,7 @@
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, readlinkSync, symlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { REPO_ROOT, Sandbox, bashMajorVersion } from '../helpers/repo.js';
+import { REPO_ROOT, SKILL_DIR, Sandbox, bashMajorVersion } from '../helpers/repo.js';
 
 // The three installers run against a sandbox HOME, so nothing of the developer's is touched.
 
@@ -43,7 +43,7 @@ suite('install-claude-code.sh', () => {
     expect(names).not.toContain('tests');
     expect(names).not.toContain('install-codex.sh');
     expect(lstatSync(join(dest(), 'SKILL.md')).isSymbolicLink()).toBe(true);
-    expect(readlinkSync(join(dest(), 'SKILL.md'))).toBe(join(REPO_ROOT, 'SKILL.md'));
+    expect(readlinkSync(join(dest(), 'SKILL.md'))).toBe(join(SKILL_DIR, 'SKILL.md'));
   });
 
   it('can run again', () => {
@@ -221,7 +221,7 @@ suite('install-codex.sh', () => {
 
     expect(res.code).toBe(0);
     const text = readFileSync(agents(), 'utf-8');
-    const version = /Embedded Compliance Layer v([0-9.]+)/.exec(readFileSync(join(REPO_ROOT, 'SKILL.md'), 'utf-8'))?.[1];
+    const version = /Embedded Compliance Layer v([0-9.]+)/.exec(readFileSync(join(SKILL_DIR, 'SKILL.md'), 'utf-8'))?.[1];
     expect(text).toContain(`v${version}**`);
     expect(text).toContain('round(N/2)');
     expect(text).not.toContain('fold Medium/Low');

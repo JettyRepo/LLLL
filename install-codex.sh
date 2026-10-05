@@ -8,7 +8,8 @@
 
 set -euo pipefail
 
-INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+# The skill files (SKILL.md and its reference documents) live in the Claude plugin folder.
+INSTALL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/plugins/llll/skills/llll" && pwd -P)"
 AGENTS_MD="$HOME/.codex/AGENTS.md"
 BEGIN_MARK="<!-- BEGIN LLLL (managed by install-codex.sh; do not edit between the markers) -->"
 END_MARK="<!-- END LLLL -->"

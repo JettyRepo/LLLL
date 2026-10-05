@@ -1159,7 +1159,7 @@ Next:
 [3] /llll deep
 [4] /llll checklist
 
-**When the engine could not run** (exit code 2: no repository, an unreadable policy, a git error), the verdict header is **NOT CHECKED**, with the engine's error text. It is never reported as a pass. **When no engine is installed**, LLLL says so, labels anything it then reads from the diff "Advisory only, not the Guard gate", and suggests `~/.llll/guard doctor --fix`.
+**When the engine could not run** (exit code 2: no repository, an unreadable policy, a git error), the verdict header is **NOT CHECKED**, with the engine's error text. It is never reported as a pass. **When no engine is installed**, LLLL says so, labels anything it then reads from the diff "Advisory only, not the Guard gate", and suggests `npm install -g @layrix.ai/llll-guard` (or `~/.llll/guard doctor --fix` from a clone).
 
 ---
 

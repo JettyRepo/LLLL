@@ -1,0 +1,19 @@
+{
+  "name": "llll",
+  "displayName": "LLLL — Layrix Compliance Layer",
+  "version": "5.0.0",
+  "description": "Embedded compliance layer for AI-built software: design-time compliance review, security scans, feature-to-policy mapping, and push/release compliance gates.",
+  "author": {
+    "name": "Layrix",
+    "url": "https://layrix.ai"
+  },
+  "homepage": "https://layrix.ai/llll/",
+  "repository": "https://github.com/layrix-ai/LLLL",
+  "license": "MIT",
+  "keywords": ["compliance", "security", "governance", "git", "ai-governance"],
+  "icon": "./icon.svg",
+  "documentationUrl": "https://github.com/layrix-ai/LLLL#readme",
+  "supportUrl": "https://github.com/layrix-ai/LLLL/issues",
+  "privacyPolicyUrl": "https://layrix.ai/privacy",
+  "termsOfServiceUrl": "https://layrix.ai/terms"
+}

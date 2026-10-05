@@ -6,42 +6,45 @@ set -e
 cd "$(dirname "$0")"
 echo "=== LLLL Integrity Check ==="
 
+# The skill files live in the Claude plugin folder; S is the path to them from the repository root.
+S="plugins/llll/skills/llll"
+
 # The skill is SKILL.md plus the reference files it tells the model to read. Content checks look at all of them.
 SKILL_FILES="SKILL.md mode-scan.md mode-guard-review.md menus.md output-standards.md observation-storage.md"
 SKILL_ALL=$(mktemp)
 trap 'rm -f "$SKILL_ALL"' EXIT
 for f in $SKILL_FILES; do
-  test -f "$f" && cat "$f" >> "$SKILL_ALL" || { echo "FAIL: $f missing"; exit 1; }
+  test -f "$S/$f" && cat "$S/$f" >> "$SKILL_ALL" || { echo "FAIL: $S/$f missing"; exit 1; }
 done
 
 # SKILL.md must stay a core file, and every reference file must be named in it (or it would never be read)
-test "$(wc -l < SKILL.md)" -lt 1000 && echo "PASS: SKILL.md stays under 1000 lines" || { echo "FAIL: SKILL.md grew past 1000 lines; move detail into a reference file"; exit 1; }
+test "$(wc -l < "$S/SKILL.md")" -lt 1000 && echo "PASS: SKILL.md stays under 1000 lines" || { echo "FAIL: SKILL.md grew past 1000 lines; move detail into a reference file"; exit 1; }
 for f in $SKILL_FILES; do
   [ "$f" = "SKILL.md" ] && continue
-  grep -q "\`$f\`" SKILL.md && echo "PASS: SKILL.md tells the model when to read $f" || { echo "FAIL: SKILL.md never mentions $f"; exit 1; }
+  grep -q "\`$f\`" "$S/SKILL.md" && echo "PASS: SKILL.md tells the model when to read $f" || { echo "FAIL: SKILL.md never mentions $f"; exit 1; }
 done
 
 # Domain count (A-O = 15)
-DOMAINS=$(grep -c "^## [A-O]\." compliance-checklist-master.md || true)
+DOMAINS=$(grep -c "^## [A-O]\." "$S/compliance-checklist-master.md" || true)
 test "$DOMAINS" -eq 15 && echo "PASS: $DOMAINS domains (A-O)" || { echo "FAIL: $DOMAINS domains (expected 15)"; exit 1; }
 
 # Check count (>=51)
-CHECKS=$(grep -c "^### [A-O][0-9]" compliance-checklist-master.md || true)
+CHECKS=$(grep -c "^### [A-O][0-9]" "$S/compliance-checklist-master.md" || true)
 test "$CHECKS" -ge 51 && echo "PASS: $CHECKS checks (expected >=51)" || { echo "FAIL: $CHECKS checks (expected >=51)"; exit 1; }
 
 # All domain letters present
 for letter in A B C D E F G H I J K L M N O; do
-  grep -q "^## ${letter}\." compliance-checklist-master.md && echo "PASS: Domain $letter" || { echo "FAIL: Domain $letter missing"; exit 1; }
+  grep -q "^## ${letter}\." "$S/compliance-checklist-master.md" && echo "PASS: Domain $letter" || { echo "FAIL: Domain $letter missing"; exit 1; }
 done
 
 # Section numbering (8-13)
 for i in 8 9 10 11 12 13; do
-  grep -q "^# ${i}\." compliance-checklist-master.md && echo "PASS: Section $i" || { echo "FAIL: Section $i missing"; exit 1; }
+  grep -q "^# ${i}\." "$S/compliance-checklist-master.md" && echo "PASS: Section $i" || { echo "FAIL: Section $i missing"; exit 1; }
 done
 
 # Key files exist
 for f in SKILL.md compliance-checklist-master.md checklist-schema.md output-templates.md examples.md scan-patterns.md guard-patterns.md; do
-  test -f "$f" && echo "PASS: $f exists" || { echo "FAIL: $f missing"; exit 1; }
+  test -f "$S/$f" && echo "PASS: $f exists" || { echo "FAIL: $S/$f missing"; exit 1; }
 done
 
 # Guard engine and launcher exist, and the shell scripts parse (the launcher under the system bash, 3.2 on macOS)
@@ -67,7 +70,7 @@ grep -q "mtime +90" "$SKILL_ALL" && echo "PASS: Cleanup reminder (90-day) docume
 grep -qE "append \`-S\`|\`-S\` flag|pre-save gates verify" "$SKILL_ALL" && { echo "FAIL: -S flag reference still present"; exit 1; } || echo "PASS: -S flag fully removed"
 grep -q "auditable history" "$SKILL_ALL" && { echo "FAIL: 'auditable history' language still present"; exit 1; } || echo "PASS: Overclaim language removed"
 grep -q "ephemeral" "$SKILL_ALL" && echo "PASS: Ephemeral language present" || { echo "FAIL: Ephemeral language missing"; exit 1; }
-TOOLS=$(grep -m1 "^allowed-tools:" SKILL.md)
+TOOLS=$(grep -m1 "^allowed-tools:" "$S/SKILL.md")
 case "$TOOLS" in
   *" Write"*|*" Edit"*) echo "FAIL: allowed-tools lists Write or Edit"; exit 1 ;;
 esac
@@ -87,9 +90,25 @@ grep -q "GITIGNORE_MISSING" "$SKILL_ALL" && echo "PASS: Gitignore warning render
 # One version for the document set: VERSION, and the heading of every reference file
 VERSION_NOW=$(tr -d '[:space:]' < VERSION)
 for f in $SKILL_FILES scan-patterns.md guard-patterns.md output-templates.md compliance-checklist-master.md examples.md checklist-schema.md; do
-  head -n 8 "$f" | grep -q "v${VERSION_NOW}\b" && echo "PASS: $f is v${VERSION_NOW}" || { echo "FAIL: $f does not say v${VERSION_NOW} (VERSION file) near the top"; exit 1; }
+  head -n 8 "$S/$f" | grep -q "v${VERSION_NOW}\b" && echo "PASS: $f is v${VERSION_NOW}" || { echo "FAIL: $f does not say v${VERSION_NOW} (VERSION file) near the top"; exit 1; }
 done
-grep -q "Embedded Compliance Layer v${VERSION_NOW}" SKILL.md && echo "PASS: install-codex.sh will read v${VERSION_NOW} from SKILL.md" || { echo "FAIL: SKILL.md title version differs from VERSION"; exit 1; }
+grep -q "Embedded Compliance Layer v${VERSION_NOW}" "$S/SKILL.md" && echo "PASS: install-codex.sh will read v${VERSION_NOW} from SKILL.md" || { echo "FAIL: SKILL.md title version differs from VERSION"; exit 1; }
+
+# The Claude plugin: its version follows VERSION, the copied LICENSE matches the original, and the icon exists
+PLUGIN_VERSION=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' plugins/llll/.claude-plugin/plugin.json | head -1)
+case "$PLUGIN_VERSION" in
+  "$VERSION_NOW"|"$VERSION_NOW".*) echo "PASS: plugin.json version $PLUGIN_VERSION follows VERSION $VERSION_NOW" ;;
+  *) echo "FAIL: plugin.json version '$PLUGIN_VERSION' does not start with VERSION $VERSION_NOW"; exit 1 ;;
+esac
+cmp -s LICENSE plugins/llll/LICENSE && echo "PASS: plugins/llll/LICENSE matches LICENSE" || { echo "FAIL: plugins/llll/LICENSE differs from LICENSE (copy it again)"; exit 1; }
+test -f plugins/llll/icon.svg && echo "PASS: plugins/llll/icon.svg exists" || { echo "FAIL: plugins/llll/icon.svg missing (plugin.json names it as the icon)"; exit 1; }
+
+# The command prefix rule for plugin installs is present, so menus stay correct when invoked as /llll:llll
+grep -q "/llll:llll" plugins/llll/skills/llll/menus.md && grep -q "/llll:llll" plugins/llll/skills/llll/SKILL.md && echo "PASS: command prefix rule (/llll:llll) is in SKILL.md and menus.md" || { echo "FAIL: command prefix rule for plugin installs is missing"; exit 1; }
+
+# pip-audit may only run without installing anything
+grep -q "pip-audit --no-deps" plugins/llll/skills/llll/mode-scan.md && grep -q "Bash(pip-audit --no-deps -r:\*)" plugins/llll/skills/llll/SKILL.md && echo "PASS: pip-audit is pre-approved only with --no-deps" || { echo "FAIL: pip-audit must be pre-approved only as 'pip-audit --no-deps -r'"; exit 1; }
+if grep -q "Bash(pip-audit -r:" plugins/llll/skills/llll/SKILL.md; then echo "FAIL: allowed-tools still pre-approves pip-audit without --no-deps"; exit 1; fi
 
 # Rule ids: guard-patterns.md, taxonomy and the engine name the same rules (needs llll-guard dependencies)
 if [ -d llll-guard/node_modules ]; then

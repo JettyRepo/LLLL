@@ -68,14 +68,16 @@ Run the appropriate command based on detected tech stack.
 | Node.js (npm) | `npm audit --json 2>/dev/null` | `package-lock.json` |
 | Node.js (yarn) | `yarn audit --json 2>/dev/null` | `yarn.lock` |
 | Node.js (pnpm) | `pnpm audit --json 2>/dev/null` | `pnpm-lock.yaml` |
-| Python (pip) | `pip-audit -r requirements.txt -f json 2>/dev/null` | `requirements.txt` |
+| Python (pip) | `pip-audit --no-deps -r requirements.txt -f json 2>/dev/null` | `requirements.txt` |
 | Python (pipenv) | `pipenv check --json 2>/dev/null` | `Pipfile.lock` |
-| Python (poetry) | no built-in audit command: a third-party audit plugin, or `pip-audit` on exported requirements; if neither is installed, NEEDS TECHNICAL CONFIRMATION | `poetry.lock` |
+| Python (poetry) | no built-in audit command: a third-party audit plugin, or `pip-audit --no-deps` on exported requirements; if neither is installed, NEEDS TECHNICAL CONFIRMATION | `poetry.lock` |
 | Rust | `cargo audit --json 2>/dev/null` | `Cargo.lock` |
 | Go | `govulncheck ./... 2>/dev/null` | `go.sum` |
 | Ruby | `bundle audit check --format=json 2>/dev/null` | `Gemfile.lock` |
 
 If the audit command is not installed, report as: `NEEDS TECHNICAL CONFIRMATION — [tool] not installed. Install with [install command] and re-run scan.`
+
+`pip-audit --no-deps` checks only the exact versions written in the file and never installs anything. It stops with an error if an entry is not pinned to one version (`==`), and it does not look at transitive dependencies that the file does not list. In that case report `NEEDS TECHNICAL CONFIRMATION — requirements.txt is not fully pinned, so pip-audit cannot check it without installing packages. Pin the versions (for example from a lock file or pip freeze) and re-run scan.` Do not re-run pip-audit without `--no-deps`.
 
 ## 5. License Risk Scan
 
