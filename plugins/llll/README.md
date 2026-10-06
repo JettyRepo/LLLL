@@ -8,7 +8,7 @@ LLLL is not legal advice. Every output carries a disclaimer and suggests review 
 
 - **Design-time review** — after you plan a feature or generate code, LLLL appends the compliance domains it triggers, the gaps, and what to do next.
 - **Commands** — diagnosis, deep analysis, checklist, brief, feature-versus-policy diff, scan, fix guidance, GRC dashboard, expert review hand-off, and push and release gates.
-- **How to invoke it** — Claude Code namespaces plugin skills, so when LLLL is installed as a plugin you type /llll:llll followed by the mode, for example /llll:llll scan or /llll:llll guard push. LLLL also activates on its own when your request matches it. The shorter /llll form is what you get when you install from the repository clone instead. The menus and next-step suggestions LLLL prints use whichever form matches how it was installed.
+- **How to invoke it** — Claude Code namespaces plugin skills, so when LLLL is installed as a plugin you type /layrix:llll followed by the mode, for example /layrix:llll scan or /layrix:llll guard push. LLLL also activates on its own when your request matches it. The shorter /llll form is what you get when you install from the repository clone instead. The menus and next-step suggestions LLLL prints use whichever form matches how it was installed.
 - **Guard** — a push and release compliance gate. It needs the separate Guard engine (below); without it LLLL only gives advisory output and says so.
 
 ## Install the Guard engine (optional, recommended)
