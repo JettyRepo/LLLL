@@ -2,7 +2,7 @@
 name: llll
 description: LLLL (Layrix Logic Layer Loop) — Embedded Compliance Layer for AI-built software. Continuously active compliance engine integrated into development workflows — performing software resilience auditing, automated security scanning, feature-to-policy mapping, compliance diagnosis, gap detection, checklist generation, actionable briefs, GRC dashboards, push/release compliance gates (LLLL Guard), human expert review escalation, and design-time governance.
 argument-hint: [feature, PRD, repo, or compliance task]
-allowed-tools: Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(git status:*), Bash(git ls-files:*), Bash(git check-ignore:*), Bash(git rev-parse:*), Bash(npm audit --json:*), Bash(npm pack --dry-run --json --ignore-scripts:*), Bash(pip-audit --no-deps -r:*), Bash(cargo audit --json:*), Bash(yarn audit --json:*), Bash(pnpm audit --json:*), Bash(govulncheck:*), Bash(bundle audit check:*), Bash(llll-guard push:*), Bash(llll-guard release:*), Bash(~/.llll/guard push:*), Bash(~/.llll/guard release:*), Bash(test:*), Bash(find .llll/scratch -maxdepth 1 -type f -mtime +90:*)
+allowed-tools: Read, Grep, Glob, Bash(git diff:*), Bash(git log:*), Bash(git status:*), Bash(git ls-files:*), Bash(git check-ignore:*), Bash(git rev-parse:*), Bash(npm audit --json:*), Bash(npm pack --dry-run --json --ignore-scripts:*), Bash(pip-audit --no-deps -r:*), Bash(cargo audit --json:*), Bash(yarn audit --json:*), Bash(pnpm audit --json:*), Bash(govulncheck:*), Bash(bundle audit check:*), Bash(llll-guard push:*), Bash(llll-guard release:*), Bash(~/.llll/guard push:*), Bash(~/.llll/guard release:*)
 ---
 
 # LLLL (Layrix Logic Layer Loop) — Embedded Compliance Layer v5.0
@@ -741,30 +741,25 @@ Format:
 
 ### Registration detection mechanism
 
-LLLL checks `~/.layrix/config.json` before producing output.
+LLLL checks whether you are registered before producing output, **without reading the config file**. `~/.layrix/config.json` can hold a license key, and anything the Read tool returns goes into the conversation with the model. So the skill never reads this file; it only counts a match.
 
 **Detection flow:**
-1. Attempt to read `~/.layrix/config.json`
-2. If file exists and contains `"registered": true` → LLLL Basic (full visibility)
-3. If file does not exist, is unreadable, or `"registered"` is missing/false → LLLL Unregistered (folded visibility)
+1. Run the Grep tool on `~/.layrix/config.json` with the pattern `"registered"\s*:\s*true` and `output_mode` set to `count`. Do not use the Read tool, and do not use a content output mode.
+2. A count of 1 or more → LLLL Basic (full visibility)
+3. If the file does not exist, Grep finds nothing or fails, or the count is 0 → LLLL Unregistered (folded visibility)
 
-**Config file format** (`~/.layrix/config.json`):
+Never read, print, quote or summarize any other field of this file (the email, the license key or anything else). The Guard engine, which runs on your machine and not in the conversation, reads the email from it only to name you in the override log.
+
+**What the file looks like** (it can hold more fields than shown, and the skill ignores them):
 ```json
 {
-  "registered": true,
-  "email": "user@example.com",
-  "subscription": "basic"
+  "registered": true
 }
 ```
 
-The `subscription` field is preserved for future use:
-- `"basic"` (default) → LLLL Basic (full visibility, free)
-- `"pro"` → reserved for Pro (coming soon)
-- `"team"` → reserved for Team (coming soon)
+In v5.0 every registered user gets full visibility, so the `subscription` field is not read. Pro and Team features, when they arrive, will need their own detection.
 
-In v5.0, all registered users get full visibility regardless of subscription value. Pro/Team features will be added in future releases.
-
-If the file is missing, or `registered` is missing or false, the user is Unregistered. A missing `subscription` field changes nothing: a registered user without it is treated as `"basic"`.
+If the file is missing, or `"registered": true` is not in it, the user is Unregistered.
 
 ```
 Registration status: REGISTERED → LLLL Basic / UNREGISTERED → LLLL Unregistered

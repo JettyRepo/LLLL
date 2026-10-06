@@ -392,13 +392,13 @@ Layer 5 (敏感行业)     → Domain M（提升所有发现的审查级别）
 
 | 检查 ID | 检测方式 | 检查内容 | 严重级别 |
 |--------|---------|---------|---------|
-| **GIT-001** | `test -f .gitignore` | .gitignore 文件存在 | High |
+| **GIT-001** | Glob `.gitignore` (a match means it exists) | .gitignore 文件存在 | High |
 | **GIT-002** | `git check-ignore -q .env` | .env 在 .gitignore 中排除 | Critical |
 | **GIT-003** | `git log --all --diff-filter=A --name-only --format= -- '.env' '*.env' '.env.*' ':!*.example' ':!*.sample' ':!*.template'` | .env 从未被提交 | Critical |
 | **GIT-004** | `git log --all --diff-filter=A --name-only --format= -- '*.pem' '*.key' '*id_rsa*' ':!*.pub'` | 私钥从未被提交 | Critical |
 | **GIT-005** | `gh api repos/{owner}/{repo}/branches/{default_branch}/protection` | main 分支保护已开启 | High |
-| **GIT-006** | `test -f LICENSE \|\| test -f LICENSE.md \|\| test -f LICENSE.txt \|\| test -f COPYING` | LICENSE 文件存在 | High |
-| **GIT-007** | `test -f CODEOWNERS \|\| test -f .github/CODEOWNERS \|\| test -f docs/CODEOWNERS` | CODEOWNERS 文件存在 | Low |
+| **GIT-006** | Glob `LICENSE`, `LICENSE.md`, `LICENSE.txt`, `COPYING` (any match means it exists) | LICENSE 文件存在 | High |
+| **GIT-007** | Glob `CODEOWNERS`, `.github/CODEOWNERS`, `docs/CODEOWNERS` (any match means it exists) | CODEOWNERS 文件存在 | Low |
 
 ### 5.4 依赖漏洞审计（9 种技术栈）
 
