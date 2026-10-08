@@ -660,7 +660,7 @@ Note: Registration hint is NOT at the tail. It appears at the top of the output 
 
 ### Menu format — read `menus.md`
 
-The exact menu for each mode, the variants for LLLL Unregistered and LLLL Basic, and the response to the registration call-to-action are in `menus.md`. **Read it when writing the Next steps menu.** The menus for `/llll scan`, `/llll fix`, `/llll grc`, `/llll review` and `/llll guard` are task-specific (for example `/llll fix [highest-severity finding]`), so do not build them from a general rule; use the exact one in `menus.md`, with the registration call-to-action as the final item for LLLL Unregistered. Wherever this skill shows or suggests a command (menus, hints, "suggest `/llll guard push`"), the **command prefix** rule at the top of `menus.md` applies: a plugin install is invoked as `/llll:llll`, so show `/llll:llll deep` there instead of `/llll deep`.
+The exact menu for each mode, the variants for LLLL Unregistered and LLLL Basic, and the response to the registration call-to-action are in `menus.md`. **Read it when writing the Next steps menu.** The menus for `/llll scan`, `/llll fix`, `/llll grc`, `/llll review` and `/llll guard` are task-specific (for example `/llll fix [highest-severity finding]`), so do not build them from a general rule; use the exact one in `menus.md`, with the registration call-to-action as the final item for LLLL Unregistered. Wherever this skill shows or suggests a command (menus, hints, "suggest `/llll guard push`"), the **command prefix** rule at the top of `menus.md` applies: a plugin install is invoked as `/layrix:llll`, so show `/layrix:llll deep` there instead of `/llll deep`.
 
 ## ACTIONABLE OUTPUT STANDARD
 

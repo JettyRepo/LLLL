@@ -6,7 +6,7 @@
 
 The menu lists the other available modes. The current mode is replaced with `/llll` (diagnosis).
 
-**Command prefix.** The menus below write commands in the short form `/llll ...`. When this skill is installed as a Claude Code plugin, it is invoked as `/llll:llll ...`, because Claude Code puts the plugin name in front. If the skill appears in your skill list as `llll:llll`, or the user typed `/llll:llll`, write every command you show in a menu, a hint or a next-step suggestion with `/llll:llll` in place of `/llll` (for example `/llll:llll deep`, `/llll:llll guard push`, and `/llll:llll` alone for diagnosis). If it appears as `llll`, or you cannot tell, use the short form. Never show both forms for the same command.
+**Command prefix.** The menus below write commands in the short form `/llll ...`. When this skill is installed as a Claude Code plugin, it is invoked as `/layrix:llll ...`, because Claude Code puts the plugin name in front. If the skill appears in your skill list as `layrix:llll`, or the user typed `/layrix:llll`, write every command you show in a menu, a hint or a next-step suggestion with `/layrix:llll` in place of `/llll` (for example `/layrix:llll deep`, `/layrix:llll guard push`, and `/layrix:llll` alone for diagnosis). If it appears as `llll`, or you cannot tell, use the short form. Never show both forms for the same command.
 
 **LLLL Unregistered** — includes registration CTA as final item:
 
