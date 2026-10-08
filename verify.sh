@@ -71,20 +71,11 @@ grep -qE "append \`-S\`|\`-S\` flag|pre-save gates verify" "$SKILL_ALL" && { ech
 grep -q "auditable history" "$SKILL_ALL" && { echo "FAIL: 'auditable history' language still present"; exit 1; } || echo "PASS: Overclaim language removed"
 grep -q "ephemeral" "$SKILL_ALL" && echo "PASS: Ephemeral language present" || { echo "FAIL: Ephemeral language missing"; exit 1; }
 TOOLS=$(grep -m1 "^allowed-tools:" "$S/SKILL.md")
+# No shell command is pre-approved: the directory review holds a plugin whose allowed-tools pre-approves shell access
+# (a ':*' tail accepts extra arguments such as -exec, -delete, --output or fix). Claude Code asks before each command instead.
 case "$TOOLS" in
-  *" Write"*|*" Edit"*) echo "FAIL: allowed-tools lists Write or Edit"; exit 1 ;;
-esac
-case "$TOOLS" in
-  *"Bash,"*|*"Bash") echo "FAIL: allowed-tools has an unrestricted Bash"; exit 1 ;;
-esac
-case "$TOOLS" in
-  "allowed-tools: Read, Grep, Glob, "*"Bash(llll-guard push:*)"*"Bash(llll-guard release:*)"*) echo "PASS: allowed-tools has no Write/Edit, Bash is restricted, the guard engine push and release are reachable" ;;
-  *) echo "FAIL: allowed-tools must start 'Read, Grep, Glob' and include Bash(llll-guard push:*) and Bash(llll-guard release:*)"; exit 1 ;;
-esac
-# find and test with a ':*' tail accept extra arguments such as -exec or -delete, so they are not pre-approved (the directory review flags them)
-case "$TOOLS" in
-  *"Bash(find"*|*"Bash(test"*) echo "FAIL: allowed-tools pre-approves find or test; use the Glob tool for file checks"; exit 1 ;;
-  *) echo "PASS: allowed-tools does not pre-approve find or test" ;;
+  "allowed-tools: Read, Grep, Glob") echo "PASS: allowed-tools pre-approves only Read, Grep and Glob (no Bash, no Write/Edit)" ;;
+  *) echo "FAIL: allowed-tools must be exactly 'Read, Grep, Glob'"; exit 1 ;;
 esac
 # the skill must not read ~/.layrix/config.json: it can hold a license key, and Read output goes to the model
 grep -q "without reading the config file" "$S/SKILL.md" && ! grep -q "Attempt to read \`~/.layrix/config.json\`" "$S/SKILL.md" && echo "PASS: registration is detected without reading the config file" || { echo "FAIL: SKILL.md must detect registration with a count-only Grep, not by reading ~/.layrix/config.json"; exit 1; }
@@ -114,8 +105,7 @@ cmp -s LLLL.svg plugins/llll/icon.svg && echo "PASS: plugins/llll/icon.svg match
 grep -q "/layrix:llll" plugins/llll/skills/llll/menus.md && grep -q "/layrix:llll" plugins/llll/skills/llll/SKILL.md && echo "PASS: command prefix rule (/layrix:llll) is in SKILL.md and menus.md" || { echo "FAIL: command prefix rule for plugin installs is missing"; exit 1; }
 
 # pip-audit may only run without installing anything
-grep -q "pip-audit --no-deps" plugins/llll/skills/llll/mode-scan.md && grep -q "Bash(pip-audit --no-deps -r:\*)" plugins/llll/skills/llll/SKILL.md && echo "PASS: pip-audit is pre-approved only with --no-deps" || { echo "FAIL: pip-audit must be pre-approved only as 'pip-audit --no-deps -r'"; exit 1; }
-if grep -q "Bash(pip-audit -r:" plugins/llll/skills/llll/SKILL.md; then echo "FAIL: allowed-tools still pre-approves pip-audit without --no-deps"; exit 1; fi
+grep -q "pip-audit --no-deps" plugins/llll/skills/llll/mode-scan.md && ! grep -q "pip-audit -r" plugins/llll/skills/llll/mode-scan.md plugins/llll/skills/llll/scan-patterns.md && echo "PASS: pip-audit is documented only with --no-deps" || { echo "FAIL: pip-audit must only be documented as 'pip-audit --no-deps -r'"; exit 1; }
 
 # Rule ids: guard-patterns.md, taxonomy and the engine name the same rules (needs llll-guard dependencies)
 if [ -d llll-guard/node_modules ]; then
